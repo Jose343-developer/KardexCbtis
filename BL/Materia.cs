@@ -96,5 +96,104 @@ namespace BL
             return result;
         }
 
+        public ML.Result GetById(int idMateria)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var query = _context.MateriaGetAlls.FromSqlInterpolated($"EXEC MateriaGetById {idMateria}").AsEnumerable().FirstOrDefault();
+
+                if (query != null)
+                {
+                    ML.Materia materia = new ML.Materia();
+                    materia.IdMateria = query.IdMateria;
+                    materia.Nombre = query.Nombre;
+                    materia.Semestre = query.Semestre;
+                    materia.Creditos = query.Creditos;
+
+                    materia.Especialidad = new ML.Especialidad();
+                    materia.Especialidad.IdEspecialidad = query.IdEspecialidad ?? 0;
+                    materia.Especialidad.Nombre = query.NombreEspecialidad ?? "Sin especialidad";
+                    materia.Especialidad.ClaveOficial = query.ClaveOficial ?? "sin clave";
+
+                    result.Object = materia;
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "No se encontró la materia";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
+        public ML.Result Update(ML.Materia materia)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                int? idEspecialidad = (materia.Especialidad != null && materia.Especialidad.IdEspecialidad > 0) 
+                    ? materia.Especialidad.IdEspecialidad 
+                    : null;
+
+                var rowsAffected = _context.Database.ExecuteSqlInterpolated($@"EXEC MateriaUpdate 
+                    {materia.IdMateria},
+                    {materia.Nombre}, 
+                    {materia.Semestre}, 
+                    {materia.Creditos}, 
+                    {idEspecialidad}");
+
+                 if (rowsAffected > 0 || rowsAffected == -1)
+                {
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "No se pudo actualizar la materia.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
+        public ML.Result Delete(int idMateria)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var rowsAffected = _context.Database.ExecuteSqlInterpolated($"EXEC MateriaDelete {idMateria}");
+
+                if (rowsAffected > 0 || rowsAffected == -1)
+                {
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "No se pudo eliminar la materia.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
     }
 }

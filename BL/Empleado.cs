@@ -111,5 +111,119 @@ namespace BL
             return result;
         }
 
+        public ML.Result GetById(int idEmpleado)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var query = _context.EmpleadoGetAlls.FromSqlInterpolated($"EXEC EmpleadoGetById {idEmpleado}").AsEnumerable().FirstOrDefault();
+
+                if (query != null)
+                {
+                    ML.Empleado empleado = new ML.Empleado();
+                    empleado.IdEmpleado = query.IdEmpleado;
+                    empleado.Curp = query.Curp;
+                    empleado.Rfc = query.Rfc;
+                    empleado.Nombre = query.Nombre;
+                    empleado.ApellidoPaterno = query.ApellidoPaterno;
+                    empleado.ApellidoMaterno = query.ApellidoMaterno;
+                    empleado.Correo = query.Correo;
+                    empleado.Telefono = query.Telefono;
+                    empleado.Celular = query.Celular;
+                    empleado.Departamento = query.Departamento;
+
+                    empleado.Usuario = new ML.Usuario();
+                    empleado.Usuario.IdUsuario = query.IdUsuario;
+                    empleado.Usuario.NombreUser = query.NombreUser;
+                    empleado.Usuario.Password = query.Password;
+                    empleado.Usuario.Estatus = query.Estatus;
+
+                    empleado.Usuario.Rol = new ML.Rol();
+                    empleado.Usuario.Rol.IdRol = query.IdRol;
+                    empleado.Usuario.Rol.Nombre = query.NombreRol;
+
+                    result.Object = empleado;
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "No se encontró el empleado";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
+        public ML.Result Update(ML.Empleado empleado)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var rowsAffected = _context.Database.ExecuteSqlInterpolated($@"EXEC EmpleadoUpdate 
+                    {empleado.IdEmpleado},
+                    {empleado.Usuario.NombreUser}, 
+                    {empleado.Usuario.Password}, 
+                    {empleado.Usuario.Rol.IdRol}, 
+                    {empleado.Curp}, 
+                    {empleado.Rfc}, 
+                    {empleado.Nombre}, 
+                    {empleado.ApellidoPaterno}, 
+                    {empleado.ApellidoMaterno}, 
+                    {empleado.Correo}, 
+                    {empleado.Telefono}, 
+                    {empleado.Celular}, 
+                    {empleado.Departamento}");
+
+                if (rowsAffected > 0 || rowsAffected == -1)
+                {
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "No se pudo actualizar el empleado.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
+        public ML.Result Delete(int idEmpleado)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                var rowsAffected = _context.Database.ExecuteSqlInterpolated($"EXEC EmpleadoDelete {idEmpleado}");
+
+                if (rowsAffected > 0 || rowsAffected == -1)
+                {
+                    result.Correct = true;
+                }
+                else
+                {
+                    result.Correct = false;
+                    result.ErrorMessage = "No se pudo eliminar el empleado.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+            return result;
+        }
+
     }
 }

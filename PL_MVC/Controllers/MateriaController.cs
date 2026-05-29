@@ -90,5 +90,84 @@ namespace PL_MVC.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult MateriaEdit(int idMateria)
+        {
+            ML.Result result = _materiaBL.GetById(idMateria);
+            if (result.Correct)
+            {
+                ML.Materia model = (ML.Materia)result.Object;
+
+                ML.Result resultEspecialidades = _especialidadBL.EspecialidadGetAll();
+                if (model.Especialidad == null)
+                {
+                    model.Especialidad = new ML.Especialidad();
+                }
+                if (resultEspecialidades.Correct)
+                {
+                    model.Especialidad.Especialidades = resultEspecialidades.Objects;
+                }
+                else
+                {
+                    model.Especialidad.Especialidades = new List<object>();
+                }
+                return View(model);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No se pudo obtener los datos de la materia: " + result.ErrorMessage;
+                return RedirectToAction("GetAll");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult MateriaEdit(ML.Materia model)
+        {
+            if (ModelState.IsValid)
+            {
+                ML.Result result = _materiaBL.Update(model);
+                if (result.Correct)
+                {
+                    TempData["SuccessMessage"] = "Materia actualizada correctamente.";
+                    return RedirectToAction("GetAll");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = result.ErrorMessage;
+                }
+            }
+
+            // Repopulate specialties dropdown
+            if (model.Especialidad == null)
+            {
+                model.Especialidad = new ML.Especialidad();
+            }
+            ML.Result resultEspecialidades = _especialidadBL.EspecialidadGetAll();
+            if (resultEspecialidades.Correct)
+            {
+                model.Especialidad.Especialidades = resultEspecialidades.Objects;
+            }
+            else
+            {
+                model.Especialidad.Especialidades = new List<object>();
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult MateriaDelete(int idMateria)
+        {
+            ML.Result result = _materiaBL.Delete(idMateria);
+            if (result.Correct)
+            {
+                TempData["SuccessMessage"] = "Materia eliminada correctamente.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No se pudo eliminar la materia: " + result.ErrorMessage;
+            }
+            return RedirectToAction("GetAll");
+        }
     }
 }

@@ -1,0 +1,143 @@
+@model ML.Empleado
+@{
+    ViewData["Title"] = "Editar Empleado";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Empleado/EmpleadoEdit.css" asp-append-version="true" />
+}
+
+<div class="container-fluid py-4">
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 border-start border-danger border-4 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-4 me-3"></i>
+                <div>
+                    @ViewBag.Message
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-primary bg-gradient text-white p-3 rounded-top-3">
+                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Editar Empleado</h5>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    @using (Html.BeginForm("EmpleadoEdit", "Empleado", FormMethod.Post, new { id = "empleadoForm" }))
+                    {
+                        @Html.HiddenFor(m => m.IdEmpleado)
+                        @Html.HiddenFor(m => m.Usuario.IdUsuario)
+
+                        <h6 class="text-primary border-bottom pb-2 mb-3"><i class="bi bi-person-fill me-2"></i>Información Personal</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="Nombre" class="form-label fw-semibold">Nombre(s)</label>
+                                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", id = "Nombre", placeholder = "Ej: Juan" })
+                                @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El nombre es obligatorio y sólo debe contener letras.</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="ApellidoPaterno" class="form-label fw-semibold">Apellido Paterno</label>
+                                @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control", id = "ApellidoPaterno", placeholder = "Ej: Pérez" })
+                                @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El apellido paterno es obligatorio y sólo debe contener letras.</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="ApellidoMaterno" class="form-label fw-semibold">Apellido Materno</label>
+                                @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control", id = "ApellidoMaterno", placeholder = "Ej: Gómez" })
+                                @Html.ValidationMessageFor(m => m.ApellidoMaterno, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El apellido materno sólo debe contener letras si se especifica.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Curp" class="form-label fw-semibold">CURP</label>
+                                @Html.TextBoxFor(m => m.Curp, new { @class = "form-control", id = "Curp", placeholder = "Ej: PEEG800101HDFRMX05" })
+                                @Html.ValidationMessageFor(m => m.Curp, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">La CURP es obligatoria y debe tener formato oficial (18 caracteres).</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Rfc" class="form-label fw-semibold">RFC</label>
+                                @Html.TextBoxFor(m => m.Rfc, new { @class = "form-control", id = "Rfc", placeholder = "Ej: PEEG800101XXX" })
+                                @Html.ValidationMessageFor(m => m.Rfc, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El RFC es obligatorio y debe tener un formato válido (12 o 13 caracteres).</div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary border-bottom pb-2 mb-3"><i class="bi bi-telephone-fill me-2"></i>Contacto y Plantel</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="Correo" class="form-label fw-semibold">Correo Electrónico</label>
+                                @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", id = "Correo", placeholder = "Ej: juan@cbtis.edu.mx", type = "email" })
+                                @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El correo electrónico no tiene un formato válido.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="Telefono" class="form-label fw-semibold">Teléfono Fijo</label>
+                                @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", id = "Telefono", placeholder = "Ej: 5551234567" })
+                                @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El teléfono debe contener 10 dígitos numéricos.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="Celular" class="form-label fw-semibold">Celular</label>
+                                @Html.TextBoxFor(m => m.Celular, new { @class = "form-control", id = "Celular", placeholder = "Ej: 5559876543" })
+                                @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El celular debe contener 10 dígitos numéricos.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Departamento" class="form-label fw-semibold">Departamento / Área</label>
+                                @Html.TextBoxFor(m => m.Departamento, new { @class = "form-control", id = "Departamento", placeholder = "Ej: Docencia, Dirección, Control Escolar" })
+                                @Html.ValidationMessageFor(m => m.Departamento, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El departamento es obligatorio.</div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-primary border-bottom pb-2 mb-3"><i class="bi bi-shield-lock-fill me-2"></i>Información de Acceso (Usuario)</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label for="NombreUser" class="form-label fw-semibold">Nombre de Usuario</label>
+                                @Html.TextBoxFor(m => m.Usuario.NombreUser, new { @class = "form-control", id = "NombreUser", placeholder = "Ej: juan.perez" })
+                                @Html.ValidationMessageFor(m => m.Usuario.NombreUser, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El nombre de usuario es obligatorio (mínimo 3 caracteres).</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="Password" class="form-label fw-semibold">Contraseña <span class="text-muted font-monospace" style="font-size: 11px;">(Opcional)</span></label>
+                                @Html.PasswordFor(m => m.Usuario.Password, new { @class = "form-control", id = "Password", placeholder = "Dejar en blanco para no modificar", value = "" })
+                                @Html.ValidationMessageFor(m => m.Usuario.Password, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">La contraseña debe tener mínimo 4 caracteres si se modifica.</div>
+                                <span class="form-text text-muted small">Deja este campo vacío para conservar la contraseña actual.</span>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="ddlRol" class="form-label fw-semibold">Rol del Sistema</label>
+                                @Html.DropDownListFor(
+                                    m => m.Usuario.Rol.IdRol, 
+                                    new SelectList(Model.Usuario.Rol.Roles, "IdRol", "Nombre"), 
+                                    "Seleccione un Rol", 
+                                    new { @class = "form-select", id = "ddlRol" }
+                                )
+                                @Html.ValidationMessageFor(m => m.Usuario.Rol.IdRol, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Seleccione un rol de usuario.</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-4 text-center">
+                            <a href="@Url.Action("GetAll", "Empleado")" class="btn btn-outline-secondary px-4 me-2">
+                                <i class="bi bi-arrow-left me-2"></i>Regresar
+                            </a>
+                            <button type="submit" class="btn btn-success px-5">
+                                <i class="bi bi-save me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Empleado/EmpleadoEdit.js" asp-append-version="true"></script>
+}

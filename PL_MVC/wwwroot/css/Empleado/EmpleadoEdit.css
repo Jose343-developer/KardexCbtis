@@ -1,0 +1,40 @@
+/* --- FORM EMPLEADO EDIT STYLING --- */
+
+.avatar-circle {
+    width: 45px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 50%;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+.text-primary {
+    color: #0d6efd !important;
+}
+
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+    border-radius: 50px;
+}
+
+.btn-outline-secondary {
+    border-radius: 50px;
+}
+
+.form-label {
+    margin-bottom: 0.25rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}

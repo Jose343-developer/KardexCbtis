@@ -24,6 +24,14 @@
             </div>
         }
 
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
         @if (ViewBag.Message != null)
         {
             <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
@@ -41,6 +49,7 @@
                         <th class="text-center">Semestre</th>
                         <th class="text-center">Créditos</th>
                         <th>Especialidad</th>
+                        <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,13 +74,23 @@
                                 {
                                     <td>@materia.Especialidad.Nombre</td>
                                 }
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("MateriaEdit", "Materia", new { idMateria = materia.IdMateria })" class="btn btn-sm btn-outline-primary" title="Editar Materia">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="@Url.Action("MateriaDelete", "Materia", new { idMateria = materia.IdMateria })" class="btn btn-sm btn-outline-danger" title="Eliminar Materia" onclick="return confirm('¿Estás seguro de que deseas eliminar esta materia?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">
+                            <td colspan="6" class="text-center py-4 text-muted">
                                 No hay materias registradas.
                             </td>
                         </tr>
