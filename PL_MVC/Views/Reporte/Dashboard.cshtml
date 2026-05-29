@@ -1,6 +1,7 @@
+@model Dictionary<string, object>
 @{
     ViewData["Title"] = "Dashboard de Control Escolar";
-    var stats = ViewBag.Stats as Dictionary<string, object>;
+    var stats = Model;
 }
 @section Styles {
     <link rel="stylesheet" href="~/css/Reporte/Dashboard.css" asp-append-version="true" />

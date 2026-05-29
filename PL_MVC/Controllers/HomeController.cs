@@ -9,40 +9,28 @@ public class HomeController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-       
-            BL.Alumno alumnoCount = new BL.Alumno();
-            ML.Result result = new ML.Result();
-
-            result = alumnoCount.CountAlumno();
-            int[] countSemestre =  new int[7];
-            for (int i = 1; i <= 6; i++)
-    {
-        ML.Result resultSemestre = alumnoCount.GetCountAlumnoBySemestre(i);
+        BL.Alumno alumnoCount = new BL.Alumno();
+        ML.Result result = alumnoCount.CountAlumno();
         
-        
-        countSemestre[i] = resultSemestre.Correct ? (int)resultSemestre.Object : 0;
-    }
+        int[] countSemestre = new int[7];
+        for (int i = 1; i <= 6; i++)
+        {
+            ML.Result resultSemestre = alumnoCount.GetCountAlumnoBySemestre(i);
+            countSemestre[i] = resultSemestre.Correct ? (int)resultSemestre.Object : 0;
+        }
 
-    // 2. Mandamos al ViewBag
-    ViewBag.primerSemestre = countSemestre[1];
-    ViewBag.segundoSemestre = countSemestre[2]; 
-    ViewBag.tercerSemestre = countSemestre[3];
-    ViewBag.cuartoSemestre = countSemestre[4];
-    ViewBag.quintoSemestre = countSemestre[5];
-    ViewBag.sextoSemestre = countSemestre[6];
-            if (result.Correct)
-            {
-                     ViewBag.alumnosCount = (int)result.Object;
+        ML.HomeViewModel model = new ML.HomeViewModel
+        {
+            AlumnosCount = result.Correct ? (int)result.Object : 0,
+            PrimerSemestre = countSemestre[1],
+            SegundoSemestre = countSemestre[2],
+            TercerSemestre = countSemestre[3],
+            CuartoSemestre = countSemestre[4],
+            QuintoSemestre = countSemestre[5],
+            SextoSemestre = countSemestre[6]
+        };
 
-
-            }
-                else
-                {
-            
-                    ViewBag.alumnosCount = 0;
-
-                }
-                    return View();
+        return View(model);
     }
 
     public IActionResult Privacy()

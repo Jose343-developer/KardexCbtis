@@ -1,19 +1,18 @@
+@model ML.HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
 
 @{
-    // 1. Preparamos las variables y evitamos errores de división entre cero
-    double total = ViewBag.alumnosCount != null && ViewBag.alumnosCount > 0 ? Convert.ToDouble(ViewBag.alumnosCount) : 1;
+    double total = Model != null && Model.AlumnosCount > 0 ? Convert.ToDouble(Model.AlumnosCount) : 1;
     
-    double sem1 = ViewBag.primerSemestre != null ? Convert.ToDouble(ViewBag.primerSemestre) : 0;
-    double sem2 = ViewBag.segundoSemestre != null ? Convert.ToDouble(ViewBag.segundoSemestre) : 0;
-    double sem3 = ViewBag.tercerSemestre != null ? Convert.ToDouble(ViewBag.tercerSemestre) : 0;
-    double sem4 = ViewBag.cuartoSemestre != null ? Convert.ToDouble(ViewBag.cuartoSemestre) : 0;
-    double sem5 = ViewBag.quintoSemestre != null ? Convert.ToDouble(ViewBag.quintoSemestre) : 0;
-    double sem6 = ViewBag.sextoSemestre != null ? Convert.ToDouble(ViewBag.sextoSemestre) : 0;
+    double sem1 = Model != null ? Convert.ToDouble(Model.PrimerSemestre) : 0;
+    double sem2 = Model != null ? Convert.ToDouble(Model.SegundoSemestre) : 0;
+    double sem3 = Model != null ? Convert.ToDouble(Model.TercerSemestre) : 0;
+    double sem4 = Model != null ? Convert.ToDouble(Model.CuartoSemestre) : 0;
+    double sem5 = Model != null ? Convert.ToDouble(Model.QuintoSemestre) : 0;
+    double sem6 = Model != null ? Convert.ToDouble(Model.SextoSemestre) : 0;
 
-    // 2. Calculamos los porcentajes (usamos CultureInfo para que el punto decimal funcione bien en CSS)
     var culture = System.Globalization.CultureInfo.InvariantCulture;
     string pct1 = (sem1 / total * 100).ToString("0.0", culture) + "%";
     string pct2 = (sem2 / total * 100).ToString("0.0", culture) + "%";
@@ -30,7 +29,7 @@
     <!-- Encabezado -->
     <h1 class="display-4 dashboard-title">¡BIENVENIDOS!</h1>
     <p class="text-muted text-uppercase fw-bold mt-3">Total de Alumnos Inscritos</p>
-    <div class="total-alumnos">@ViewBag.alumnosCount</div>
+    <div class="total-alumnos">@Model.AlumnosCount</div>
     <hr class="mt-4 mb-4" style="border-top: 2px solid #eee;">
 
     <!-- Gráfica generada con CSS -->
@@ -41,7 +40,7 @@
         <div class="barra-grupo">
             <div class="barra-etiquetas">
                 <span>1er Semestre</span>
-                <span>@ViewBag.primerSemestre alumnos</span>
+                <span>@Model.PrimerSemestre alumnos</span>
             </div>
             <div class="barra-fondo">
                 <div class="barra-progreso c-sem1" style="width: @pct1;">@pct1</div>
@@ -52,7 +51,7 @@
         <div class="barra-grupo">
             <div class="barra-etiquetas">
                 <span>2do Semestre</span>
-                <span>@ViewBag.segundoSemestre alumnos</span>
+                <span>@Model.SegundoSemestre alumnos</span>
             </div>
             <div class="barra-fondo">
                 <div class="barra-progreso c-sem2" style="width: @pct2;">@pct2</div>
@@ -63,7 +62,7 @@
         <div class="barra-grupo">
             <div class="barra-etiquetas">
                 <span>3er Semestre</span>
-                <span>@ViewBag.tercerSemestre alumnos</span>
+                <span>@Model.TercerSemestre alumnos</span>
             </div>
             <div class="barra-fondo">
                 <div class="barra-progreso c-sem3" style="width: @pct3;">@pct3</div>
@@ -74,7 +73,7 @@
         <div class="barra-grupo">
             <div class="barra-etiquetas">
                 <span>4to Semestre</span>
-                <span>@ViewBag.cuartoSemestre alumnos</span>
+                <span>@Model.CuartoSemestre alumnos</span>
             </div>
             <div class="barra-fondo">
                 <div class="barra-progreso c-sem4" style="width: @pct4;">@pct4</div>
@@ -85,7 +84,7 @@
         <div class="barra-grupo">
             <div class="barra-etiquetas">
                 <span>5to Semestre</span>
-                <span>@ViewBag.quintoSemestre alumnos</span>
+                <span>@Model.QuintoSemestre alumnos</span>
             </div>
             <div class="barra-fondo">
                 <div class="barra-progreso c-sem5" style="width: @pct5;">@pct5</div>
@@ -96,7 +95,7 @@
         <div class="barra-grupo">
             <div class="barra-etiquetas">
                 <span>6to Semestre</span>
-                <span>@ViewBag.sextoSemestre alumnos</span>
+                <span>@Model.SextoSemestre alumnos</span>
             </div>
             <div class="barra-fondo">
                 <div class="barra-progreso c-sem6" style="width: @pct6;">@pct6</div>

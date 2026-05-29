@@ -44,5 +44,6 @@ namespace ML
 
         public ML.Especialidad? Especialidad {get; set;}
         public ML.Grupo? Grupo {get; set;}
+        public List<ML.Calificacion>? Calificaciones { get; set; }
     }
 }

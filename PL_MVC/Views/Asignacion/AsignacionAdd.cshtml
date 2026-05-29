@@ -28,9 +28,12 @@
                     <label class="form-label fw-semibold">Docente</label>
                     <select class="form-select" id="ddlDocente" name="Empleado.IdEmpleado" required>
                         <option value="">-- Seleccione Docente --</option>
-                        @foreach (var doc in ViewBag.Docentes)
+                        @if (Model.Docentes != null)
                         {
-                            <option value="@doc.IdEmpleado">@doc.Nombre @doc.ApellidoPaterno @doc.ApellidoMaterno (@doc.Departamento)</option>
+                            foreach (var doc in Model.Docentes)
+                            {
+                                <option value="@doc.IdEmpleado">@doc.Nombre @doc.ApellidoPaterno @doc.ApellidoMaterno (@doc.Departamento)</option>
+                            }
                         }
                     </select>
                     <div class="invalid-feedback">Debe seleccionar un docente.</div>
@@ -41,9 +44,12 @@
                     <label class="form-label fw-semibold">Asignatura / Materia</label>
                     <select class="form-select" id="ddlMateria" name="Materia.IdMateria" required>
                         <option value="">-- Seleccione Materia --</option>
-                        @foreach (var mat in ViewBag.Materias)
+                        @if (Model.Materias != null)
                         {
-                            <option value="@mat.IdMateria">@mat.Nombre (Semestre @mat.Semestre)</option>
+                            foreach (var mat in Model.Materias)
+                            {
+                                <option value="@mat.IdMateria">@mat.Nombre (Semestre @mat.Semestre)</option>
+                            }
                         }
                     </select>
                     <div class="invalid-feedback">Debe seleccionar una materia.</div>
@@ -54,9 +60,12 @@
                     <label class="form-label fw-semibold">Grupo</label>
                     <select class="form-select" id="ddlGrupo" name="Grupo.IdGrupo" required>
                         <option value="">-- Seleccione Grupo --</option>
-                        @foreach (var gp in ViewBag.Grupos)
+                        @if (Model.Grupos != null)
                         {
-                            <option value="@gp.IdGrupo">@gp.Semestre - @gp.Letra (@gp.Turno)</option>
+                            foreach (var gp in Model.Grupos)
+                            {
+                                <option value="@gp.IdGrupo">@gp.Semestre - @gp.Letra (@gp.Turno)</option>
+                            }
                         }
                     </select>
                     <div class="invalid-feedback">Debe seleccionar un grupo.</div>

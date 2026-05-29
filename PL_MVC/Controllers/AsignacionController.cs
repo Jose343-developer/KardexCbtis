@@ -34,14 +34,13 @@ namespace PL_MVC.Controllers
             model.Materia = new ML.Materia();
             model.Grupo = new ML.Grupo();
 
-            PopulateDropdowns();
+            PopulateDropdowns(model);
             return View(model);
         }
 
         [HttpPost]
         public IActionResult AsignacionAdd(ML.AsignacionDocente model)
         {
-            // Note: Since model binder might fail on complex nested objects, check and copy values if needed
             if (ModelState.IsValid)
             {
                 BL.AsignacionDocente blAsignacion = new BL.AsignacionDocente();
@@ -58,11 +57,11 @@ namespace PL_MVC.Controllers
                 }
             }
 
-            PopulateDropdowns();
+            PopulateDropdowns(model);
             return View(model);
         }
 
-        private void PopulateDropdowns()
+        private void PopulateDropdowns(ML.AsignacionDocente model)
         {
             // 1. Get Docentes (Empleados with Rol Profesor (IdRol = 2))
             BL.Empleado blEmpleado = new BL.Empleado();
@@ -78,17 +77,17 @@ namespace PL_MVC.Controllers
                     }
                 }
             }
-            ViewBag.Docentes = docentes;
+            model.Docentes = docentes;
 
             // 2. Get Materias
             BL.Materia blMateria = new BL.Materia();
             ML.Result resultMaterias = blMateria.GetAll();
-            ViewBag.Materias = resultMaterias.Correct ? resultMaterias.Objects : new List<object>();
+            model.Materias = resultMaterias.Correct ? resultMaterias.Objects.Cast<ML.Materia>().ToList() : new List<ML.Materia>();
 
             // 3. Get Grupos
             BL.Grupo blGrupo = new BL.Grupo();
             ML.Result resultGrupos = blGrupo.GrupoGetAll();
-            ViewBag.Grupos = resultGrupos.Correct ? resultGrupos.Objects : new List<object>();
+            model.Grupos = resultGrupos.Correct ? resultGrupos.Objects.Cast<ML.Grupo>().ToList() : new List<ML.Grupo>();
         }
     }
 }

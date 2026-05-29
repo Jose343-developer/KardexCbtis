@@ -1,7 +1,8 @@
+@model ML.Alumno
 @{
     ViewData["Title"] = "Boleta Oficial";
-    var alumno = ViewBag.Alumno as ML.Alumno;
-    var calificaciones = ViewBag.Calificaciones as List<ML.Calificacion>;
+    var alumno = Model;
+    var calificaciones = Model?.Calificaciones;
     
     decimal sumGrades = 0;
     int totalCredits = 0;

@@ -27,5 +27,8 @@ namespace ML
         public TimeSpan HoraFin { get; set; }
 
         public List<object>? Asignaciones { get; set; }
+        public List<ML.Empleado>? Docentes { get; set; }
+        public List<ML.Materia>? Materias { get; set; }
+        public List<ML.Grupo>? Grupos { get; set; }
     }
 }

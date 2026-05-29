@@ -16,14 +16,13 @@ namespace PL_MVC.Controllers
 
             if (result.Correct)
             {
-                ViewBag.Stats = result.Object;
+                return View(result.Object);
             }
             else
             {
                 ViewBag.ErrorMessage = result.ErrorMessage;
+                return View(new Dictionary<string, object>());
             }
-
-            return View();
         }
 
         [HttpGet]
@@ -82,11 +81,9 @@ namespace PL_MVC.Controllers
                     calificaciones = resultCalificaciones.Objects.Cast<ML.Calificacion>().ToList();
                 }
 
-                ViewBag.Alumno = alumno;
-                ViewBag.Calificaciones = calificaciones;
+                alumno.Calificaciones = calificaciones;
+                return View(alumno);
             }
-
-            return View();
         }
     }
 }
