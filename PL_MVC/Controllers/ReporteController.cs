@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PL_MVC.Filters;
 
 namespace PL_MVC.Controllers
 {
+    [AuthorizeRole("Administrador", "Profesor")]
     public class ReporteController : Controller
     {
         private readonly BL.Calificacion _calificacionBL;
@@ -18,6 +20,7 @@ namespace PL_MVC.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRole("Administrador")]
         public IActionResult Dashboard()
         {
             var blCalificacion = _calificacionBL;

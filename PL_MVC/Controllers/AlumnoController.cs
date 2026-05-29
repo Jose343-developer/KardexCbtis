@@ -4,8 +4,11 @@ using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using System.Data;
 using System.IO;
 using ExcelDataReader;
+using PL_MVC.Filters;
+
 namespace PL_MVC.Controllers
 {
+    [AuthorizeRole("Administrador")]
     public class AlumnoController : Controller
     {
         private readonly BL.Alumno _alumnoBL;

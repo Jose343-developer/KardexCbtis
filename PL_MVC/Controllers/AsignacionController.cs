@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using PL_MVC.Filters;
 
 namespace PL_MVC.Controllers
 {
+    [AuthorizeRole("Administrador", "Profesor")]
     public class AsignacionController : Controller
     {
         private readonly BL.AsignacionDocente _asignacionBL;
@@ -44,6 +46,7 @@ namespace PL_MVC.Controllers
         }
 
         [HttpGet]
+        [AuthorizeRole("Administrador")]
         public IActionResult AsignacionAdd()
         {
             ML.AsignacionDocente model = new ML.AsignacionDocente();
@@ -56,6 +59,7 @@ namespace PL_MVC.Controllers
         }
 
         [HttpPost]
+        [AuthorizeRole("Administrador")]
         public IActionResult AsignacionAdd(ML.AsignacionDocente model)
         {
             if (ModelState.IsValid)

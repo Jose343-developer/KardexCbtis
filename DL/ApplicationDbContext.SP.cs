@@ -18,6 +18,8 @@ public virtual DbSet<DTO.AsignacionDocenteGetAll> AsignacionDocenteGetAlls { get
 public virtual DbSet<DTO.CalificacionGetByAlumno> CalificacionGetByAlumnos { get; set; }
 public virtual DbSet<DTO.GrupoGetTurnos> GrupoGetTurnos { get; set; }
 public virtual DbSet<DTO.GrupoGetSemestres> GrupoGetSemestres { get; set; }
+public virtual DbSet<DTO.UsuarioGetParaLogin> UsuarioGetParaLogins { get; set; }
+public virtual DbSet<DTO.LoginUsuarioResult> LoginUsuarioResults { get; set; }
 
  partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {
@@ -32,6 +34,8 @@ public virtual DbSet<DTO.GrupoGetSemestres> GrupoGetSemestres { get; set; }
         modelBuilder.Entity<DTO.CalificacionGetByAlumno>().HasNoKey();
         modelBuilder.Entity<DTO.GrupoGetTurnos>().HasNoKey();
         modelBuilder.Entity<DTO.GrupoGetSemestres>().HasNoKey();
+        modelBuilder.Entity<DTO.UsuarioGetParaLogin>().HasNoKey();
+        modelBuilder.Entity<DTO.LoginUsuarioResult>().HasNoKey();
     }
 
 

@@ -140,5 +140,20 @@ public class GrupoGetAll
     {
         public byte? Semestre { get; set; }
     }
+
+    public class UsuarioGetParaLogin
+    {
+        public int IdUsuario { get; set; }
+        public int IdRol { get; set; }
+        public string Password { get; set; } = null!;
+        public bool? Estatus { get; set; }
+    }
+
+    public class LoginUsuarioResult
+    {
+        public int IdUsuario { get; set; }
+        public int IdRol { get; set; }
+    }
 }
+
 

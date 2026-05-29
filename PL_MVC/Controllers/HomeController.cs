@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using PL_MVC.Models;
+using PL_MVC.Filters;
 
 namespace PL_MVC.Controllers;
 
+[AuthorizeRole("Administrador", "Profesor", "Alumno")]
 public class HomeController : Controller
 {
     private readonly BL.Alumno _alumnoBL;

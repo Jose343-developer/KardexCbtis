@@ -9,8 +9,11 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Services;
 using Newtonsoft.Json;
+using PL_MVC.Filters;
+
 namespace PL_MVC.Controllers
 {
+    [AuthorizeRole("Administrador", "Profesor")]
     public class CalendarioController : Controller
 {
     private readonly IConfiguration _config;

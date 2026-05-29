@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using DL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,8 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:5174", "https://localhost:7123", "http://127.0.0.1:5174", "https://127.0.0.1:7123")
                   .AllowAnyMethod()
-                  .AllowAnyHeader();
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
 });
 
@@ -36,6 +40,38 @@ builder.Services.AddScoped<BL.Especialidad>();
 builder.Services.AddScoped<BL.Grupo>();
 builder.Services.AddScoped<BL.Materia>();
 builder.Services.AddScoped<BL.Rol>();
+builder.Services.AddScoped<BL.Usuario>();
+
+// Configurar Autenticación con JWT Bearer
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "1978APPPCONGIUSER_sistem?console_%%%contrsaena#segurademuchis12345679caracrtereSV777"))
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["tokenjwt"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -49,6 +85,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowMvcApp");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 var summaries = new[]
 {

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using PL_MVC.Filters;
 
 namespace PL_MVC.Controllers
 {
+    [AuthorizeRole("Administrador")]
     public class MateriaController : Controller
     {
         private readonly BL.Materia _materiaBL;

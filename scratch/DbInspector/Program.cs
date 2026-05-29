@@ -9,36 +9,24 @@ class Program
         using (SqlConnection conn = new SqlConnection(connString))
         {
             conn.Open();
-            Console.WriteLine("--- TABLES ---");
-            using (SqlCommand cmd = new SqlCommand("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", conn))
+            Console.WriteLine("--- ROLES ---");
+            using (SqlCommand cmd = new SqlCommand("SELECT IdRol, Nombre FROM Rol", conn))
             using (SqlDataReader rdr = cmd.ExecuteReader())
             {
                 while (rdr.Read())
                 {
-                    Console.WriteLine(rdr.GetString(0));
+                    Console.WriteLine($"IdRol: {rdr.GetInt32(0)}, Nombre: {rdr.GetString(1)}");
                 }
             }
 
-            Console.WriteLine("\n--- COLUMNS IN Empleados ---");
-            PrintColumns(conn, "Empleados");
-
-            Console.WriteLine("\n--- COLUMNS IN Usuario ---");
-            PrintColumns(conn, "Usuario");
-
-            Console.WriteLine("\n--- COLUMNS IN Materia ---");
-            PrintColumns(conn, "Materia");
-        }
-    }
-
-    static void PrintColumns(SqlConnection conn, string tableName)
-    {
-        string query = $"SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}'";
-        using (SqlCommand cmd = new SqlCommand(query, conn))
-        using (SqlDataReader rdr = cmd.ExecuteReader())
-        {
-            while (rdr.Read())
+            Console.WriteLine("\n--- USUARIOS ---");
+            using (SqlCommand cmd = new SqlCommand("SELECT IdUsuario, IdRol, NombreUser, Password, Estatus FROM Usuario", conn))
+            using (SqlDataReader rdr = cmd.ExecuteReader())
             {
-                Console.WriteLine($"{rdr.GetString(0)} ({rdr.GetString(1)}, Nullable: {rdr.GetString(2)})");
+                while (rdr.Read())
+                {
+                    Console.WriteLine($"IdUsuario: {rdr.GetInt32(0)}, IdRol: {rdr.GetInt32(1)}, NombreUser: {rdr.GetString(2)}, Password: {rdr.GetString(3)}, Estatus: {(rdr.IsDBNull(4) ? "NULL" : rdr.GetBoolean(4))}");
+                }
             }
         }
     }

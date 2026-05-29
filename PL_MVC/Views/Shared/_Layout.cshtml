@@ -1,3 +1,37 @@
+@using System.Linq
+@{
+    var user = Context.User;
+    string nombreUsuario = "Invitado";
+    string rolUsuario = "";
+    string emailUsuario = "";
+    bool isAuthenticated = false;
+
+    if (user != null && user.Identity != null && user.Identity.IsAuthenticated)
+    {
+        isAuthenticated = true;
+        emailUsuario = user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value 
+                       ?? user.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value 
+                       ?? "";
+        rolUsuario = user.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value 
+                     ?? user.FindFirst("role")?.Value 
+                     ?? "";
+        
+        if (!string.IsNullOrEmpty(emailUsuario))
+        {
+            nombreUsuario = emailUsuario.Contains("@") ? emailUsuario.Split('@')[0] : emailUsuario;
+            if (nombreUsuario.Contains("."))
+            {
+                var parts = nombreUsuario.Split('.');
+                nombreUsuario = string.Join(" ", parts.Select(p => p.Length > 0 ? char.ToUpper(p[0]) + p.Substring(1) : ""));
+            }
+            else if (nombreUsuario.Length > 0)
+            {
+                nombreUsuario = char.ToUpper(nombreUsuario[0]) + nombreUsuario.Substring(1);
+            }
+        }
+    }
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,27 +57,60 @@
                 </div>
                 
                 <nav class="nav-menu">
-                    <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-                    <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="GetAll">Alumnos</a>
-                    <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="GetAll">Empleados</a>
-                    <a class="nav-item" asp-area="" asp-controller="Asignacion" asp-action="GetAll">Asignación Docente</a>
-                    <a class="nav-item" asp-area="" asp-controller="Materia" asp-action="GetAll">Materias</a>
-                    <a class="nav-item" asp-area="" asp-controller="Reporte" asp-action="Dashboard">Estadísticas</a>
-                    <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
-                    <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="AlumnoAdd">Agregar Alumno</a>
-                    <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="EmpleadoAdd">Agregar Empleado</a>
-                    <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
+                    @if (isAuthenticated)
+                    {
+                        <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+
+                        @if (rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="GetAll">Alumnos</a>
+                            <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="GetAll">Empleados</a>
+                            <a class="nav-item" asp-area="" asp-controller="Asignacion" asp-action="GetAll">Asignación Docente</a>
+                            <a class="nav-item" asp-area="" asp-controller="Materia" asp-action="GetAll">Materias</a>
+                            <a class="nav-item" asp-area="" asp-controller="Reporte" asp-action="Dashboard">Estadísticas</a>
+                            <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="AlumnoAdd">Agregar Alumno</a>
+                            <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="EmpleadoAdd">Agregar Empleado</a>
+                            <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
+                        }
+                        else if (rolUsuario.Equals("Profesor", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <a class="nav-item" asp-area="" asp-controller="Asignacion" asp-action="GetAll">Asignación Docente</a>
+                            <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
+                        }
+                        else if (rolUsuario.Equals("Alumno", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <a class="nav-item" asp-area="" asp-controller="Calificacion" asp-action="MisCalificaciones">Mis Calificaciones</a>
+                        }
+
+                        <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+                    }
+                    else
+                    {
+                        <a class="nav-item" asp-area="" asp-controller="Login" asp-action="Login">Iniciar Sesión</a>
+                    }
                 </nav>
             </div>
 
             <div class="sidebar-bottom">
-                <div class="user-profile">
-                    <img src="~/images/perfil.png" alt="Usuario" class="user-avatar">
-                    <div class="user-info">
-                        <span class="user-name">Matheo Caifan</span>
-                        <span class="user-email">202121572@cbtis.com</span>
+                @if (isAuthenticated)
+                {
+                    <div class="user-profile mb-3">
+                        <img src="~/images/perfil.png" alt="Usuario" class="user-avatar">
+                        <div class="user-info">
+                            <span class="user-name">@nombreUsuario</span>
+                            <span class="user-email text-muted" style="font-size: 11px;">@rolUsuario</span>
+                        </div>
                     </div>
-                </div>
+                    <a class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-2 rounded-3" asp-controller="Login" asp-action="Logout">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-sm w-100 rounded-3" asp-controller="Login" asp-action="Login">
+                        Iniciar Sesión
+                    </a>
+                }
             </div>
         </aside>
 

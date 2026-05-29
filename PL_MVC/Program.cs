@@ -19,6 +19,7 @@ builder.Services.AddScoped<BL.Especialidad>();
 builder.Services.AddScoped<BL.Grupo>();
 builder.Services.AddScoped<BL.Materia>();
 builder.Services.AddScoped<BL.Rol>();
+builder.Services.AddScoped<BL.Usuario>();
 
 var app = builder.Build();
 
