@@ -1,0 +1,347 @@
+@using BL
+@model ML.Alumno
+@{
+    ViewData["Title"] = "Agregar Alumno";
+}
+
+<div class="mt-4">
+    <p class="d-inline-flex gap-1">
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseCargaMasiva" role="button" aria-expanded="false" aria-controls="collapseCargaMasiva">
+            <i class="bi bi-file-earmark-excel me-1"></i> CARGA MASIVA
+        </a>
+    </p>
+    <div class="collapse" id="collapseCargaMasiva">
+        <form action="@Url.Action("CargaMasiva", "Alumno")" method="POST" enctype="multipart/form-data">
+            <div class="input-group mb-3">
+                <input type="file" name="archivoExcel" class="form-control" id="inputGroupFile04" accept=".xlsx" required>
+                
+                <button class="btn btn-success px-4" type="submit">
+                    <i class="bi bi-upload me-2"></i> Subir Excel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@* <div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center text-md-start">
+            <h1 class="display-5 fw-bold text-primary mb-2">Agregar Alumno</h1>
+            <p class="text-muted lead">Ingresa los datos del nuevo alumno.</p>
+        </div>
+    </div> *@
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="fs-4 bi bi-exclamation-triangle-fill text-danger me-2"></i> @ViewBag.Message
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+                    @using (Html.BeginForm("AlumnoAdd", "Alumno", FormMethod.Post, new { id = "alumnoForm", enctype = "multipart/form-data" }))
+                    {
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="Nombre" class="form-label fw-semibold">Nombre</label>
+                                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", id = "Nombre", placeholder = "Ej: Emmanuel" })
+                                @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El nombre es obligatorio y sólo debe contener letras.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ApellidoPaterno" class="form-label fw-semibold">Apellido Paterno</label>
+                                @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control", id = "ApellidoPaterno", placeholder = "Ej: Rodríguez" })
+                                @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El apellido paterno es obligatorio y sólo debe contener letras.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ApellidoMaterno" class="form-label fw-semibold">Apellido Materno</label>
+                                @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control", id = "ApellidoMaterno", placeholder = "Ej: Flores" })
+                                @Html.ValidationMessageFor(m => m.ApellidoMaterno, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El apellido materno sólo debe contener letras si se especifica.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Matricula" class="form-label fw-semibold">Matrícula</label>
+                                @Html.TextBoxFor(m => m.Matricula, new { @class = "form-control", id = "Matricula", placeholder = "Ej: 123456789" })
+                                @Html.ValidationMessageFor(m => m.Matricula, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">La matrícula es obligatoria y sólo debe contener números.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Curp" class="form-label fw-semibold">CURP</label>
+                                @Html.TextBoxFor(m => m.Curp, new { @class = "form-control", id = "Curp", placeholder = "Ej: ROFE000101XXXXXXXX" })
+                                @Html.ValidationMessageFor(m => m.Curp, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El CURP es obligatorio y debe tener un formato oficial válido (18 caracteres).</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Correo" class="form-label fw-semibold">Correo</label>
+                                @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", id = "Correo", placeholder = "Ej: alumno@cbtis.edu.mx", type = "email" })
+                                @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El correo electrónico no tiene un formato válido.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Telefono" class="form-label fw-semibold">Teléfono</label>
+                                @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", id = "Telefono", placeholder = "Ej: 5551234567" })
+                                @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El teléfono debe contener exactamente 10 dígitos numéricos.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Celular" class="form-label fw-semibold">Celular</label>
+                                @Html.TextBoxFor(m => m.Celular, new { @class = "form-control", id = "Celular", placeholder = "Ej: 5559876543" })
+                                @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">El celular debe contener exactamente 10 dígitos numéricos.</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                @Html.LabelFor(m=>Model.Grupo.Semestre, "Semestre", new { @class = "form-label fw-semibold" })
+                                @Html.DropDownListFor(
+                                    m=> Model.Grupo.Semestre,
+                                     new SelectList(Model.Grupo.semestres),
+                                     "Seleccione un Semestre",
+                                     new {@class = "form-select", @id="ddlsemestre"})
+                                @Html.ValidationMessageFor(m => m.Grupo.Semestre, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Seleccione un semestre.</div>
+                            </div>    
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Turno</label>
+                                <select id="ddlTurno" class="form-select" disabled>
+                                    <option value="">Primero seleccione Semestre</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione un turno.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => m.Grupo.IdGrupo, "Grupo", new { @class = "form-label fw-semibold" })
+                                <select name="Grupo.IdGrupo" id="ddlGrupo" class="form-select" disabled>
+                                    <option value="">Seleccione SEMESTRE</option>
+                                    @foreach (ML.Grupo grupo in Model.Grupo.grupos)
+                                    {
+                                        <option value="@grupo.IdGrupo" data-semestre="@grupo.Semestre" data-turno="@grupo.Turno">
+                                            Grupo @grupo.Letra
+                                        </option>
+                                    }
+                                </select>
+                                @Html.ValidationMessageFor(m => m.Grupo.IdGrupo, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Seleccione un grupo.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                @Html.LabelFor(m => Model.Especialidad, "Especialidad", new { @class = "form-label fw-semibold" })
+                                @Html.DropDownListFor(
+                                    m => m.Especialidad.IdEspecialidad, 
+                                    new SelectList(Model.Especialidad.Especialidades, "IdEspecialidad", "Nombre"), 
+                                    "Seleccione una especialidad", 
+                                    new { @class = "form-select", @id = "ddlEspecialidad" }
+                                )
+                                @Html.ValidationMessageFor(m => m.Especialidad.IdEspecialidad, "", new { @class = "text-danger" })
+                                <div class="invalid-feedback">Seleccione una especialidad.</div>
+                            </div>
+
+                            <div class="col-12 mt-4 text-center">
+                                <a href="@Url.Action("GetAll", "Alumno")" class="btn btn-outline-secondary px-4 me-2">
+                                    <i class="bi bi-arrow-left me-2"></i>Regresar
+                                </a>
+                                <button type="submit" class="btn btn-success px-4">
+                                    <i class="bi bi-save me-2"></i>Guardar Alumno
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        // 0. Ocultamos todos los grupos de la lista maestra al inicio
+        $("#ddlGrupo option[data-semestre]").hide();
+
+        // ==========================================
+        // PASO 1: Cuando el usuario cambia el SEMESTRE
+        // ==========================================
+        $("#ddlsemestre").change(function () {
+            var semestreElegido = $(this).val();
+            
+            var ddlTurno = $("#ddlTurno");
+            var ddlGrupo = $("#ddlGrupo");
+
+            // Reseteamos y bloqueamos los siguientes pasos
+            ddlTurno.empty();
+            ddlGrupo.val("").prop("disabled", true);
+            $("#ddlGrupo option[data-semestre]").hide();
+
+            if (semestreElegido != "") {
+                // Quitamos el candado al Turno
+                ddlTurno.prop("disabled", false);
+                ddlTurno.append('<option value="">Seleccione un Turno</option>');
+
+                // Buscamos qué turnos existen para este semestre
+                var turnosEncontrados = [];
+                
+                $("#ddlGrupo option[data-semestre='" + semestreElegido + "']").each(function () {
+                    var turno = $(this).attr("data-turno");
+                    
+                    // Si no hemos agregado este turno a la lista, lo agregamos
+                    if ($.inArray(turno, turnosEncontrados) === -1) {
+                        turnosEncontrados.push(turno);
+                        ddlTurno.append('<option value="' + turno + '">' + turno + '</option>');
+                    }
+                });
+            } else {
+                ddlTurno.prop("disabled", true);
+                ddlTurno.append('<option value="">Primero seleccione Semestre</option>');
+            }
+            validateField($(this), $(this).val() !== "");
+        });
+
+        // ==========================================
+        // PASO 2: Cuando el usuario cambia el TURNO
+        // ==========================================
+        $("#ddlTurno").change(function () {
+            var turnoElegido = $(this).val();
+            var semestreElegido = $("#ddlsemestre").val();
+            var ddlGrupo = $("#ddlGrupo");
+
+            // Escondemos las opciones y limpiamos el valor actual
+            $("#ddlGrupo option[data-semestre]").hide();
+            ddlGrupo.val("");
+
+            if (turnoElegido != "") {
+                // Quitamos el candado al Grupo
+                ddlGrupo.prop("disabled", false);
+                
+                // Mostramos SOLO el grupo que coincida con el Semestre Y el Turno
+                $("#ddlGrupo option[data-semestre='" + semestreElegido + "'][data-turno='" + turnoElegido + "']").show();
+            } else {
+                ddlGrupo.prop("disabled", true);
+            }
+            validateField($(this), $(this).val() !== "");
+        });
+
+        $("#ddlGrupo").change(function () {
+            validateField($(this), $(this).val() !== "");
+        });
+
+        $("#ddlEspecialidad").change(function () {
+            validateField($(this), $(this).val() !== "");
+        });
+
+        // ==========================================
+        // VALIDACIÓN DE CAMPOS EN TIEMPO REAL
+        // ==========================================
+        function validateField(element, condition) {
+            if (condition) {
+                element.removeClass("is-invalid").addClass("is-valid");
+                return true;
+            } else {
+                element.removeClass("is-valid").addClass("is-invalid");
+                return false;
+            }
+        }
+
+        var regexLetters = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        var regexDigits = /^\d+$/;
+        var regexCurp = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z\d]\d$/;
+        var regexEmail = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        $("#Nombre").on("input", function() {
+            var val = $(this).val().trim();
+            validateField($(this), val !== "" && regexLetters.test(val) && val.length <= 50);
+        });
+
+        $("#ApellidoPaterno").on("input", function() {
+            var val = $(this).val().trim();
+            validateField($(this), val !== "" && regexLetters.test(val) && val.length <= 50);
+        });
+
+        $("#ApellidoMaterno").on("input", function() {
+            var val = $(this).val().trim();
+            if (val === "") {
+                $(this).removeClass("is-invalid is-valid");
+            } else {
+                validateField($(this), regexLetters.test(val) && val.length <= 50);
+            }
+        });
+
+        $("#Matricula").on("input", function() {
+            var val = $(this).val().trim();
+            validateField($(this), val !== "" && regexDigits.test(val) && val.length <= 20);
+        });
+
+        $("#Curp").on("input", function() {
+            var val = $(this).val().trim().toUpperCase();
+            $(this).val(val);
+            validateField($(this), val !== "" && regexCurp.test(val));
+        });
+
+        $("#Correo").on("input", function() {
+            var val = $(this).val().trim();
+            if (val === "") {
+                $(this).removeClass("is-invalid is-valid");
+            } else {
+                validateField($(this), regexEmail.test(val) && val.length <= 100);
+            }
+        });
+
+        $("#Telefono").on("input", function() {
+            var val = $(this).val().trim();
+            if (val === "") {
+                $(this).removeClass("is-invalid is-valid");
+            } else {
+                validateField($(this), regexDigits.test(val) && val.length === 10);
+            }
+        });
+
+        $("#Celular").on("input", function() {
+            var val = $(this).val().trim();
+            if (val === "") {
+                $(this).removeClass("is-invalid is-valid");
+            } else {
+                validateField($(this), regexDigits.test(val) && val.length === 10);
+            }
+        });
+
+        // Validar en el submit del formulario
+        $("#alumnoForm").submit(function (e) {
+            var isValid = true;
+
+            // Trigger input validation
+            $("#Nombre").trigger("input");
+            $("#ApellidoPaterno").trigger("input");
+            $("#Matricula").trigger("input");
+            $("#Curp").trigger("input");
+            
+            if ($("#ApellidoMaterno").val().trim() !== "") $("#ApellidoMaterno").trigger("input");
+            if ($("#Correo").val().trim() !== "") $("#Correo").trigger("input");
+            if ($("#Telefono").val().trim() !== "") $("#Telefono").trigger("input");
+            if ($("#Celular").val().trim() !== "") $("#Celular").trigger("input");
+
+            // Validate select lists
+            if (!validateField($("#ddlsemestre"), $("#ddlsemestre").val() !== "")) isValid = false;
+            if (!validateField($("#ddlTurno"), $("#ddlTurno").val() !== "" && $("#ddlTurno").val() !== null)) isValid = false;
+            if (!validateField($("#ddlGrupo"), $("#ddlGrupo").val() !== "")) isValid = false;
+            if (!validateField($("#ddlEspecialidad"), $("#ddlEspecialidad").val() !== "")) isValid = false;
+
+            // Check if any element has class is-invalid
+            if ($(".is-invalid").length > 0) {
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                // Focus the first invalid element
+                $(".is-invalid").first().focus();
+            }
+        });
+    });
+</script>

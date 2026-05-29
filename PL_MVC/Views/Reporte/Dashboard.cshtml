@@ -1,0 +1,211 @@
+@{
+    ViewData["Title"] = "Dashboard de Control Escolar";
+    var stats = ViewBag.Stats as Dictionary<string, object>;
+}
+
+<style>
+    .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        padding: 20px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    .table-container {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        padding: 25px;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1" style="color: #2d3436;"><i class="bi bi-speedometer2 text-danger"></i> Estadísticas y Métricas Críticas</h2>
+            <p class="text-muted mb-0">Indicadores de rendimiento académico, aprobación y deserción escolar.</p>
+        </div>
+    </div>
+
+    @if (stats != null)
+    {
+        <!-- KPI Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Total Alumnos -->
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fs-7 fw-semibold">Total Alumnos</span>
+                            <h3 class="fw-bold mb-0 mt-1">@stats["TotalAlumnos"]</h3>
+                        </div>
+                        <div class="stat-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 fs-7 text-muted">
+                        <span class="text-success fw-semibold"><i class="bi bi-circle-fill"></i> @stats["Activos"]</span> Activos | 
+                        <span class="text-danger fw-semibold">@stats["Bajas"]</span> Bajas
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promedio General -->
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fs-7 fw-semibold">Promedio General</span>
+                            <h3 class="fw-bold mb-0 mt-1 text-info">@stats["PromedioGeneral"]</h3>
+                        </div>
+                        <div class="stat-icon bg-info-subtle text-info">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3 fs-7 text-muted">
+                        Calificación promedio a nivel plantel.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasa de Aprobación -->
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fs-7 fw-semibold">Tasa de Aprobación</span>
+                            <h3 class="fw-bold mb-0 mt-1 text-success">@stats["AprobacionPorcentaje"]%</h3>
+                        </div>
+                        <div class="stat-icon bg-success-subtle text-success">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: @stats["AprobacionPorcentaje"]%" aria-valuenow="@stats["AprobacionPorcentaje"]" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasa de Deserción -->
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fs-7 fw-semibold">Tasa de Deserción</span>
+                            <h3 class="fw-bold mb-0 mt-1 text-danger">@stats["DesercionPorcentaje"]%</h3>
+                        </div>
+                        <div class="stat-icon bg-danger-subtle text-danger">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: @stats["DesercionPorcentaje"]%" aria-valuenow="@stats["DesercionPorcentaje"]" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Charts Section -->
+            <div class="col-lg-6">
+                <div class="table-container h-100">
+                    <h5 class="fw-bold mb-4" style="color: #2d3436;"><i class="bi bi-pie-chart text-warning"></i> Distribución Académica</h5>
+                    <div style="max-height: 280px; display: flex; justify-content: center;">
+                        <canvas id="academicChart" style="max-width: 280px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="table-container h-100">
+                    <h5 class="fw-bold mb-4" style="color: #2d3436;"><i class="bi bi-mortarboard text-primary"></i> Resumen por Especialidad</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Especialidad</th>
+                                    <th class="text-center">Alumnos</th>
+                                    <th class="text-center">Bajas</th>
+                                    <th class="text-center">Promedio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var esp in stats["EspecialidadStats"] as List<Dictionary<string, object>>)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@esp["Nombre"]</td>
+                                        <td class="text-center">@esp["TotalAlumnos"]</td>
+                                        <td class="text-center">
+                                            @if ((int)esp["Bajas"] > 0)
+                                            {
+                                                <span class="badge bg-danger-subtle text-danger">@esp["Bajas"]</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td class="text-center fw-bold text-info">@esp["Promedio"]</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger shadow-sm">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i> No se pudieron recuperar estadísticas debido a un problema con los datos.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('academicChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Aprobadas', 'Reprobadas'],
+                        datasets: [{
+                            data: [@stats?["Aprobadas"], @stats?["Reprobadas"]],
+                            backgroundColor: ['#2ec4b6', '#e71d36'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

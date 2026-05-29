@@ -1,0 +1,109 @@
+@model List<ML.CalendarObjects>
+@{
+    ViewData["Title"] = "GetAllCalendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- 1. Agregamos la librería FullCalendar desde su CDN -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+
+<style>
+    /* Mantenemos el estilo de tu tarjeta profesional */
+    .calendar-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        margin: 20px auto;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Pequeños ajustes para que FullCalendar se vea más limpio */
+    .fc .fc-button-primary {
+        background-color: #7B2037;
+        border-color: #7B2037;
+    }
+    .fc .fc-button-primary:not(:disabled):active,
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+        background-color: #5a1728; /* Tono ligeramente más oscuro al presionar */
+        border-color: #5a1728;
+    }
+    .fc-event {
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 2px 4px;
+    }
+</style>
+
+<div class="container">
+    <div class="calendar-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold mb-0" style="color: #2d3436;">Agenda del Sistema</h2>
+        </div>
+        <hr class="mb-4" style="border-top: 2px solid #eee;">
+
+        <!-- 2. Este div es donde FullCalendar dibujará toda la interfaz -->
+        <div id='calendar'></div>
+
+    </div>
+</div>
+
+<!-- 3. Script para inicializar el calendario y pasarle los datos de tu Modelo -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+
+        // Mapeamos tu modelo de C# (Model) a un arreglo de JavaScript
+        // que FullCalendar pueda entender
+        var eventosGoogle = [
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    // FullCalendar necesita las fechas en formato ISO (yyyy-MM-ddTHH:mm:ss)
+                    var fechaInicio = item.start?.dateTime != null ? item.start.dateTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : (item.start?.date ?? "");
+                    var fechaFin = item.end?.dateTime != null ? item.end.dateTime.Value.ToString("yyyy-MM-ddTHH:mm:ss") : (item.end?.date ?? "");
+                    
+                    // Asignamos colores según el estatus
+                    string colorEvento = "#7B2037"; // El color guinda para los eventos
+                    if (item.status == "tentative") colorEvento = "#f39c12"; // Naranja
+                    if (item.status == "cancelled") colorEvento = "#e74c3c"; // Rojo
+
+                    // Creamos el objeto JSON para JavaScript
+                    <text>
+                    {
+                        title: '@Html.Raw(item.summary?.Replace("'", "\\'"))', // Limpiamos comillas simples para evitar errores de JS
+                        start: '@fechaInicio',
+                        end: '@fechaFin',
+                        backgroundColor: '@colorEvento',
+                        borderColor: '@colorEvento'
+                    },
+                    </text>
+                }
+            }
+        ];
+
+        // Inicializamos FullCalendar
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth', // Vista por defecto (Mes)
+            locale: 'es', // Idioma español
+            themeSystem: 'bootstrap5',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' // Botones tipo Google Calendar
+            },
+            buttonText: {
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Agenda'
+            },
+            events: eventosGoogle, // Aquí le pasamos la lista que armamos arriba
+            height: 700 // Altura del calendario
+        });
+
+        calendar.render();
+    });
+</script>

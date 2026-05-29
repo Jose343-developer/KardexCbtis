@@ -1,0 +1,177 @@
+@model ML.AsignacionDocente
+
+@{
+    ViewData["Title"] = "Programar Asignación";
+}
+
+<style>
+    .form-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 30px;
+        margin-top: 20px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .btn-save {
+        background-color: #7B2037;
+        color: white;
+        border: none;
+    }
+    .btn-save:hover {
+        background-color: #5a1728;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="form-card">
+        <h3 class="fw-bold mb-3" style="color: #2d3436;"><i class="bi bi-calendar-plus text-danger"></i> Programar Asignación</h3>
+        <p class="text-muted mb-4">Mapea un docente a una asignatura y grupo, definiendo su horario semanal.</p>
+
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger shadow-sm alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.ErrorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @using (Html.BeginForm("AsignacionAdd", "Asignacion", FormMethod.Post, new { id = "frmAsignacion", @class = "needs-validation", novalidate = "novalidate" }))
+        {
+            <div class="row g-3">
+                <!-- Docente -->
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Docente</label>
+                    <select class="form-select" id="ddlDocente" name="Empleado.IdEmpleado" required>
+                        <option value="">-- Seleccione Docente --</option>
+                        @foreach (var doc in ViewBag.Docentes)
+                        {
+                            <option value="@doc.IdEmpleado">@doc.Nombre @doc.ApellidoPaterno @doc.ApellidoMaterno (@doc.Departamento)</option>
+                        }
+                    </select>
+                    <div class="invalid-feedback">Debe seleccionar un docente.</div>
+                </div>
+
+                <!-- Materia -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Asignatura / Materia</label>
+                    <select class="form-select" id="ddlMateria" name="Materia.IdMateria" required>
+                        <option value="">-- Seleccione Materia --</option>
+                        @foreach (var mat in ViewBag.Materias)
+                        {
+                            <option value="@mat.IdMateria">@mat.Nombre (Semestre @mat.Semestre)</option>
+                        }
+                    </select>
+                    <div class="invalid-feedback">Debe seleccionar una materia.</div>
+                </div>
+
+                <!-- Grupo -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Grupo</label>
+                    <select class="form-select" id="ddlGrupo" name="Grupo.IdGrupo" required>
+                        <option value="">-- Seleccione Grupo --</option>
+                        @foreach (var gp in ViewBag.Grupos)
+                        {
+                            <option value="@gp.IdGrupo">@gp.Semestre - @gp.Letra (@gp.Turno)</option>
+                        }
+                    </select>
+                    <div class="invalid-feedback">Debe seleccionar un grupo.</div>
+                </div>
+
+                <!-- Dia de la Semana -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Día</label>
+                    <select class="form-select" id="ddlDia" name="DiaSemana" required>
+                        <option value="">-- Seleccione Día --</option>
+                        <option value="Lunes">Lunes</option>
+                        <option value="Martes">Martes</option>
+                        <option value="Miércoles">Miércoles</option>
+                        <option value="Jueves">Jueves</option>
+                        <option value="Viernes">Viernes</option>
+                        <option value="Sábado">Sábado</option>
+                    </select>
+                    <div class="invalid-feedback">Debe seleccionar un día de la semana.</div>
+                </div>
+
+                <!-- Hora Inicio -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Hora de Inicio</label>
+                    <input type="time" class="form-control" id="timeInicio" name="HoraInicio" required />
+                    <div class="invalid-feedback" id="valInicio">Debe ingresar la hora de inicio.</div>
+                </div>
+
+                <!-- Hora Fin -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Hora de Fin</label>
+                    <input type="time" class="form-control" id="timeFin" name="HoraFin" required />
+                    <div class="invalid-feedback" id="valFin">Debe ingresar la hora de fin.</div>
+                </div>
+
+                <!-- Acciones -->
+                <div class="col-12 mt-4 d-flex justify-content-end gap-2">
+                    <a href="@Url.Action("GetAll")" class="btn btn-light rounded-pill px-4">Cancelar</a>
+                    <button type="submit" class="btn btn-save rounded-pill px-4" id="btnGuardar">Programar Horario</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("frmAsignacion");
+            const timeInicio = document.getElementById("timeInicio");
+            const timeFin = document.getElementById("timeFin");
+
+            form.addEventListener("submit", function (e) {
+                let isValid = true;
+                
+                // Clear custom states
+                timeFin.classList.remove("is-invalid");
+                
+                // Native validation
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isValid = false;
+                }
+
+                // Custom validation: HoraInicio < HoraFin
+                if (timeInicio.value && timeFin.value) {
+                    const start = timeInicio.value;
+                    const end = timeFin.value;
+
+                    if (start >= end) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        timeFin.classList.add("is-invalid");
+                        document.getElementById("valFin").innerText = "La hora de fin debe ser posterior a la hora de inicio.";
+                        isValid = false;
+                    }
+                }
+
+                form.classList.add("was-validated");
+            });
+
+            // Interactive checks
+            timeInicio.addEventListener("change", checkHours);
+            timeFin.addEventListener("change", checkHours);
+
+            function checkHours() {
+                if (timeInicio.value && timeFin.value) {
+                    if (timeInicio.value >= timeFin.value) {
+                        timeFin.classList.add("is-invalid");
+                        document.getElementById("valFin").innerText = "La hora de fin debe ser posterior.";
+                    } else {
+                        timeFin.classList.remove("is-invalid");
+                        timeFin.classList.add("is-valid");
+                    }
+                }
+            }
+        });
+    </script>
+}

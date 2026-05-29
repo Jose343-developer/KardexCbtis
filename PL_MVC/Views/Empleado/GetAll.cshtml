@@ -1,0 +1,148 @@
+@model List<ML.Empleado>
+@{
+    ViewData["Title"] = "Catálogo de Empleados";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="display-6 fw-bold text-primary mb-1">Catálogo de Empleados</h1>
+                <p class="text-muted mb-0">Administra el personal del plantel, profesores y administradores.</p>
+            </div>
+            <div>
+                <a href="@Url.Action("EmpleadoAdd", "Empleado")" class="btn btn-success px-4 py-2 shadow-sm rounded-pill">
+                    <i class="bi bi-person-plus-fill me-2"></i>Agregar Empleado
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 border-start border-success border-4 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill text-success fs-4 me-3"></i>
+                <div>
+                    @TempData["Message"]
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 border-start border-danger border-4 mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill text-danger fs-4 me-3"></i>
+                <div>
+                    @ViewBag.Message
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-secondary small text-uppercase">
+                        <tr>
+                            <th class="px-4 py-3">Nombre Completo</th>
+                            <th class="py-3">CURP / RFC</th>
+                            <th class="py-3">Contacto</th>
+                            <th class="py-3">Departamento</th>
+                            <th class="py-3">Usuario / Rol</th>
+                            <th class="text-center px-4 py-3">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (var empleado in Model)
+                            {
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle me-3 bg-primary bg-opacity-10 text-primary fw-bold text-center">
+                                                @(empleado.Nombre?.Substring(0, 1).ToUpper() ?? "E")
+                                            </div>
+                                            <div>
+                                                <div class="fw-semibold text-dark">@empleado.Nombre @empleado.ApellidoPaterno @empleado.ApellidoMaterno</div>
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary small">ID: @empleado.IdEmpleado</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="small">
+                                            <div><span class="text-muted me-1">CURP:</span> <code class="text-dark">@empleado.Curp</code></div>
+                                            <div><span class="text-muted me-1">RFC:</span> <code class="text-dark">@empleado.Rfc</code></div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="small">
+                                            @if (!string.IsNullOrEmpty(empleado.Correo))
+                                            {
+                                                <div><i class="bi bi-envelope text-muted me-1"></i> @empleado.Correo</div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(empleado.Telefono))
+                                            {
+                                                <div><i class="bi bi-telephone text-muted me-1"></i> @empleado.Telefono</div>
+                                            }
+                                            @if (!string.IsNullOrEmpty(empleado.Celular))
+                                            {
+                                                <div><i class="bi bi-phone text-muted me-1"></i> @empleado.Celular</div>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="py-3">
+                                        <span class="fw-medium text-dark">@empleado.Departamento</span>
+                                    </td>
+                                    <td class="py-3">
+                                        <div>
+                                            <div class="fw-semibold small"><i class="bi bi-person text-muted me-1"></i>@empleado.Usuario?.NombreUser</div>
+                                            <span class="badge bg-primary rounded-pill small">@empleado.Usuario?.Rol?.Nombre</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center px-4 py-3">
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" title="Editar Empleado" disabled>
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" title="Eliminar Empleado" disabled>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-people fs-1 d-block mb-3 text-secondary"></i>
+                                        <p class="mb-0">No se encontraron empleados registrados.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 50%;
+        font-size: 16px;
+    }
+</style>

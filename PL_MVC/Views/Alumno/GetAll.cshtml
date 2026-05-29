@@ -1,0 +1,136 @@
+@model List<ML.Alumno>
+
+@{
+    ViewData["Title"] = "Alumnos - GetAll";
+}
+
+<style>
+    /* Contenedor principal para darle aspecto de tarjeta y limitar su ancho */
+    .table-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        padding: 20px;
+        margin-top: 20px;
+        max-width: 100%; /* Evita que se desborde del área de trabajo */
+    }
+
+    /* Configuración del contenedor con scroll */
+    .table-responsive {
+        max-height: 500px; 
+        overflow-y: auto;
+        overflow-x: scroll; /* <-- TRUCO: 'scroll' fuerza a que la barra SIEMPRE se dibuje */
+        display: block;     /* <-- Asegura que respete los límites de la pantalla */
+        width: 100%;
+    }
+
+    /* Estilos para hacer la tabla más pequeña y compacta */
+    .table-compacta {
+        font-size: 0.85rem; 
+        white-space: nowrap; /* Evita que el texto baje de línea, obligando al scroll horizontal */
+    }
+
+    .table-compacta th, .table-compacta td {
+        padding: 8px 12px; 
+        vertical-align: middle;
+    }
+
+    /* Personalización del Scrollbar (barra de desplazamiento) */
+    .table-responsive::-webkit-scrollbar {
+        width: 10px;  /* Scroll vertical */
+        height: 12px; /* Scroll horizontal (un poco más grueso para que sea más fácil agarrarlo) */
+    }
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f2f6;
+        border-radius: 8px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #7B2037; /* Color institucional */
+        border-radius: 8px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #5a1728; 
+    }
+    
+    /* Para que los encabezados se queden fijos al hacer scroll vertical */
+    .table-responsive thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: #212529; 
+        color: white;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="table-card">
+        <h2 class="mb-4 fw-bold" style="color: #2d3436;">Alumnos - GetAll</h2>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-danger shadow-sm">
+                @ViewBag.Message
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover mb-0 table-compacta">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Matrícula</th>
+                        <th>CURP</th>
+                        <th>Nombre</th>
+                        <th>A. Paterno</th> 
+                        <th>A. Materno</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Especialidad</th>
+                        <th>Grupo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var alumno in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@alumno.idAlumno</td>
+                                <td>@alumno.Matricula</td>
+                                <td>@alumno.Curp</td>
+                                <td>@alumno.Nombre</td>
+                                <td>@alumno.ApellidoPaterno</td>
+                                <td>@alumno.ApellidoMaterno</td>
+                                <td>@alumno.Correo</td>
+                                <td>@alumno.Telefono</td>
+                                @if (string.IsNullOrEmpty(alumno.Especialidad?.Nombre))
+                                {
+                                    <td class="text-muted fst-italic">Sin especialidad</td>
+                                }
+                                else
+                                {
+                                    <td>@(alumno.Especialidad?.Nombre)</td>
+                                }
+                                <td>@(alumno.Grupo?.Semestre) - @(alumno.Grupo?.Letra) (@(alumno.Grupo?.Turno))</td>
+                                <td class="text-center">
+                                    <a href="@Url.Action("Boleta", "Reporte", new { idAlumno = alumno.idAlumno })" class="btn btn-sm btn-outline-info rounded-pill">
+                                        <i class="bi bi-file-earmark-pdf"></i> Boleta
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center py-4 text-muted">
+                                No hay alumnos disponibles.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

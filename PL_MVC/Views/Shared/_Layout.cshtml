@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CBTis 133</title>
+    <script type="importmap"></script>
+    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PL_MVC.styles.css" asp-append-version="true" />
+    
+   
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="brand">
+                    <img src="~/images/003.jpg" alt="CBTis 133" class="brand-logo">
+                    <span class="brand-name">CBTis 133</span>
+                </div>
+                
+                <nav class="nav-menu">
+                    <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                    <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="GetAll">Alumnos</a>
+                    <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="GetAll">Empleados</a>
+                    <a class="nav-item" asp-area="" asp-controller="Asignacion" asp-action="GetAll">Asignación Docente</a>
+                    <a class="nav-item" asp-area="" asp-controller="Reporte" asp-action="Dashboard">Estadísticas</a>
+                    <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
+                    <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="AlumnoAdd">Agregar Alumno</a>
+                    <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="EmpleadoAdd">Agregar Empleado</a>
+                    <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
+                </nav>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="user-profile">
+                    <img src="~/images/perfil.png" alt="Usuario" class="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name">Matheo Caifan</span>
+                        <span class="user-email">202121572@cbtis.com</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="page-header">
+                <h1>@ViewData["Title"]</h1>
+            </header>
+
+            <section class="content-area">
+                <div class="container-fluid pb-3">
+                    @RenderBody()
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <p>&copy; 2026 - CBTIS No. 133 - <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-muted">Privacy</a></p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

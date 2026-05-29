@@ -1,0 +1,177 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    // 1. Preparamos las variables y evitamos errores de división entre cero
+    double total = ViewBag.alumnosCount != null && ViewBag.alumnosCount > 0 ? Convert.ToDouble(ViewBag.alumnosCount) : 1;
+    
+    double sem1 = ViewBag.primerSemestre != null ? Convert.ToDouble(ViewBag.primerSemestre) : 0;
+    double sem2 = ViewBag.segundoSemestre != null ? Convert.ToDouble(ViewBag.segundoSemestre) : 0;
+    double sem3 = ViewBag.tercerSemestre != null ? Convert.ToDouble(ViewBag.tercerSemestre) : 0;
+    double sem4 = ViewBag.cuartoSemestre != null ? Convert.ToDouble(ViewBag.cuartoSemestre) : 0;
+    double sem5 = ViewBag.quintoSemestre != null ? Convert.ToDouble(ViewBag.quintoSemestre) : 0;
+    double sem6 = ViewBag.sextoSemestre != null ? Convert.ToDouble(ViewBag.sextoSemestre) : 0;
+
+    // 2. Calculamos los porcentajes (usamos CultureInfo para que el punto decimal funcione bien en CSS)
+    var culture = System.Globalization.CultureInfo.InvariantCulture;
+    string pct1 = (sem1 / total * 100).ToString("0.0", culture) + "%";
+    string pct2 = (sem2 / total * 100).ToString("0.0", culture) + "%";
+    string pct3 = (sem3 / total * 100).ToString("0.0", culture) + "%";
+    string pct4 = (sem4 / total * 100).ToString("0.0", culture) + "%";
+    string pct5 = (sem5 / total * 100).ToString("0.0", culture) + "%";
+    string pct6 = (sem6 / total * 100).ToString("0.0", culture) + "%";
+}
+
+<style>
+    /* Diseño de la tarjeta principal */
+    .dashboard-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        margin: 20px auto;
+        max-width: 800px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Estilos del encabezado */
+    .dashboard-title {
+        color: #2d3436;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+    .total-alumnos {
+        font-size: 4rem;
+        font-weight: 800;
+        color: #6c5ce7; /* Morado moderno */
+        line-height: 1;
+        margin: 15px 0;
+    }
+
+    /* Estilos de la gráfica de barras */
+    .grafica-contenedor {
+        margin-top: 40px;
+        text-align: left;
+    }
+    .barra-grupo {
+        margin-bottom: 20px;
+    }
+    .barra-etiquetas {
+        display: flex;
+        justify-content: space-between;
+        font-weight: 600;
+        color: #636e72;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    .barra-fondo {
+        width: 100%;
+        background-color: #f1f2f6;
+        border-radius: 50px;
+        height: 24px;
+        overflow: hidden;
+    }
+    .barra-progreso {
+        height: 100%;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 15px;
+        color: white;
+        font-weight: bold;
+        font-size: 0.85rem;
+        transition: width 1s ease-in-out;
+        /* Efecto de brillo */
+        box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); 
+    }
+
+    /* Colores únicos para cada semestre */
+    .c-sem1 { background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #333; }
+    .c-sem2 { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); color: #333;}
+    .c-sem3 { background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); }
+    .c-sem4 { background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); color: #333;}
+    .c-sem5 { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); }
+    .c-sem6 { background: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%); }
+</style>
+
+<div class="dashboard-card text-center">
+    <!-- Encabezado -->
+    <h1 class="display-4 dashboard-title">¡BIENVENIDOS!</h1>
+    <p class="text-muted text-uppercase fw-bold mt-3">Total de Alumnos Inscritos</p>
+    <div class="total-alumnos">@ViewBag.alumnosCount</div>
+    <hr class="mt-4 mb-4" style="border-top: 2px solid #eee;">
+
+    <!-- Gráfica generada con CSS -->
+    <div class="grafica-contenedor">
+        <h4 class="mb-4 text-center fw-bold text-secondary">Distribución por Semestre</h4>
+
+        <!-- Semestre 1 -->
+        <div class="barra-grupo">
+            <div class="barra-etiquetas">
+                <span>1er Semestre</span>
+                <span>@ViewBag.primerSemestre alumnos</span>
+            </div>
+            <div class="barra-fondo">
+                <div class="barra-progreso c-sem1" style="width: @pct1;">@pct1</div>
+            </div>
+        </div>
+
+        <!-- Semestre 2 -->
+        <div class="barra-grupo">
+            <div class="barra-etiquetas">
+                <span>2do Semestre</span>
+                <span>@ViewBag.segundoSemestre alumnos</span>
+            </div>
+            <div class="barra-fondo">
+                <div class="barra-progreso c-sem2" style="width: @pct2;">@pct2</div>
+            </div>
+        </div>
+
+        <!-- Semestre 3 -->
+        <div class="barra-grupo">
+            <div class="barra-etiquetas">
+                <span>3er Semestre</span>
+                <span>@ViewBag.tercerSemestre alumnos</span>
+            </div>
+            <div class="barra-fondo">
+                <div class="barra-progreso c-sem3" style="width: @pct3;">@pct3</div>
+            </div>
+        </div>
+
+        <!-- Semestre 4 -->
+        <div class="barra-grupo">
+            <div class="barra-etiquetas">
+                <span>4to Semestre</span>
+                <span>@ViewBag.cuartoSemestre alumnos</span>
+            </div>
+            <div class="barra-fondo">
+                <div class="barra-progreso c-sem4" style="width: @pct4;">@pct4</div>
+            </div>
+        </div>
+
+        <!-- Semestre 5 -->
+        <div class="barra-grupo">
+            <div class="barra-etiquetas">
+                <span>5to Semestre</span>
+                <span>@ViewBag.quintoSemestre alumnos</span>
+            </div>
+            <div class="barra-fondo">
+                <div class="barra-progreso c-sem5" style="width: @pct5;">@pct5</div>
+            </div>
+        </div>
+
+        <!-- Semestre 6 -->
+        <div class="barra-grupo">
+            <div class="barra-etiquetas">
+                <span>6to Semestre</span>
+                <span>@ViewBag.sextoSemestre alumnos</span>
+            </div>
+            <div class="barra-fondo">
+                <div class="barra-progreso c-sem6" style="width: @pct6;">@pct6</div>
+            </div>
+        </div>
+
+    </div>
+</div>
