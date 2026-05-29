@@ -12,6 +12,21 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowMvcApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5174", "https://localhost:7123", "http://127.0.0.1:5174", "https://127.0.0.1:7123")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
+// Registrar controladores de la API
+builder.Services.AddControllers();
+
 // Registrar servicios de la capa de Negocio (BL)
 builder.Services.AddScoped<BL.Alumno>();
 builder.Services.AddScoped<BL.AsignacionDocente>();
@@ -33,6 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowMvcApp");
 
 var summaries = new[]
 {
@@ -50,8 +66,8 @@ app.MapGet("/weatherforecast", () =>
         ))
         .ToArray();
     return forecast;
-})
-.WithName("GetWeatherForecast");
+});
+app.MapControllers();
 
 app.Run();
 
