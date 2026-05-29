@@ -61,97 +61,76 @@ return result;
     }
 public ML.Result GetTurno()
     {
-        
-ML.Result result = new ML.Result();
-
-try
+        ML.Result result = new ML.Result();
+        try
         {
-            
-using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
             {
-                
-                var query = (from turno in context.Grupos
-                select turno.Turno).Distinct().ToList();
-
+                var query = context.GrupoGetTurnos.FromSqlInterpolated($"EXEC GrupoGetTurnos").ToList();
 
                 if (query.Count > 0)
                 {
                     result.Objects = new List<object>();
-                foreach (var item in query){
-                        
-                        result.Objects.Add(item);
-
+                    foreach (var item in query)
+                    {
+                        if (item.Turno != null)
+                        {
+                            result.Objects.Add(item.Turno);
+                        }
                     }
-
+                    result.Correct = true;
                 }
                 else
                 {
-                    
                     result.Correct = false;
                     result.ErrorMessage = "error al obtener turnos";
                 }
-
-
             }
-
-
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             result.Correct = false;
             result.ErrorMessage = ex.Message;
             result.Ex = ex;
-
         }
-
         return result;
-
     }
 
-
-public ML.Result GetSemestres()
+    public ML.Result GetSemestres()
     {
-        
-ML.Result result = new ML.Result();
-
+        ML.Result result = new ML.Result();
         try
         {
-            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
             {
-                
-                        var query = (from semestre in context.Grupos 
-                        select semestre.Semestre).Distinct().ToList();
+                var query = context.GrupoGetSemestres.FromSqlInterpolated($"EXEC GrupoGetSemestres").ToList();
 
-                    if (query.Count > 0)
+                if (query.Count > 0)
                 {
                     result.Objects = new List<object>();
-                foreach (var item in query){
-                        
-                        result.Objects.Add(item);
-
+                    foreach (var item in query)
+                    {
+                        if (item.Semestre != null)
+                        {
+                            result.Objects.Add(item.Semestre);
+                        }
                     }
-
+                    result.Correct = true;
                 }
                 else
                 {
-                    
                     result.Correct = false;
-                    result.ErrorMessage = "error al obtener turnos";
+                    result.ErrorMessage = "error al obtener semestres";
                 }
-
             }
-
-
-
-
-        }catch(Exception ex)
-        {
-            
-result.Correct = false;
-result.ErrorMessage = ex.Message;
-result.Ex = ex;
-
         }
-return result;
-
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
     }
+
 }

@@ -141,42 +141,31 @@ ML.Result result = new ML.Result();
 
 public ML.Result CountAlumno()
     {
-        
-ML.Result result = new ML.Result();
+        ML.Result result = new ML.Result();
         try
         {
-            
-                using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
             {
-                                 
-var query= (from countAlumno in context.Alumnos select countAlumno.IdAlumno).Count();
-if (query > 0)
+                var query = context.AlumnosCountSemestres.FromSqlInterpolated($"EXEC AlumnosCountSemestre").AsEnumerable().FirstOrDefault();
+                if (query != null)
                 {
                     result.Correct = true;
-                        result.Object = query;
-
-
+                    result.Object = query.Cantidad;
                 }
                 else
                 {
                     result.Correct = false;
                     result.ErrorMessage = "NO HAY ALUMNOS";
-
                 }
-
-
             }
-
-        }catch(Exception ex)
-        {
-            
-result.Correct = false;
-result.ErrorMessage = ex.Message;
-result.Ex = ex;
-
         }
-return result;
-
+        catch(Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
     }
 
 public ML.Result GetCountAlumnoBySemestre(int semestre)

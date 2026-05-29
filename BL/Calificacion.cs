@@ -14,25 +14,11 @@ namespace BL
             {
                 using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
                 {
-                    // Check if grade already exists for this student and subject
-                    var existing = context.Calificaciones
-                        .FirstOrDefault(c => c.IdAlumno == calificacion.Alumno.idAlumno 
-                                          && c.IdMateria == calificacion.Materia.IdMateria);
+                    var rowsAffected = context.Database.ExecuteSqlInterpolated($@"EXEC CalificacionAdd 
+                        {calificacion.Alumno.idAlumno}, 
+                        {calificacion.Materia.IdMateria}, 
+                        {calificacion.Nota}");
 
-                    if (existing != null)
-                    {
-                        existing.Nota = calificacion.Nota;
-                    }
-                    else
-                    {
-                        DL.Models.Calificacion dbCalificacion = new DL.Models.Calificacion();
-                        dbCalificacion.IdAlumno = calificacion.Alumno.idAlumno ?? 0;
-                        dbCalificacion.IdMateria = calificacion.Materia.IdMateria;
-                        dbCalificacion.Nota = calificacion.Nota;
-                        context.Calificaciones.Add(dbCalificacion);
-                    }
-
-                    context.SaveChanges();
                     result.Correct = true;
                 }
             }
@@ -55,10 +41,7 @@ namespace BL
                     // If no qualifications exist, seed some random ones for demo
                     SeedMockCalificacionesIfEmpty(context);
 
-                    var query = context.Calificaciones
-                        .Include(c => c.IdMateriaNavigation)
-                        .Where(c => c.IdAlumno == idAlumno)
-                        .ToList();
+                    var query = context.CalificacionGetByAlumnos.FromSqlInterpolated($"EXEC CalificacionGetByAlumno {idAlumno}").ToList();
 
                     result.Objects = new List<object>();
                     foreach (var item in query)
@@ -68,13 +51,10 @@ namespace BL
                         calificacion.Nota = item.Nota;
 
                         calificacion.Materia = new ML.Materia();
-                        if (item.IdMateriaNavigation != null)
-                        {
-                            calificacion.Materia.IdMateria = item.IdMateriaNavigation.IdMateria;
-                            calificacion.Materia.Nombre = item.IdMateriaNavigation.Nombre;
-                            calificacion.Materia.Semestre = item.IdMateriaNavigation.Semestre;
-                            calificacion.Materia.Creditos = item.IdMateriaNavigation.Creditos;
-                        }
+                        calificacion.Materia.IdMateria = item.IdMateria;
+                        calificacion.Materia.Nombre = item.NombreMateria;
+                        calificacion.Materia.Semestre = item.Semestre;
+                        calificacion.Materia.Creditos = item.Creditos;
 
                         result.Objects.Add(calificacion);
                     }
@@ -89,6 +69,7 @@ namespace BL
             }
             return result;
         }
+
 
         public ML.Result GetStatistics()
         {

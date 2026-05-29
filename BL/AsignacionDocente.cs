@@ -14,11 +14,7 @@ namespace BL
             {
                 using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
                 {
-                    var query = context.AsignacionDocentes
-                        .Include(a => a.IdEmpleadoNavigation)
-                        .Include(a => a.IdMateriaNavigation)
-                        .Include(a => a.IdGrupoNavigation)
-                        .ToList();
+                    var query = context.AsignacionDocenteGetAlls.FromSqlInterpolated($"EXEC AsignacionDocenteGetAll").ToList();
 
                     if (query != null && query.Count > 0)
                     {
@@ -32,30 +28,21 @@ namespace BL
                             asignacion.HoraFin = item.HoraFin;
 
                             asignacion.Empleado = new ML.Empleado();
-                            if (item.IdEmpleadoNavigation != null)
-                            {
-                                asignacion.Empleado.IdEmpleado = item.IdEmpleadoNavigation.IdEmpleado;
-                                asignacion.Empleado.Nombre = item.IdEmpleadoNavigation.Nombre;
-                                asignacion.Empleado.ApellidoPaterno = item.IdEmpleadoNavigation.ApellidoPaterno;
-                                asignacion.Empleado.ApellidoMaterno = item.IdEmpleadoNavigation.ApellidoMaterno;
-                            }
+                            asignacion.Empleado.IdEmpleado = item.IdEmpleado;
+                            asignacion.Empleado.Nombre = item.NombreEmpleado;
+                            asignacion.Empleado.ApellidoPaterno = item.ApellidoPaternoEmpleado;
+                            asignacion.Empleado.ApellidoMaterno = item.ApellidoMaternoEmpleado;
 
                             asignacion.Materia = new ML.Materia();
-                            if (item.IdMateriaNavigation != null)
-                            {
-                                asignacion.Materia.IdMateria = item.IdMateriaNavigation.IdMateria;
-                                asignacion.Materia.Nombre = item.IdMateriaNavigation.Nombre;
-                                asignacion.Materia.Semestre = item.IdMateriaNavigation.Semestre;
-                            }
+                            asignacion.Materia.IdMateria = item.IdMateria;
+                            asignacion.Materia.Nombre = item.NombreMateria;
+                            asignacion.Materia.Semestre = item.SemestreMateria;
 
                             asignacion.Grupo = new ML.Grupo();
-                            if (item.IdGrupoNavigation != null)
-                            {
-                                asignacion.Grupo.IdGrupo = item.IdGrupoNavigation.IdGrupo;
-                                asignacion.Grupo.Semestre = item.IdGrupoNavigation.Semestre;
-                                asignacion.Grupo.Letra = item.IdGrupoNavigation.Letra;
-                                asignacion.Grupo.Turno = item.IdGrupoNavigation.Turno;
-                            }
+                            asignacion.Grupo.IdGrupo = item.IdGrupo;
+                            asignacion.Grupo.Semestre = item.SemestreGrupo;
+                            asignacion.Grupo.Letra = item.LetraGrupo;
+                            asignacion.Grupo.Turno = item.TurnoGrupo;
 
                             result.Objects.Add(asignacion);
                         }
@@ -84,56 +71,25 @@ namespace BL
             {
                 using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
                 {
-                    // 1. Validar empalmes del Docente
-                    var overlapTeacher = context.AsignacionDocentes
-                        .Any(a => a.IdEmpleado == asignacion.Empleado.IdEmpleado
-                                  && a.DiaSemana == asignacion.DiaSemana
-                                  && a.HoraInicio < asignacion.HoraFin
-                                  && a.HoraFin > asignacion.HoraInicio);
+                    var rowsAffected = context.Database.ExecuteSqlInterpolated($@"EXEC AsignacionDocenteAdd 
+                        {asignacion.Empleado.IdEmpleado}, 
+                        {asignacion.Materia.IdMateria}, 
+                        {asignacion.Grupo.IdGrupo}, 
+                        {asignacion.DiaSemana}, 
+                        {asignacion.HoraInicio}, 
+                        {asignacion.HoraFin}");
 
-                    if (overlapTeacher)
-                    {
-                        result.Correct = false;
-                        result.ErrorMessage = "El docente seleccionado ya tiene una materia asignada en este día y rango de horas (empalme).";
-                        return result;
-                    }
-
-                    // 2. Validar empalmes del Grupo
-                    var overlapGroup = context.AsignacionDocentes
-                        .Any(a => a.IdGrupo == asignacion.Grupo.IdGrupo
-                                  && a.DiaSemana == asignacion.DiaSemana
-                                  && a.HoraInicio < asignacion.HoraFin
-                                  && a.HoraFin > asignacion.HoraInicio);
-
-                    if (overlapGroup)
-                    {
-                        result.Correct = false;
-                        result.ErrorMessage = "El grupo seleccionado ya tiene otra clase asignada en este día y rango de horas (empalme).";
-                        return result;
-                    }
-
-                    // 3. Si no hay empalmes, guardar asignación
-                    DL.Models.AsignacionDocente dbAsignacion = new DL.Models.AsignacionDocente();
-                    dbAsignacion.IdEmpleado = asignacion.Empleado.IdEmpleado ?? 0;
-                    dbAsignacion.IdMateria = asignacion.Materia.IdMateria;
-                    dbAsignacion.IdGrupo = asignacion.Grupo.IdGrupo ?? 0;
-                    dbAsignacion.DiaSemana = asignacion.DiaSemana;
-                    dbAsignacion.HoraInicio = asignacion.HoraInicio;
-                    dbAsignacion.HoraFin = asignacion.HoraFin;
-
-                    context.AsignacionDocentes.Add(dbAsignacion);
-                    context.SaveChanges();
-                    
                     result.Correct = true;
                 }
             }
             catch (Exception ex)
             {
                 result.Correct = false;
-                result.ErrorMessage = ex.Message;
+                result.ErrorMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 result.Ex = ex;
             }
             return result;
         }
+
     }
 }

@@ -14,9 +14,7 @@ namespace BL
             {
                 using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
                 {
-                    var query = context.Materias
-                        .Include(m => m.IdEspecialidadNavigation)
-                        .ToList();
+                    var query = context.MateriaGetAlls.FromSqlInterpolated($"EXEC MateriaGetAll").ToList();
 
                     if (query != null && query.Count > 0)
                     {
@@ -30,12 +28,9 @@ namespace BL
                             materia.Creditos = item.Creditos;
 
                             materia.Especialidad = new ML.Especialidad();
-                            if (item.IdEspecialidadNavigation != null)
-                            {
-                                materia.Especialidad.IdEspecialidad = item.IdEspecialidadNavigation.IdEspecialidad;
-                                materia.Especialidad.Nombre = item.IdEspecialidadNavigation.Nombre;
-                                materia.Especialidad.ClaveOficial = item.IdEspecialidadNavigation.ClaveOficial;
-                            }
+                            materia.Especialidad.IdEspecialidad = item.IdEspecialidad ?? 0;
+                            materia.Especialidad.Nombre = item.NombreEspecialidad ?? "Sin especialidad";
+                            materia.Especialidad.ClaveOficial = item.ClaveOficial ?? "sin clave";
 
                             result.Objects.Add(materia);
                         }
@@ -64,23 +59,25 @@ namespace BL
             {
                 using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
                 {
-                    DL.Models.Materia dbMateria = new DL.Models.Materia();
-                    dbMateria.Nombre = materia.Nombre;
-                    dbMateria.Semestre = materia.Semestre;
-                    dbMateria.Creditos = materia.Creditos;
-                    
-                    if (materia.Especialidad != null && materia.Especialidad.IdEspecialidad > 0)
+                    int? idEspecialidad = (materia.Especialidad != null && materia.Especialidad.IdEspecialidad > 0) 
+                        ? materia.Especialidad.IdEspecialidad 
+                        : null;
+
+                    var rowsAffected = context.Database.ExecuteSqlInterpolated($@"EXEC MateriaAdd 
+                        {materia.Nombre}, 
+                        {materia.Semestre}, 
+                        {materia.Creditos}, 
+                        {idEspecialidad}");
+
+                    if (rowsAffected > 0)
                     {
-                        dbMateria.IdEspecialidad = materia.Especialidad.IdEspecialidad;
+                        result.Correct = true;
                     }
                     else
                     {
-                        dbMateria.IdEspecialidad = null;
+                        result.Correct = false;
+                        result.ErrorMessage = "No se pudo insertar la materia.";
                     }
-
-                    context.Materias.Add(dbMateria);
-                    context.SaveChanges();
-                    result.Correct = true;
                 }
             }
             catch (Exception ex)
@@ -91,5 +88,6 @@ namespace BL
             }
             return result;
         }
+
     }
 }
