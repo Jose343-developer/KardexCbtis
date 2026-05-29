@@ -7,13 +7,20 @@ namespace BL
 {
     public class Empleado
     {
+        private readonly DL.ApplicationDbContext _context;
+
+        public Empleado(DL.ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public ML.Result GetAll()
         {
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     var query = context.EmpleadoGetAlls.FromSqlInterpolated($"EXEC EmpleadoGetAll").ToList();
 
                     if (query != null && query.Count > 0)
@@ -68,8 +75,8 @@ namespace BL
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     var rowsAffected = context.Database.ExecuteSqlInterpolated($@"EXEC EmpleadoAdd 
                         {empleado.Usuario.NombreUser}, 
                         {empleado.Usuario.Password}, 

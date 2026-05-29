@@ -5,10 +5,19 @@ namespace PL_MVC.Controllers
 {
     public class EmpleadoController : Controller
     {
+        private readonly BL.Empleado _empleadoBL;
+        private readonly BL.Rol _rolBL;
+
+        public EmpleadoController(BL.Empleado empleadoBL, BL.Rol rolBL)
+        {
+            _empleadoBL = empleadoBL;
+            _rolBL = rolBL;
+        }
+
         [HttpGet]
         public ActionResult GetAll()
         {
-            BL.Empleado empleadoBL = new BL.Empleado();
+            var empleadoBL = _empleadoBL;
             ML.Result result = empleadoBL.GetAll();
 
             List<ML.Empleado> lista = new List<ML.Empleado>();
@@ -34,7 +43,7 @@ namespace PL_MVC.Controllers
             empleado.Usuario = new ML.Usuario();
             empleado.Usuario.Rol = new ML.Rol();
 
-            BL.Rol rolBL = new BL.Rol();
+            var rolBL = _rolBL;
             ML.Result resultRoles = rolBL.RolGetAll();
 
             if (resultRoles.Correct)
@@ -54,7 +63,7 @@ namespace PL_MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                BL.Rol rolBL = new BL.Rol();
+                var rolBL = _rolBL;
                 ML.Result resultRoles = rolBL.RolGetAll();
 
                 if (empleado.Usuario == null) empleado.Usuario = new ML.Usuario();
@@ -72,7 +81,7 @@ namespace PL_MVC.Controllers
                 return View(empleado);
             }
 
-            BL.Empleado empleadoBL = new BL.Empleado();
+            var empleadoBL = _empleadoBL;
             ML.Result result = empleadoBL.Add(empleado);
 
             if (result.Correct)
@@ -82,7 +91,7 @@ namespace PL_MVC.Controllers
             }
             else
             {
-                BL.Rol rolBL = new BL.Rol();
+                var rolBL = _rolBL;
                 ML.Result resultRoles = rolBL.RolGetAll();
 
                 if (empleado.Usuario == null) empleado.Usuario = new ML.Usuario();

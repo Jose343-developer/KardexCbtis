@@ -7,10 +7,27 @@ namespace PL_MVC.Controllers
 {
     public class AsignacionController : Controller
     {
+        private readonly BL.AsignacionDocente _asignacionBL;
+        private readonly BL.Empleado _empleadoBL;
+        private readonly BL.Materia _materiaBL;
+        private readonly BL.Grupo _grupoBL;
+
+        public AsignacionController(
+            BL.AsignacionDocente asignacionBL,
+            BL.Empleado empleadoBL,
+            BL.Materia materiaBL,
+            BL.Grupo grupoBL)
+        {
+            _asignacionBL = asignacionBL;
+            _empleadoBL = empleadoBL;
+            _materiaBL = materiaBL;
+            _grupoBL = grupoBL;
+        }
+
         [HttpGet]
         public IActionResult GetAll()
         {
-            BL.AsignacionDocente blAsignacion = new BL.AsignacionDocente();
+            var blAsignacion = _asignacionBL;
             ML.Result result = blAsignacion.GetAll();
             
             ML.AsignacionDocente model = new ML.AsignacionDocente();
@@ -43,7 +60,7 @@ namespace PL_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                BL.AsignacionDocente blAsignacion = new BL.AsignacionDocente();
+                var blAsignacion = _asignacionBL;
                 ML.Result result = blAsignacion.Add(model);
 
                 if (result.Correct)
@@ -64,7 +81,7 @@ namespace PL_MVC.Controllers
         private void PopulateDropdowns(ML.AsignacionDocente model)
         {
             // 1. Get Docentes (Empleados with Rol Profesor (IdRol = 2))
-            BL.Empleado blEmpleado = new BL.Empleado();
+            var blEmpleado = _empleadoBL;
             ML.Result resultEmpleados = blEmpleado.GetAll();
             List<ML.Empleado> docentes = new List<ML.Empleado>();
             if (resultEmpleados.Correct)
@@ -80,12 +97,12 @@ namespace PL_MVC.Controllers
             model.Docentes = docentes;
 
             // 2. Get Materias
-            BL.Materia blMateria = new BL.Materia();
+            var blMateria = _materiaBL;
             ML.Result resultMaterias = blMateria.GetAll();
             model.Materias = resultMaterias.Correct ? resultMaterias.Objects.Cast<ML.Materia>().ToList() : new List<ML.Materia>();
 
             // 3. Get Grupos
-            BL.Grupo blGrupo = new BL.Grupo();
+            var blGrupo = _grupoBL;
             ML.Result resultGrupos = blGrupo.GrupoGetAll();
             model.Grupos = resultGrupos.Correct ? resultGrupos.Objects.Cast<ML.Grupo>().ToList() : new List<ML.Grupo>();
         }

@@ -1,25 +1,154 @@
-/* Mantenemos el estilo de tu tarjeta profesional */
+/* Glassmorphism / Premium Card Style */
 .calendar-card {
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+    padding: 30px;
     margin: 20px auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
-/* Pequeños ajustes para que FullCalendar se vea más limpio */
+/* Custom Header / Legend Styling */
+.calendar-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 5px;
+}
+
+.calendar-legend {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    background: #f8f9fa;
+    border-radius: 50px;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.legend-color {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.color-primary { background-color: #7B2037; }
+.color-tentative { background-color: #FF9F43; }
+.color-cancelled { background-color: #FF4560; }
+
+/* FullCalendar Customizations */
+.fc {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Header toolbar layout */
+.fc .fc-toolbar {
+    margin-top: 15px !important;
+    margin-bottom: 25px !important;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #2d3436 !important;
+}
+
+/* Custom Button Styling */
+.fc .fc-button {
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+
 .fc .fc-button-primary {
-    background-color: #7B2037;
-    border-color: #7B2037;
+    background-color: #7B2037 !important;
+    border-color: #7B2037 !important;
+    color: #ffffff !important;
 }
-.fc .fc-button-primary:not(:disabled):active,
-.fc .fc-button-primary:not(:disabled).fc-button-active {
-    background-color: #5a1728; /* Tono ligeramente más oscuro al presionar */
-    border-color: #5a1728;
+
+.fc .fc-button-primary:hover {
+    background-color: #5a1728 !important;
+    border-color: #5a1728 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(123, 32, 55, 0.15) !important;
 }
-.fc-event {
-    cursor: pointer;
-    border-radius: 4px;
-    padding: 2px 4px;
+
+.fc .fc-button-primary:disabled {
+    background-color: #7B2037 !important;
+    border-color: #7B2037 !important;
+    opacity: 0.65;
+}
+
+.fc .fc-button-group > .fc-button {
+    border-radius: 8px !important;
+    margin: 0 2px !important;
+}
+
+/* Grid & Border Customization */
+.fc-theme-bootstrap5 th, 
+.fc-theme-bootstrap5 td,
+.fc-theme-bootstrap5 thead {
+    border-color: #f1f2f6 !important;
+}
+
+.fc .fc-col-header-cell {
+    background-color: #f8f9fa !important;
+    padding: 12px 0 !important;
+    font-weight: 600 !important;
+    color: #4a4a4a !important;
+    font-size: 0.9rem !important;
+}
+
+/* Event design - Premium Glassmorphism Look */
+.fc-v-event, .fc-h-event {
+    border: none !important;
+    padding: 4px 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.fc-daygrid-event:hover, .fc-timegrid-event:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    z-index: 5;
+}
+
+/* Accent Left Border for Events depending on color */
+.event-guinda {
+    background-color: rgba(123, 32, 55, 0.08) !important;
+    color: #7B2037 !important;
+    border-left: 4px solid #7B2037 !important;
+}
+
+.event-orange {
+    background-color: rgba(255, 159, 67, 0.08) !important;
+    color: #d37c1a !important;
+    border-left: 4px solid #FF9F43 !important;
+}
+
+.event-red {
+    background-color: rgba(255, 69, 96, 0.08) !important;
+    color: #c92c42 !important;
+    border-left: 4px solid #FF4560 !important;
+}
+
+/* Current Day Highlight */
+.fc .fc-day-today {
+    background-color: rgba(123, 32, 55, 0.02) !important;
 }

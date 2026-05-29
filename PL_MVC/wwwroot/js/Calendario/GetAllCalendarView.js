@@ -17,16 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
         var fechaInicio = item.start && item.start.dateTime ? item.start.dateTime : (item.start && item.start.date ? item.start.date : "");
         var fechaFin = item.end && item.end.dateTime ? item.end.dateTime : (item.end && item.end.date ? item.end.date : "");
 
-        var colorEvento = "#7B2037"; // El color guinda para los eventos
-        if (item.status === "tentative") colorEvento = "#f39c12"; // Naranja
-        if (item.status === "cancelled") colorEvento = "#e74c3c"; // Rojo
+        var statusClass = "event-guinda"; // El color guinda para los eventos
+        if (item.status === "tentative") statusClass = "event-orange";
+        if (item.status === "cancelled") statusClass = "event-red";
 
         return {
             title: item.summary,
             start: fechaInicio,
             end: fechaFin,
-            backgroundColor: colorEvento,
-            borderColor: colorEvento
+            classNames: [statusClass]
         };
     });
 

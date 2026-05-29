@@ -8,7 +8,14 @@ namespace BL;
 
 public class Alumno
 {
-public ML.Result GetAll (ML.Alumno alumno)
+    private readonly DL.ApplicationDbContext _context;
+
+    public Alumno(DL.ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public ML.Result GetAll (ML.Alumno alumno)
 
     {
         
@@ -16,7 +23,7 @@ ML.Result result = new ML.Result();
 
         try
         {
-            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 
 
@@ -87,7 +94,7 @@ ML.Result result = new ML.Result();
         try
         {
             
-                using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+                var context = _context;
             {
                 
                 var query = context.Database.ExecuteSqlInterpolated($@"EXEC AlumnoAdd
@@ -144,7 +151,7 @@ public ML.Result CountAlumno()
         ML.Result result = new ML.Result();
         try
         {
-            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 var query = context.AlumnosCountSemestres.FromSqlInterpolated($"EXEC AlumnosCountSemestre").AsEnumerable().FirstOrDefault();
                 if (query != null)
@@ -174,7 +181,8 @@ public ML.Result GetCountAlumnoBySemestre(int semestre)
         try
         {
             
-            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext()){
+            var context = _context;
+            {
                 
                     var query = context.AlumnosCountSemestres.FromSqlInterpolated(
                         $@"EXEC GetCountAlumnosForSemestre {semestre}").AsEnumerable().FirstOrDefault();

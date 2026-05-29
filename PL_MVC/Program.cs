@@ -10,6 +10,16 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Registrar servicios de la capa de Negocio (BL)
+builder.Services.AddScoped<BL.Alumno>();
+builder.Services.AddScoped<BL.AsignacionDocente>();
+builder.Services.AddScoped<BL.Calificacion>();
+builder.Services.AddScoped<BL.Empleado>();
+builder.Services.AddScoped<BL.Especialidad>();
+builder.Services.AddScoped<BL.Grupo>();
+builder.Services.AddScoped<BL.Materia>();
+builder.Services.AddScoped<BL.Rol>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

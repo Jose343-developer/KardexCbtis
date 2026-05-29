@@ -6,10 +6,17 @@ namespace PL_MVC.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly BL.Alumno _alumnoBL;
+
+    public HomeController(BL.Alumno alumnoBL)
+    {
+        _alumnoBL = alumnoBL;
+    }
+
     [HttpGet]
     public IActionResult Index()
     {
-        BL.Alumno alumnoCount = new BL.Alumno();
+        var alumnoCount = _alumnoBL;
         ML.Result result = alumnoCount.CountAlumno();
         
         int[] countSemestre = new int[7];

@@ -7,13 +7,20 @@ namespace BL
 {
     public class Calificacion
     {
+        private readonly DL.ApplicationDbContext _context;
+
+        public Calificacion(DL.ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public ML.Result Add(ML.Calificacion calificacion)
         {
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     var rowsAffected = context.Database.ExecuteSqlInterpolated($@"EXEC CalificacionAdd 
                         {calificacion.Alumno.idAlumno}, 
                         {calificacion.Materia.IdMateria}, 
@@ -36,8 +43,8 @@ namespace BL
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     // If no qualifications exist, seed some random ones for demo
                     SeedMockCalificacionesIfEmpty(context);
 
@@ -76,8 +83,8 @@ namespace BL
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     // Ensure we have some data
                     SeedMockCalificacionesIfEmpty(context);
 

@@ -12,7 +12,7 @@
 .table-responsive {
     max-height: 500px; 
     overflow-y: auto;
-    overflow-x: scroll; /* <-- TRUCO: 'scroll' fuerza a que la barra SIEMPRE se dibuje */
+    overflow-x: auto; /* <-- Se dibuja dinámicamente cuando el contenido se desborda */
     display: block;     /* <-- Asegura que respete los límites de la pantalla */
     width: 100%;
 }

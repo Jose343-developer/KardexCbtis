@@ -6,7 +6,12 @@ namespace BL;
 
 public class Especialidad
 {
+    private readonly DL.ApplicationDbContext _context;
 
+    public Especialidad(DL.ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
 public ML.Result EspecialidadGetAll ()
     {
@@ -16,7 +21,7 @@ ML.Result result = new ML.Result();
         try
         {
             
-            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 
                 var query = context.EspecialidadGetAlls.FromSqlInterpolated($"EXEC EspecialidadGetAll").ToList();

@@ -6,6 +6,12 @@ namespace BL;
 
 public class Grupo
 {
+    private readonly DL.ApplicationDbContext _context;
+
+    public Grupo(DL.ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
 public ML.Result GrupoGetAll()
     {
@@ -13,7 +19,7 @@ public ML.Result GrupoGetAll()
 
         try
         {
-            using(DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 var query = context.GrupoGetAlls.FromSqlInterpolated($"EXEC GrupoGetAll").ToList();
                 
@@ -64,7 +70,7 @@ public ML.Result GetTurno()
         ML.Result result = new ML.Result();
         try
         {
-            using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 var query = context.GrupoGetTurnos.FromSqlInterpolated($"EXEC GrupoGetTurnos").ToList();
 
@@ -101,7 +107,7 @@ public ML.Result GetTurno()
         ML.Result result = new ML.Result();
         try
         {
-            using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 var query = context.GrupoGetSemestres.FromSqlInterpolated($"EXEC GrupoGetSemestres").ToList();
 

@@ -7,13 +7,20 @@ namespace BL
 {
     public class Materia
     {
+        private readonly DL.ApplicationDbContext _context;
+
+        public Materia(DL.ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public ML.Result GetAll()
         {
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     var query = context.MateriaGetAlls.FromSqlInterpolated($"EXEC MateriaGetAll").ToList();
 
                     if (query != null && query.Count > 0)
@@ -57,8 +64,8 @@ namespace BL
             ML.Result result = new ML.Result();
             try
             {
-                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
-                {
+            var context = _context;
+            {
                     int? idEspecialidad = (materia.Especialidad != null && materia.Especialidad.IdEspecialidad > 0) 
                         ? materia.Especialidad.IdEspecialidad 
                         : null;

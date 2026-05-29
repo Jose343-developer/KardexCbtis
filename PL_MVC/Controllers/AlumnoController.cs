@@ -8,12 +8,23 @@ namespace PL_MVC.Controllers
 {
     public class AlumnoController : Controller
     {
+        private readonly BL.Alumno _alumnoBL;
+        private readonly BL.Grupo _grupoBL;
+        private readonly BL.Especialidad _especialidadBL;
+
+        public AlumnoController(BL.Alumno alumnoBL, BL.Grupo grupoBL, BL.Especialidad especialidadBL)
+        {
+            _alumnoBL = alumnoBL;
+            _grupoBL = grupoBL;
+            _especialidadBL = especialidadBL;
+        }
+
         // GET: AlumnoController
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            BL.Alumno blAlumno = new BL.Alumno();
+            var blAlumno = _alumnoBL;
             ML.Result result = blAlumno.GetAll(new ML.Alumno());
             
             List<ML.Alumno> alumnosList = new List<ML.Alumno>();
@@ -42,8 +53,8 @@ public ActionResult AlumnoAdd()
     alumno.Especialidad = new ML.Especialidad();
     alumno.Grupo = new ML.Grupo();
 
-    BL.Grupo grupoBL = new BL.Grupo();
-    BL.Especialidad especialidadBL = new BL.Especialidad();
+    var grupoBL = _grupoBL;
+    var especialidadBL = _especialidadBL;
 
     // 1. Traemos los datos
     ML.Result resultEspecialidades = especialidadBL.EspecialidadGetAll();
@@ -71,8 +82,8 @@ public ActionResult AlumnoAdd(ML.Alumno alumno)
 {
     if (!ModelState.IsValid)
     {
-        BL.Especialidad especialidadBL = new BL.Especialidad();
-        BL.Grupo grupoBL = new BL.Grupo();
+        var especialidadBL = _especialidadBL;
+        var grupoBL = _grupoBL;
 
         ML.Result resultEspecialidades = especialidadBL.EspecialidadGetAll();
         ML.Result resultSemestres = grupoBL.GetSemestres();
@@ -102,7 +113,7 @@ public ActionResult AlumnoAdd(ML.Alumno alumno)
         return View(alumno);
     }
 
-    BL.Alumno alumnos = new BL.Alumno();
+    var alumnos = _alumnoBL;
     ML.Result result = alumnos.AlumnoAdd(alumno);
     
     if (result.Correct)
@@ -116,8 +127,8 @@ public ActionResult AlumnoAdd(ML.Alumno alumno)
         // ¡ERROR! (Ej. Matrícula duplicada, error de SQL, etc.)
         // La vista se va a recargar, así que le devolvemos TODAS sus listas (Cartas).
 
-        BL.Especialidad especialidadBL = new BL.Especialidad();
-        BL.Grupo grupoBL = new BL.Grupo();
+        var especialidadBL = _especialidadBL;
+        var grupoBL = _grupoBL;
 
         ML.Result resultEspecialidades = especialidadBL.EspecialidadGetAll();
         ML.Result resultSemestres = grupoBL.GetSemestres();
@@ -158,7 +169,7 @@ public ActionResult AlumnoAdd(ML.Alumno alumno)
 [HttpGet] 
 public JsonResult GetEspecialidad()
 {
-    BL.Especialidad especialidades = new BL.Especialidad();
+    var especialidades = _especialidadBL;
     ML.Result result = especialidades.EspecialidadGetAll();
   
     return Json(result.Objects);
@@ -170,7 +181,7 @@ public JsonResult GetEspecialidad()
         {
             ML.Result result = new ML.Result();
 
-            BL.Especialidad especialidades = new BL.Especialidad();
+            var especialidades = _especialidadBL;
             
            result = especialidades.EspecialidadGetAll();
   
@@ -232,7 +243,7 @@ public ActionResult CargaMasiva(IFormFile archivoExcel)
 
                 // Sacamos la primera hoja del Excel
                 DataTable dt = result.Tables[0];
-                BL.Alumno alumnoBL = new BL.Alumno();
+                var alumnoBL = _alumnoBL;
 
                 // 5. El mismo foreach de siempre (Recorremos el DataTable)
                 foreach (DataRow row in dt.Rows)

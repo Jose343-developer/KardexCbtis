@@ -1,9 +1,26 @@
+using Microsoft.EntityFrameworkCore;
+using DL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+
+// Configurar Entity Framework Core con SQL Server
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Registrar servicios de la capa de Negocio (BL)
+builder.Services.AddScoped<BL.Alumno>();
+builder.Services.AddScoped<BL.AsignacionDocente>();
+builder.Services.AddScoped<BL.Calificacion>();
+builder.Services.AddScoped<BL.Empleado>();
+builder.Services.AddScoped<BL.Especialidad>();
+builder.Services.AddScoped<BL.Grupo>();
+builder.Services.AddScoped<BL.Materia>();
+builder.Services.AddScoped<BL.Rol>();
 
 var app = builder.Build();
 

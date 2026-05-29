@@ -8,10 +8,19 @@ namespace PL_MVC.Controllers
 {
     public class ReporteController : Controller
     {
+        private readonly BL.Calificacion _calificacionBL;
+        private readonly DL.ApplicationDbContext _context;
+
+        public ReporteController(BL.Calificacion calificacionBL, DL.ApplicationDbContext context)
+        {
+            _calificacionBL = calificacionBL;
+            _context = context;
+        }
+
         [HttpGet]
         public IActionResult Dashboard()
         {
-            BL.Calificacion blCalificacion = new BL.Calificacion();
+            var blCalificacion = _calificacionBL;
             ML.Result result = blCalificacion.GetStatistics();
 
             if (result.Correct)
@@ -28,7 +37,7 @@ namespace PL_MVC.Controllers
         [HttpGet]
         public IActionResult Boleta(int idAlumno)
         {
-            using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+            var context = _context;
             {
                 var dbAlumno = context.Alumnos
                     .Include(a => a.IdEspecialidadNavigation)
@@ -72,7 +81,7 @@ namespace PL_MVC.Controllers
                 }
 
                 // Get Grades
-                BL.Calificacion blCalificacion = new BL.Calificacion();
+                var blCalificacion = _calificacionBL;
                 ML.Result resultCalificaciones = blCalificacion.GetByAlumno(idAlumno);
                 
                 List<ML.Calificacion> calificaciones = new List<ML.Calificacion>();
