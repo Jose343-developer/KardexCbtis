@@ -22,79 +22,9 @@
     string pct5 = (sem5 / total * 100).ToString("0.0", culture) + "%";
     string pct6 = (sem6 / total * 100).ToString("0.0", culture) + "%";
 }
-
-<style>
-    /* Diseño de la tarjeta principal */
-    .dashboard-card {
-        background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-        padding: 40px;
-        margin: 20px auto;
-        max-width: 800px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    /* Estilos del encabezado */
-    .dashboard-title {
-        color: #2d3436;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
-    .total-alumnos {
-        font-size: 4rem;
-        font-weight: 800;
-        color: #6c5ce7; /* Morado moderno */
-        line-height: 1;
-        margin: 15px 0;
-    }
-
-    /* Estilos de la gráfica de barras */
-    .grafica-contenedor {
-        margin-top: 40px;
-        text-align: left;
-    }
-    .barra-grupo {
-        margin-bottom: 20px;
-    }
-    .barra-etiquetas {
-        display: flex;
-        justify-content: space-between;
-        font-weight: 600;
-        color: #636e72;
-        margin-bottom: 8px;
-        font-size: 0.95rem;
-    }
-    .barra-fondo {
-        width: 100%;
-        background-color: #f1f2f6;
-        border-radius: 50px;
-        height: 24px;
-        overflow: hidden;
-    }
-    .barra-progreso {
-        height: 100%;
-        border-radius: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        padding-right: 15px;
-        color: white;
-        font-weight: bold;
-        font-size: 0.85rem;
-        transition: width 1s ease-in-out;
-        /* Efecto de brillo */
-        box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); 
-    }
-
-    /* Colores únicos para cada semestre */
-    .c-sem1 { background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #333; }
-    .c-sem2 { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); color: #333;}
-    .c-sem3 { background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); }
-    .c-sem4 { background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); color: #333;}
-    .c-sem5 { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); }
-    .c-sem6 { background: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%); }
-</style>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home/Index.css" asp-append-version="true" />
+}
 
 <div class="dashboard-card text-center">
     <!-- Encabezado -->

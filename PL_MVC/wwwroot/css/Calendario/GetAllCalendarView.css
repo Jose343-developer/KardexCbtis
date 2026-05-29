@@ -1,0 +1,25 @@
+/* Mantenemos el estilo de tu tarjeta profesional */
+.calendar-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    margin: 20px auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Pequeños ajustes para que FullCalendar se vea más limpio */
+.fc .fc-button-primary {
+    background-color: #7B2037;
+    border-color: #7B2037;
+}
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #5a1728; /* Tono ligeramente más oscuro al presionar */
+    border-color: #5a1728;
+}
+.fc-event {
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 4px;
+}

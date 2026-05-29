@@ -1,0 +1,55 @@
+/* Contenedor principal para darle aspecto de tarjeta y limitar su ancho */
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 20px;
+    margin-top: 20px;
+    max-width: 100%; /* Evita que se desborde del área de trabajo */
+}
+
+/* Configuración del contenedor con scroll */
+.table-responsive {
+    max-height: 500px; 
+    overflow-y: auto;
+    overflow-x: scroll; /* <-- TRUCO: 'scroll' fuerza a que la barra SIEMPRE se dibuje */
+    display: block;     /* <-- Asegura que respete los límites de la pantalla */
+    width: 100%;
+}
+
+/* Estilos para hacer la tabla más pequeña y compacta */
+.table-compacta {
+    font-size: 0.85rem; 
+    white-space: nowrap; /* Evita que el texto baje de línea, obligando al scroll horizontal */
+}
+
+.table-compacta th, .table-compacta td {
+    padding: 8px 12px; 
+    vertical-align: middle;
+}
+
+/* Personalización del Scrollbar (barra de desplazamiento) */
+.table-responsive::-webkit-scrollbar {
+    width: 10px;  /* Scroll vertical */
+    height: 12px; /* Scroll horizontal (un poco más grueso para que sea más fácil agarrarlo) */
+}
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f2f6;
+    border-radius: 8px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #7B2037; /* Color institucional */
+    border-radius: 8px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #5a1728; 
+}
+
+/* Para que los encabezados se queden fijos al hacer scroll vertical */
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #212529; 
+    color: white;
+}

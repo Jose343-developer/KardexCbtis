@@ -3,24 +3,9 @@
 @{
     ViewData["Title"] = "Asignaciones Docentes";
 }
-
-<style>
-    .table-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        padding: 20px;
-        margin-top: 20px;
-    }
-    .badge-dia {
-        background-color: #7B2037;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-</style>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Asignacion/GetAll.css" asp-append-version="true" />
+}
 
 <div class="container-fluid">
     <div class="table-card">

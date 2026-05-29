@@ -3,28 +3,9 @@
 @{
     ViewData["Title"] = "Programar Asignación";
 }
-
-<style>
-    .form-card {
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        padding: 30px;
-        margin-top: 20px;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .btn-save {
-        background-color: #7B2037;
-        color: white;
-        border: none;
-    }
-    .btn-save:hover {
-        background-color: #5a1728;
-        color: white;
-    }
-</style>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Asignacion/AsignacionAdd.css" asp-append-version="true" />
+}
 
 <div class="container-fluid">
     <div class="form-card">
@@ -119,59 +100,6 @@
         }
     </div>
 </div>
-
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.getElementById("frmAsignacion");
-            const timeInicio = document.getElementById("timeInicio");
-            const timeFin = document.getElementById("timeFin");
-
-            form.addEventListener("submit", function (e) {
-                let isValid = true;
-                
-                // Clear custom states
-                timeFin.classList.remove("is-invalid");
-                
-                // Native validation
-                if (!form.checkValidity()) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    isValid = false;
-                }
-
-                // Custom validation: HoraInicio < HoraFin
-                if (timeInicio.value && timeFin.value) {
-                    const start = timeInicio.value;
-                    const end = timeFin.value;
-
-                    if (start >= end) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        timeFin.classList.add("is-invalid");
-                        document.getElementById("valFin").innerText = "La hora de fin debe ser posterior a la hora de inicio.";
-                        isValid = false;
-                    }
-                }
-
-                form.classList.add("was-validated");
-            });
-
-            // Interactive checks
-            timeInicio.addEventListener("change", checkHours);
-            timeFin.addEventListener("change", checkHours);
-
-            function checkHours() {
-                if (timeInicio.value && timeFin.value) {
-                    if (timeInicio.value >= timeFin.value) {
-                        timeFin.classList.add("is-invalid");
-                        document.getElementById("valFin").innerText = "La hora de fin debe ser posterior.";
-                    } else {
-                        timeFin.classList.remove("is-invalid");
-                        timeFin.classList.add("is-valid");
-                    }
-                }
-            }
-        });
-    </script>
+    <script src="~/js/Asignacion/AsignacionAdd.js" asp-append-version="true"></script>
 }

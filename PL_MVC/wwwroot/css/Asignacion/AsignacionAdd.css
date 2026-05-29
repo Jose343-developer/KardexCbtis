@@ -1,0 +1,19 @@
+.form-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 30px;
+    margin-top: 20px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.btn-save {
+    background-color: #7B2037;
+    color: white;
+    border: none;
+}
+.btn-save:hover {
+    background-color: #5a1728;
+    color: white;
+}
