@@ -1,0 +1,87 @@
+@model List<ML.Materia>
+
+@{
+    ViewData["Title"] = "Materias";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/Materia/GetAll.css" asp-append-version="true" />
+}
+
+<div class="container-fluid">
+    <div class="table-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0 fw-bold" style="color: #2d3436;">Catálogo de Materias</h2>
+            <a href="@Url.Action("MateriaAdd", "Materia")" class="btn btn-guinda rounded-pill px-4 shadow-sm">
+                Agregar Materia
+            </a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                @ViewBag.Message
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover mb-0 table-compacta">
+                <thead>
+                    <tr>
+                        <th class="text-center">ID</th>
+                        <th>Nombre</th>
+                        <th class="text-center">Semestre</th>
+                        <th class="text-center">Créditos</th>
+                        <th>Especialidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var materia in Model)
+                        {
+                            <tr>
+                                <td class="text-center">@materia.IdMateria</td>
+                                <td class="fw-semibold">@materia.Nombre</td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary rounded-pill">@materia.Semestre °</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info rounded-pill">@materia.Creditos</span>
+                                </td>
+                                @if (string.IsNullOrEmpty(materia.Especialidad?.Nombre))
+                                {
+                                    <td class="text-muted fst-italic">Sin especialidad / Tronco Común</td>
+                                }
+                                else
+                                {
+                                    <td>@materia.Especialidad.Nombre</td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                No hay materias registradas.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/Materia/GetAll.js" asp-append-version="true"></script>
+}

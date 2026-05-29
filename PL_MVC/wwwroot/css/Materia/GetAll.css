@@ -1,0 +1,59 @@
+/* --- MATERIA LIST STYLING --- */
+
+.table-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.btn-guinda {
+    background-color: #9B1B30;
+    color: #FFFFFF;
+    font-weight: 500;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-guinda:hover {
+    background-color: #7A1425;
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(155, 27, 48, 0.2);
+}
+
+.table-compacta th {
+    background-color: #F8F9FA;
+    color: #2D3436;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    border-bottom: 2px solid #E5E5E5;
+}
+
+.table-compacta td {
+    padding: 12px 16px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.bg-secondary {
+    background-color: #E2E8F0 !important;
+    color: #4A5568 !important;
+}
+
+.bg-info {
+    background-color: #E0F2FE !important;
+    color: #0369A1 !important;
+}
