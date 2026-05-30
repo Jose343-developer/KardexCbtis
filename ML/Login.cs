@@ -12,6 +12,8 @@ namespace ML
 
         public bool Resultado { get; set; }
 
+        public int IdUsuario { get; set; }
+
         public ML.Rol Rol { get; set; } = new ML.Rol();
     }
 }

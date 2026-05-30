@@ -52,7 +52,7 @@ namespace PL_MVC.Controllers
 
                 if (usuarioLog.Resultado)
                 {
-                    string token = GenerarJwtToken(model.Correo, usuarioLog.Rol.Nombre!);
+                    string token = GenerarJwtToken(usuarioLog.IdUsuario, model.Correo, usuarioLog.Rol.Nombre!);
 
                     var cookieOptions = new CookieOptions
                     {
@@ -92,7 +92,7 @@ namespace PL_MVC.Controllers
             return View();
         }
 
-        private string GenerarJwtToken(string correo, string rol)
+        private string GenerarJwtToken(int idUsuario, string correo, string rol)
         {
             var keyStr = _config["Jwt:Key"] ?? "1978APPPCONGIUSER_sistem?console_%%%contrsaena#segurademuchis12345679caracrtereSV777";
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyStr));
@@ -100,6 +100,7 @@ namespace PL_MVC.Controllers
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, idUsuario.ToString()),
                 new Claim(ClaimTypes.Name, correo),
                 new Claim(ClaimTypes.Email, correo),
                 new Claim(ClaimTypes.Role, rol)

@@ -85,6 +85,10 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.IdGrupoNavigation).WithMany(p => p.Alumnos)
                 .HasForeignKey(d => d.IdGrupo)
                 .HasConstraintName("FK__Alumno__IdGrupo__5165187F");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany()
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_Alumno_Usuario");
         });
 
         modelBuilder.Entity<Empleado>(entity =>

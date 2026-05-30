@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace DL.Models;
@@ -29,7 +29,11 @@ public partial class Alumno
 
     public string? Estatus { get; set; }
 
+    public int? IdUsuario { get; set; }
+
     public virtual Especialidade? IdEspecialidadNavigation { get; set; }
 
     public virtual Grupo? IdGrupoNavigation { get; set; }
+
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

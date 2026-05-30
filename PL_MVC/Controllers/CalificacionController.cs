@@ -22,18 +22,18 @@ namespace PL_MVC.Controllers
         [HttpGet]
         public IActionResult MisCalificaciones()
         {
-            // 1. Get logged-in user's email/username from claims
-            string? username = User.Identity?.Name;
-            if (string.IsNullOrEmpty(username))
+            // 1. Get logged-in user's IdUsuario from claims
+            var claimUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(claimUserId) || !int.TryParse(claimUserId, out int idUsuario))
             {
                 return RedirectToAction("Login", "Login");
             }
 
-            // 2. Find corresponding Alumno record
+            // 2. Find corresponding Alumno record using the new relationship
             var dbAlumno = _context.Alumnos
                 .Include(a => a.IdEspecialidadNavigation)
                 .Include(a => a.IdGrupoNavigation)
-                .FirstOrDefault(a => a.Matricula == username || a.Correo == username);
+                .FirstOrDefault(a => a.IdUsuario == idUsuario);
 
             if (dbAlumno == null)
             {

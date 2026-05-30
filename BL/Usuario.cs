@@ -42,7 +42,8 @@ namespace BL
                     ML.Login usuarioLog = new ML.Login
                     {
                         Correo = login.Correo,
-                        Resultado = true
+                        Resultado = true,
+                        IdUsuario = query.IdUsuario
                     };
 
                     var rol = _context.Rols.FirstOrDefault(r => r.IdRol == query.IdRol);

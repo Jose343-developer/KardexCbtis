@@ -38,7 +38,7 @@ namespace ApiCbtis.Controllers
 
                 if (usuarioLog.Resultado)
                 {
-                    string token = GenerarJwtToken(login.Correo, usuarioLog.Rol.Nombre!);
+                    string token = GenerarJwtToken(usuarioLog.IdUsuario, login.Correo, usuarioLog.Rol.Nombre!);
 
                     var cookie = new CookieOptions
                     {
@@ -60,13 +60,14 @@ namespace ApiCbtis.Controllers
             return BadRequest(new { Mensaje = result.ErrorMessage });
         }
 
-        private string GenerarJwtToken(string correo, string rol)
+        private string GenerarJwtToken(int idUsuario, string correo, string rol)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? "1978APPPCONGIUSER_sistem?console_%%%contrsaena#segurademuchis12345679caracrtereSV777"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
+                new Claim(ClaimTypes.NameIdentifier, idUsuario.ToString()),
                 new Claim(ClaimTypes.Name, correo),
                 new Claim(ClaimTypes.Email, correo),
                 new Claim(ClaimTypes.Role, rol)
