@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (item.status === "class-schedule") statusClass = "event-blue";
 
         return {
+            id: item.id,
             title: item.summary,
             start: fechaInicio,
             end: fechaFin,
@@ -35,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
     });
+
+    var selectedEventId = null;
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -57,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
             var eventObj = info.event;
             var props = eventObj.extendedProps;
+            selectedEventId = eventObj.id;
 
             // Rellenar modal
             document.getElementById('modalEventTitle').innerText = eventObj.title;
@@ -66,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var endText = eventObj.end ? formatDateTime(eventObj.end) : "";
             var timeText = startText;
             if (endText && eventObj.start.toDateString() === eventObj.end.toDateString()) {
-                // Mismo día, solo mostrar hora de fin
                 var endHourOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
                 timeText += " - " + eventObj.end.toLocaleTimeString('es-ES', endHourOptions);
             } else if (endText) {
@@ -113,13 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 badge.classList.add("bg-success");
             }
 
-            // Enlace de Google Calendar
-            var googleLink = document.getElementById('modalGoogleLink');
-            if (props.htmlLink) {
-                googleLink.href = props.htmlLink;
-                googleLink.classList.remove('d-none');
+            // Mostrar/Ocultar botón de eliminar (solo habilitado para eventos creados locales que no sean clases)
+            var deleteBtn = document.getElementById('btnDeleteEvent');
+            if (status !== "class-schedule") {
+                deleteBtn.classList.remove('d-none');
             } else {
-                googleLink.classList.add('d-none');
+                deleteBtn.classList.add('d-none');
             }
 
             // Mostrar el modal
@@ -131,6 +133,125 @@ document.addEventListener('DOMContentLoaded', function() {
 
     calendar.render();
 
+    // 1. Guardar Nuevo Evento (AJAX)
+    var formAddEvent = document.getElementById('formAddEvent');
+    formAddEvent.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!formAddEvent.checkValidity()) {
+            formAddEvent.classList.add('was-validated');
+            return;
+        }
+
+        var titulo = document.getElementById('eventTitle').value;
+        var fechaInicio = document.getElementById('eventStartDate').value;
+        var fechaFin = document.getElementById('eventEndDate').value;
+        var ubicacion = document.getElementById('eventLocation').value;
+        var estatus = document.getElementById('eventStatus').value;
+        var descripcion = document.getElementById('eventDescription').value;
+
+        // Validar que fin sea posterior a inicio
+        if (new Date(fechaFin) <= new Date(fechaInicio)) {
+            alert('La fecha de fin debe ser posterior a la fecha de inicio.');
+            return;
+        }
+
+        var requestBody = {
+            Titulo: titulo,
+            FechaInicio: fechaInicio,
+            FechaFin: fechaFin,
+            Ubicacion: ubicacion,
+            Estatus: estatus,
+            Descripcion: descripcion
+        };
+
+        fetch('/Calendario/AddEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.correct) {
+                // Definir clase de estado
+                var statusClass = "event-guinda";
+                if (estatus === "tentative") statusClass = "event-orange";
+                if (estatus === "cancelled") statusClass = "event-red";
+
+                var newEventObj = {
+                    id: data.idEvento.toString(),
+                    title: titulo,
+                    start: fechaInicio,
+                    end: fechaFin,
+                    classNames: [statusClass],
+                    extendedProps: {
+                        description: descripcion,
+                        status: estatus,
+                        location: ubicacion
+                    }
+                };
+
+                // Agregar al calendario
+                calendar.addEvent(newEventObj);
+                // Guardar en array local para filtros
+                eventosGoogle.push(newEventObj);
+
+                // Limpiar y cerrar modal
+                formAddEvent.reset();
+                formAddEvent.classList.remove('was-validated');
+                var modalInstance = bootstrap.Modal.getInstance(document.getElementById('addEventModal'));
+                modalInstance.hide();
+            } else {
+                alert('Error al guardar el evento: ' + data.errorMessage);
+            }
+        })
+        .catch(function(err) {
+            console.error('Error en AJAX de agregar evento:', err);
+            alert('Ocurrió un error al intentar conectarse con el servidor.');
+        });
+    });
+
+    // 2. Eliminar Evento (AJAX)
+    var deleteBtn = document.getElementById('btnDeleteEvent');
+    deleteBtn.addEventListener('click', function() {
+        if (!selectedEventId) return;
+
+        if (confirm('¿Está seguro de que desea eliminar este evento permanentemente?')) {
+            var urlParams = new URLSearchParams();
+            urlParams.append('idEvento', selectedEventId);
+
+            fetch('/Calendario/DeleteEvent?' + urlParams.toString(), {
+                method: 'POST'
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.correct) {
+                    // Remover de FullCalendar
+                    var calEvent = calendar.getEventById(selectedEventId);
+                    if (calEvent) calEvent.remove();
+
+                    // Remover del array local
+                    eventosGoogle = eventosGoogle.filter(function(ev) {
+                        return ev.id !== selectedEventId;
+                    });
+
+                    // Cerrar modal
+                    var modalInstance = bootstrap.Modal.getInstance(document.getElementById('eventDetailModal'));
+                    modalInstance.hide();
+                    selectedEventId = null;
+                } else {
+                    alert('Error al eliminar el evento: ' + data.errorMessage);
+                }
+            })
+            .catch(function(err) {
+                console.error('Error en AJAX de eliminar evento:', err);
+                alert('Ocurrió un error al intentar comunicarse con el servidor.');
+            });
+        }
+    });
+
     // Lógica de Filtros y Búsqueda
     var filterButtons = document.querySelectorAll('.filter-btn');
     var currentFilter = 'all';
@@ -138,9 +259,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function applyFilters() {
         var filtered = eventosGoogle.filter(function(ev) {
+            var titleMatch = ev.title.toLowerCase();
+            var descMatch = ev.extendedProps.description ? ev.extendedProps.description.toLowerCase() : '';
             var matchesSearch = !searchText || 
-                ev.title.toLowerCase().includes(searchText) || 
-                (ev.extendedProps.description && ev.extendedProps.description.toLowerCase().includes(searchText));
+                titleMatch.includes(searchText) || 
+                descMatch.includes(searchText);
             
             var matchesCategory = currentFilter === 'all' || 
                 (currentFilter === 'class-schedule' && ev.extendedProps.status === 'class-schedule') ||

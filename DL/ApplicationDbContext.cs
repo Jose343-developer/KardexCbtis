@@ -34,6 +34,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Calificacion> Calificaciones { get; set; }
 
+    public virtual DbSet<Evento> Eventos { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=localhost,1435;Database=CbtisKardex;User Id=sa;Password=P@ssw0rd2026!;TrustServerCertificate=True;");
 
@@ -250,6 +252,18 @@ public partial class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.IdMateria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Calificacion_Materia");
+        });
+
+        modelBuilder.Entity<Evento>(entity =>
+        {
+            entity.HasKey(e => e.IdEvento).HasName("PK_Evento");
+            entity.ToTable("Evento");
+            entity.Property(e => e.Titulo).HasMaxLength(100).IsUnicode(false);
+            entity.Property(e => e.Descripcion).HasMaxLength(500).IsUnicode(false);
+            entity.Property(e => e.Estatus).HasMaxLength(20).IsUnicode(false).HasDefaultValue("confirmed");
+            entity.Property(e => e.Ubicacion).HasMaxLength(200).IsUnicode(false);
+            entity.Property(e => e.FechaInicio).HasColumnType("datetime");
+            entity.Property(e => e.FechaFin).HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

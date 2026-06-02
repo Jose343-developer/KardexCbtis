@@ -1,14 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
-using System.Data;
-using System.IO;
-using ExcelDataReader;
-using Microsoft.AspNetCore.Mvc;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Calendar.v3;
-using Google.Apis.Services;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using PL_MVC.Filters;
 
 namespace PL_MVC.Controllers
@@ -16,7 +10,7 @@ namespace PL_MVC.Controllers
     [AuthorizeRole("Administrador", "Profesor")]
     public class CalendarioController : Controller
     {
-        private readonly IConfiguration _config;
+        private readonly BL.Evento _eventoBL;
         private readonly BL.AsignacionDocente _asignacionDocenteBL;
 
         private static readonly Dictionary<string, DayOfWeek> SpanishDays = new(StringComparer.OrdinalIgnoreCase)
@@ -32,72 +26,43 @@ namespace PL_MVC.Controllers
             { "Domingo", DayOfWeek.Sunday }
         };
 
-        public CalendarioController(IConfiguration config, BL.AsignacionDocente asignacionDocenteBL)
+        public CalendarioController(BL.Evento eventoBL, BL.AsignacionDocente asignacionDocenteBL)
         {
-            _config = config;
+            _eventoBL = eventoBL;
             _asignacionDocenteBL = asignacionDocenteBL;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCalendarView()
+        public IActionResult GetAllCalendarView()
         {
             List<ML.CalendarObjects> objects = new List<ML.CalendarObjects>();
 
-            // 1. Obtener eventos de Google Calendar
+            // 1. Obtener eventos locales de la Base de Datos
             try
             {
-                string ruta = _config.GetValue<string>("GoogleCalendar:JsonPath");
-                string correo = _config.GetValue<string>("GoogleCalendar:CalendarId");
-                
-                var credencial = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(ruta)
-                     .CreateScoped(Google.Apis.Calendar.v3.CalendarService.Scope.CalendarReadonly);
-
-                var service = new Google.Apis.Calendar.v3.CalendarService(new Google.Apis.Services.BaseClientService.Initializer()
+                ML.Result resultEventos = _eventoBL.GetAll();
+                if (resultEventos.Correct && resultEventos.Objects != null)
                 {
-                    HttpClientInitializer = credencial,
-                    ApplicationName = "prueba postman"
-                });
-
-                var events = await service.Events.List(correo).ExecuteAsync();
-                if (events.Items != null)
-                {
-                    foreach (var item in events.Items)
+                    foreach (ML.Evento item in resultEventos.Objects)
                     {
-                        ML.CalendarObjects ObjetoCalendario = new ML.CalendarObjects();
-                        ObjetoCalendario.summary = item.Summary;
-                        ObjetoCalendario.id = item.Id;
-                        ObjetoCalendario.description = item.Description;
-                        ObjetoCalendario.status = item.Status ?? "confirmed";
-                        ObjetoCalendario.location = item.Location;
-                        ObjetoCalendario.htmlLink = item.HtmlLink;
-
-                        if (item.Start != null)
+                        ML.CalendarObjects ObjetoCalendario = new ML.CalendarObjects
                         {
-                            ObjetoCalendario.start = new ML.Start()
-                            {
-                                dateTime = item.Start.DateTime,
-                                date = item.Start.Date,
-                                timeZone = item.Start.TimeZone
-                            };
-                        }
-                        if (item.End != null)
-                        {
-                            ObjetoCalendario.end = new ML.End()
-                            {
-                                dateTime = item.End.DateTime,
-                                date = item.End.Date,
-                                timeZone = item.End.TimeZone
-                            };
-                        }
-
+                            id = item.IdEvento.ToString(),
+                            summary = item.Titulo,
+                            description = item.Descripcion,
+                            status = item.Estatus ?? "confirmed",
+                            location = item.Ubicacion,
+                            start = new ML.Start { dateTime = item.FechaInicio },
+                            end = new ML.End { dateTime = item.FechaFin }
+                        };
                         objects.Add(ObjetoCalendario);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"[Google Calendar Error] Failed to fetch events: {ex.Message}");
-                ViewBag.CalendarError = "No se pudieron cargar los eventos del Calendario de Google: " + ex.Message;
+                Console.Error.WriteLine($"[Database Events Error] Failed to fetch events: {ex.Message}");
+                ViewBag.CalendarError = "No se pudieron cargar los eventos del sistema: " + ex.Message;
             }
 
             // 2. Obtener y proyectar horarios de clases (Asignaciones Docente)
@@ -146,43 +111,49 @@ namespace PL_MVC.Controllers
             return View(objects);
         }
 
+        [HttpPost]
+        public JsonResult AddEvent([FromBody] ML.Evento model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { correct = false, errorMessage = string.Join(" ", errors) });
+            }
+
+            var result = _eventoBL.Add(model);
+            if (result.Correct)
+            {
+                return Json(new { correct = true, idEvento = result.Object });
+            }
+            else
+            {
+                return Json(new { correct = false, errorMessage = result.ErrorMessage });
+            }
+        }
+
+        [HttpPost]
+        public JsonResult DeleteEvent(int idEvento)
+        {
+            var result = _eventoBL.Delete(idEvento);
+            if (result.Correct)
+            {
+                return Json(new { correct = true });
+            }
+            else
+            {
+                return Json(new { correct = false, errorMessage = result.ErrorMessage });
+            }
+        }
 
         [HttpGet]
-        public async Task <IActionResult> GetAllCalendarApi()
+        public JsonResult GetAllCalendarApi()
         {
-            //ruta de las credenciales del perfil administradorr
-                string ruta = _config.GetValue<string>("GoogleCalendar:JsonPath");
-                /// tecnicamente no es unc orreo pero tiene la estructura solo es el id del calendario de mi perfil
-                string correo = _config.GetValue<string>("GoogleCalendar:CalendarId");
-                // credencial para identificarnos similar a jwt
-                var credencial = Google.Apis.Auth.OAuth2.GoogleCredential.FromFile(ruta)
-                     .CreateScoped(Google.Apis.Calendar.v3.CalendarService.Scope.CalendarReadonly);
-
-                    //creamos el servico
-
-                    var service = new Google.Apis.Calendar.v3.CalendarService(new Google.Apis.Services.BaseClientService.Initializer()
-                    {
-                        
-
-                            HttpClientInitializer = credencial,
-                            ApplicationName = "prueba postman"
-
-
-                    });
-
-
-                    var events = await service.Events.List(correo).ExecuteAsync();
-
-                    if (events.Items == null)
+            var result = _eventoBL.GetAll();
+            if (result.Correct)
             {
-                
-            
-
-                Response.StatusCode = 400;
+                return Json(result.Objects);
             }
-           
-              ViewBag.ItemsCalendarGet = events.Items;
-            return Ok(events.Items);
+            return Json(new List<object>());
         }
-}
+    }
 }

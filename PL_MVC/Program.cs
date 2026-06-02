@@ -20,6 +20,7 @@ builder.Services.AddScoped<BL.Grupo>();
 builder.Services.AddScoped<BL.Materia>();
 builder.Services.AddScoped<BL.Rol>();
 builder.Services.AddScoped<BL.Usuario>();
+builder.Services.AddScoped<BL.Evento>();
 
 var app = builder.Build();
 
