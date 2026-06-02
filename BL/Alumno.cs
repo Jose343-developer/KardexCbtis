@@ -110,21 +110,14 @@ ML.Result result = new ML.Result();
                 {alumno.Especialidad?.IdEspecialidad}, 
                 {alumno.Grupo?.IdGrupo} ");
 
-                if (query > 0)
+                if (query > 0 || query == -1)
                 {
-                    
-
-
-
                     result.Correct = true;
-
                 }
                 else
                 {
-                    
                     result.Correct = false;
-                    result.ErrorMessage = "error al insertra datos";
-
+                    result.ErrorMessage = "error al insertar datos";
                 }
 
 
@@ -208,6 +201,33 @@ public ML.Result GetCountAlumnoBySemestre(int semestre)
             result.ErrorMessage = ex.Message;
             result.Ex = ex;
 
+        }
+        return result;
+    }
+
+    public ML.Result ChangeStatus(int idAlumno, string estatus)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var alumno = _context.Alumnos.Find(idAlumno);
+            if (alumno != null)
+            {
+                alumno.Estatus = estatus;
+                _context.SaveChanges();
+                result.Correct = true;
+            }
+            else
+            {
+                result.Correct = false;
+                result.ErrorMessage = "No se encontró el alumno.";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
         }
         return result;
     }

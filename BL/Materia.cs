@@ -76,7 +76,7 @@ namespace BL
                         {materia.Creditos}, 
                         {idEspecialidad}");
 
-                    if (rowsAffected > 0)
+                    if (rowsAffected > 0 || rowsAffected == -1)
                     {
                         result.Correct = true;
                     }

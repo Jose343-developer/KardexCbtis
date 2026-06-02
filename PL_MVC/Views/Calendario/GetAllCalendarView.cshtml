@@ -1,6 +1,6 @@
 @model List<ML.CalendarObjects>
 @{
-    ViewData["Title"] = "GetAllCalendar";
+    ViewData["Title"] = "Calendario Escolar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,15 +11,33 @@
     <link rel="stylesheet" href="~/css/Calendario/GetAllCalendarView.css" asp-append-version="true" />
 }
 
-
 <div class="container">
+    @if (ViewBag.CalendarError != null)
+    {
+        <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.CalendarError
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (ViewBag.AsignacionError != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i> @ViewBag.AsignacionError
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="calendar-card">
         <div class="calendar-header-wrapper">
             <h2 class="fw-bold mb-0" style="color: #2d3436;">Agenda del Sistema</h2>
             <div class="calendar-legend">
                 <div class="legend-item">
                     <span class="legend-color color-primary"></span>
-                    <span>Clase / Evento</span>
+                    <span>Evento General</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color color-class"></span>
+                    <span>Horario de Clase</span>
                 </div>
                 <div class="legend-item">
                     <span class="legend-color color-tentative"></span>
@@ -33,11 +51,65 @@
         </div>
         <hr class="mb-4" style="border-top: 2px solid #eee;">
 
-        <!-- 2. Este div es donde FullCalendar dibujará toda la interfaz -->
-        <div id='calendar' data-events="@Json.Serialize(Model)"></div>
+        <!-- Filtros del Calendario -->
+        <div class="calendar-filters mb-4">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="calendarSearchInput" class="form-control border-start-0 ps-0" placeholder="Buscar clases o eventos..." />
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-8 d-flex flex-wrap gap-2 justify-content-md-end">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 filter-btn active" data-filter="all">Todos</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3 filter-btn" data-filter="class-schedule">Horarios de Clase</button>
+                    <button class="btn btn-sm btn-outline-success rounded-pill px-3 filter-btn" data-filter="confirmed">Eventos Generales</button>
+                    <button class="btn btn-sm btn-outline-warning rounded-pill px-3 filter-btn" data-filter="tentative">Tentativos</button>
+                </div>
+            </div>
+        </div>
 
+        <!-- Este div es donde FullCalendar dibujará toda la interfaz -->
+        <div id='calendar' data-events="@Json.Serialize(Model)"></div>
     </div>
 </div>
+
+<!-- Modal para Detalles del Evento -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="eventDetailModalLabel"><i class="bi bi-calendar-event text-danger me-2"></i>Detalles del Evento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div id="modalStatusBadge" class="badge rounded-pill px-3 py-2 fs-6"></div>
+                </div>
+                <h4 id="modalEventTitle" class="fw-bold mb-3 text-dark"></h4>
+                <div class="mb-3 text-muted">
+                    <i class="bi bi-clock-fill me-2 text-secondary"></i>
+                    <span id="modalEventTime"></span>
+                </div>
+                <div class="mb-3 text-muted" id="modalEventLocationContainer">
+                    <i class="bi bi-geo-alt-fill me-2 text-danger"></i>
+                    <span id="modalEventLocation"></span>
+                </div>
+                <div class="mb-3 text-muted" id="modalEventDescriptionContainer">
+                    <i class="bi bi-text-paragraph me-2 text-primary"></i>
+                    <div id="modalEventDescription" class="mt-1 ps-3 text-dark" style="white-space: pre-line; border-left: 3px solid #eee;"></div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <a id="modalGoogleLink" href="#" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-none">
+                    <i class="bi bi-google me-1"></i> Ver en Google Calendar
+                </a>
+                <button type="button" class="btn btn-light btn-sm rounded-pill px-3" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/js/Calendario/GetAllCalendarView.js" asp-append-version="true"></script>
 }

@@ -91,7 +91,7 @@ namespace BL
                         {empleado.Celular}, 
                         {empleado.Departamento}");
 
-                    if (rowsAffected > 0)
+                    if (rowsAffected > 0 || rowsAffected == -1)
                     {
                         result.Correct = true;
                     }

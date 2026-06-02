@@ -13,8 +13,23 @@
 
         @if (ViewBag.Message != null)
         {
-            <div class="alert alert-danger shadow-sm">
-                @ViewBag.Message
+            <div class="alert alert-danger shadow-sm alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @ViewBag.Message
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success shadow-sm alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger shadow-sm alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
 
@@ -32,6 +47,7 @@
                         <th>Teléfono</th>
                         <th>Especialidad</th>
                         <th>Grupo</th>
+                        <th>Estatus</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -59,9 +75,33 @@
                                 }
                                 <td>@(alumno.Grupo?.Semestre) - @(alumno.Grupo?.Letra) (@(alumno.Grupo?.Turno))</td>
                                 <td class="text-center">
-                                    <a href="@Url.Action("Boleta", "Reporte", new { idAlumno = alumno.idAlumno })" class="btn btn-sm btn-outline-info rounded-pill">
-                                        <i class="bi bi-file-earmark-pdf"></i> Boleta
-                                    </a>
+                                    @if (alumno.Estatus == "Baja")
+                                    {
+                                        <span class="badge bg-danger rounded-pill px-3 py-2">Baja</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success rounded-pill px-3 py-2">Activo</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a href="@Url.Action("Boleta", "Reporte", new { idAlumno = alumno.idAlumno })" class="btn btn-sm btn-outline-info rounded-pill">
+                                            <i class="bi bi-file-earmark-pdf"></i> Boleta
+                                        </a>
+                                        @if (alumno.Estatus == "Baja")
+                                        {
+                                            <a href="@Url.Action("ChangeStatus", "Alumno", new { idAlumno = alumno.idAlumno, estatus = "Activo" })" class="btn btn-sm btn-outline-success rounded-pill" onclick="return confirm('¿Está seguro de que desea reactivar a este alumno?');">
+                                                <i class="bi bi-person-check"></i> Activar
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("ChangeStatus", "Alumno", new { idAlumno = alumno.idAlumno, estatus = "Baja" })" class="btn btn-sm btn-outline-danger rounded-pill" onclick="return confirm('¿Está seguro de que desea dar de baja a este alumno?');">
+                                                <i class="bi bi-person-dash"></i> Dar de Baja
+                                            </a>
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -69,7 +109,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="10" class="text-center py-4 text-muted">
+                            <td colspan="12" class="text-center py-4 text-muted">
                                 No hay alumnos disponibles.
                             </td>
                         </tr>

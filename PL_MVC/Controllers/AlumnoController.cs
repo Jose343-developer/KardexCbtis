@@ -305,7 +305,20 @@ public ActionResult CargaMasiva(IFormFile archivoExcel)
 
     return RedirectToAction("GetAll");
 }
+
+        [HttpGet]
+        public ActionResult ChangeStatus(int idAlumno, string estatus)
+        {
+            var result = _alumnoBL.ChangeStatus(idAlumno, estatus);
+            if (result.Correct)
+            {
+                TempData["Message"] = $"Estatus del alumno actualizado correctamente a: {estatus}";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error al actualizar estatus: " + result.ErrorMessage;
+            }
+            return RedirectToAction("GetAll");
+        }
     }
-
-
 }
