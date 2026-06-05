@@ -1,70 +1,61 @@
-@model List<ML.AsignacionDocente>
+@model ML.Horario
+
 @{
-    ViewData["Title"] = "Horarios por Semestre y Grupo";
+    ViewData["Title"] = "Gestión de Horarios";
 }
 
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Horarios por Semestre y Grupo</h2>
-        @if (Context.User.IsInRole("Administrador") || Context.User.IsInRole("Profesor"))
-        {
-            <a asp-controller="Asignacion" asp-action="GetAll" class="btn btn-primary">Administrar Horarios</a>
-        }
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="fw-bold">Gestión de Horarios de Grupo</h2>
+            <p class="text-muted">Seleccione un grupo y suba el archivo PDF con su horario correspondiente.</p>
+        </div>
     </div>
 
-    @{
-        var groupedSchedules = Model
-            .Where(m => m.Grupo != null && m.Materia != null)
-            .GroupBy(m => new { m.Grupo.Semestre, m.Grupo.Letra, m.Grupo.Turno })
-            .OrderBy(g => g.Key.Semestre).ThenBy(g => g.Key.Letra)
-            .ToList();
-    }
-
-    @if (!groupedSchedules.Any())
+    @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-info">No hay horarios establecidos actualmente.</div>
-    }
-    else
-    {
-        <div class="accordion" id="accordionHorarios">
-            @foreach (var group in groupedSchedules)
-            {
-                var groupId = $"collapse_{group.Key.Semestre}_{group.Key.Letra}";
-                <div class="accordion-item mb-3 border rounded shadow-sm">
-                    <h2 class="accordion-header" id="heading_@groupId">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@groupId" aria-expanded="false" aria-controls="@groupId">
-                            <strong>Semestre @group.Key.Semestre - Grupo '@group.Key.Letra' (@group.Key.Turno)</strong>
-                        </button>
-                    </h2>
-                    <div id="@groupId" class="accordion-collapse collapse" aria-labelledby="heading_@groupId" data-bs-parent="#accordionHorarios">
-                        <div class="accordion-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover align-middle">
-                                    <thead class="table-dark">
-                                        <tr>
-                                            <th>Día</th>
-                                            <th>Horario</th>
-                                            <th>Materia</th>
-                                            <th>Docente</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in group.OrderBy(i => i.DiaSemana).ThenBy(i => i.HoraInicio))
-                                        {
-                                            <tr>
-                                                <td class="fw-bold">@item.DiaSemana</td>
-                                                <td>@item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")</td>
-                                                <td>@item.Materia.Nombre</td>
-                                                <td>@(item.Empleado?.Nombre) @(item.Empleado?.ApellidoPaterno)</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+            <form asp-action="Upload" method="post" enctype="multipart/form-data">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold">Seleccionar Grupo:</label>
+                        <select name="IdGrupo" class="form-select" required>
+                            <option value="">-- Seleccione un Grupo --</option>
+                            @if (Model.Grupos != null)
+                            {
+                                foreach (ML.Grupo grupo in Model.Grupos)
+                                {
+                                    <option value="@grupo.IdGrupo">@grupo.Semestre @grupo.Letra - @grupo.Turno</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold">Archivo PDF:</label>
+                        <input type="file" name="Documento" class="form-control" accept="application/pdf" required />
+                    </div>
+                    <div class="col-md-2 mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-upload"></i> Subir Horario
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

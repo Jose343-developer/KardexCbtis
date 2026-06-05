@@ -275,4 +275,40 @@ public ML.Result GetCountAlumnoBySemestre(int semestre)
         }
         return result;
     }
+
+    public ML.Result GetByIdUsuario(int idUsuario)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var dbAlumno = _context.Alumnos.FirstOrDefault(a => a.IdUsuario == idUsuario);
+            if (dbAlumno != null)
+            {
+                ML.Alumno alumno = new ML.Alumno
+                {
+                    idAlumno = dbAlumno.IdAlumno,
+                    Matricula = dbAlumno.Matricula,
+                    Nombre = dbAlumno.Nombre,
+                    Grupo = new ML.Grupo
+                    {
+                        IdGrupo = dbAlumno.IdGrupo ?? 0
+                    }
+                };
+                result.Object = alumno;
+                result.Correct = true;
+            }
+            else
+            {
+                result.Correct = false;
+                result.ErrorMessage = "No se encontró el alumno.";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
+    }
 }

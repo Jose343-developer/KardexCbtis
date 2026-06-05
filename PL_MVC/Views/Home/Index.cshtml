@@ -19,8 +19,8 @@
                     
                     @if (!string.IsNullOrEmpty(Model.NoticiaRelevante.ImagenBase64))
                     {
-                        <div class="text-center mb-4">
-                            <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" class="img-fluid rounded shadow-sm" alt="Noticia" style="height: 400px; width: 100%; object-fit: cover; object-position: center;">
+                        <div class="text-center mb-4 bg-light rounded shadow-sm d-flex justify-content-center align-items-center" style="height: 400px; overflow: hidden;">
+                            <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" class="img-fluid" alt="Noticia" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                         </div>
                     }
                     <div class="noticia-contenido" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6; color: #444;">
@@ -56,10 +56,21 @@
                     <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
                         @if (!string.IsNullOrEmpty(noticia.ImagenBase64))
                         {
-                            <img src="data:image/jpeg;base64,@noticia.ImagenBase64" class="card-img-top" alt="Imagen noticia" style="height: 280px; width: 100%; object-fit: cover; object-position: center;">
+                            <div class="bg-light d-flex justify-content-center align-items-center" style="height: 280px; width: 100%; overflow: hidden;">
+                                <img src="data:image/jpeg;base64,@noticia.ImagenBase64" class="card-img-top" alt="Imagen noticia" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                            </div>
                         }
-                        <div class="card-body p-4">
-                            <h4 class="card-title fw-bold">@noticia.Titulo</h4>
+                        <div class="card-body p-4 position-relative">
+                            @if (Context.User.IsInRole("Administrador"))
+                            {
+                                <form asp-controller="Home" asp-action="EliminarNoticia" method="post" class="position-absolute top-0 end-0 mt-3 me-3" onsubmit="return confirm('¿Estás seguro de eliminar esta noticia?');">
+                                    <input type="hidden" name="idNoticia" value="@noticia.IdNoticia" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" title="Eliminar noticia">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            }
+                            <h4 class="card-title fw-bold pe-5">@noticia.Titulo</h4>
                             <p class="card-text text-muted small mb-3">
                                 <i class="bi bi-calendar3"></i> @noticia.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm")
                             </p>

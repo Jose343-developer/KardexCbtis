@@ -28,6 +28,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
+    public virtual DbSet<Horario> Horarios { get; set; }
+
     public virtual DbSet<Materia> Materias { get; set; }
 
     public virtual DbSet<AsignacionDocente> AsignacionDocentes { get; set; }

@@ -64,6 +64,7 @@
                         @if (rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                         {
                             <a class="nav-item" asp-area="" asp-controller="Catalogo" asp-action="Index">Catálogos</a>
+                            <a class="nav-item" asp-area="" asp-controller="Horario" asp-action="Index">Subir Horarios</a>
                             <a class="nav-item" asp-area="" asp-controller="Reporte" asp-action="Dashboard">Estadísticas</a>
                             <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="AlumnoAdd">Agregar Alumno</a>
                             <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
@@ -74,10 +75,10 @@
                         }
                         else if (rolUsuario.Equals("Alumno", StringComparison.OrdinalIgnoreCase))
                         {
+                            <a class="nav-item" asp-area="" asp-controller="Horario" asp-action="MiHorario">Mi Horario</a>
                             <a class="nav-item" asp-area="" asp-controller="Calificacion" asp-action="MisCalificaciones">Mis Calificaciones</a>
                         }
 
-                        <a class="nav-item" asp-area="" asp-controller="Horario" asp-action="Index">Horarios</a>
                         <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>
                     }
                     else

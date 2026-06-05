@@ -80,6 +80,14 @@ public class HomeController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpPost]
+    [AuthorizeRole("Administrador")]
+    public IActionResult EliminarNoticia(int idNoticia)
+    {
+        BL.Noticia.Delete(idNoticia);
+        return RedirectToAction("Index");
+    }
+
     public IActionResult Privacy()
     {
         return View();

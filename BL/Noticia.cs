@@ -124,5 +124,34 @@ namespace BL
             }
             return result;
         }
+
+        public static ML.Result Delete(int idNoticia)
+        {
+            ML.Result result = new ML.Result();
+            try
+            {
+                using (DL.ApplicationDbContext context = new DL.ApplicationDbContext())
+                {
+                    var noticia = context.Noticias.Find(idNoticia);
+                    if (noticia != null)
+                    {
+                        context.Noticias.Remove(noticia);
+                        context.SaveChanges();
+                        result.Correct = true;
+                    }
+                    else
+                    {
+                        result.Correct = false;
+                        result.ErrorMessage = "La noticia no existe.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+            }
+            return result;
+        }
     }
 }
