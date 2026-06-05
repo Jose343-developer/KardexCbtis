@@ -36,6 +36,9 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<Evento> Eventos { get; set; }
 
+    public virtual DbSet<Noticia> Noticias { get; set; }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=localhost,1435;Database=CbtisKardex;User Id=sa;Password=P@ssw0rd2026!;TrustServerCertificate=True;");
 
@@ -264,6 +267,17 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.Ubicacion).HasMaxLength(200).IsUnicode(false);
             entity.Property(e => e.FechaInicio).HasColumnType("datetime");
             entity.Property(e => e.FechaFin).HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Noticia>(entity =>
+        {
+            entity.HasKey(e => e.IdNoticia).HasName("PK_Noticia");
+            entity.ToTable("Noticia");
+            entity.Property(e => e.Titulo).HasMaxLength(200).IsUnicode(false);
+            entity.Property(e => e.Contenido).IsUnicode(false);
+            entity.Property(e => e.ImagenBase64).IsUnicode(false);
+            entity.Property(e => e.FechaPublicacion).HasColumnType("datetime").HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Estatus).HasDefaultValue(true);
         });
 
         OnModelCreatingPartial(modelBuilder);

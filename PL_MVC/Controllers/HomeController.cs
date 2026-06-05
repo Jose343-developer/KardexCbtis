@@ -39,7 +39,45 @@ public class HomeController : Controller
             SextoSemestre = countSemestre[6]
         };
 
+        var resNoticias = BL.Noticia.GetAll();
+        if (resNoticias.Correct)
+        {
+            model.Noticias = resNoticias.Objects;
+        }
+
+        var resRelevante = BL.Noticia.GetRelevante();
+        if (resRelevante.Correct)
+        {
+            model.NoticiaRelevante = (ML.Noticia)resRelevante.Object;
+        }
+
         return View(model);
+    }
+
+    [HttpPost]
+    [AuthorizeRole("Administrador")]
+    public IActionResult AgregarNoticia(string titulo, string contenido, IFormFile imagen)
+    {
+        ML.Noticia nuevaNoticia = new ML.Noticia
+        {
+            Titulo = titulo,
+            Contenido = contenido,
+            Estatus = true,
+            FechaPublicacion = DateTime.Now
+        };
+
+        if (imagen != null && imagen.Length > 0)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imagen.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                nuevaNoticia.ImagenBase64 = Convert.ToBase64String(fileBytes);
+            }
+        }
+
+        BL.Noticia.Add(nuevaNoticia);
+        return RedirectToAction("Index");
     }
 
     public IActionResult Privacy()

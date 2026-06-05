@@ -45,7 +45,7 @@ namespace ApiCbtis.Controllers
                         HttpOnly = true,
                         Secure = Request.IsHttps,
                         SameSite = Request.IsHttps ? SameSiteMode.None : SameSiteMode.Lax,
-                        Expires = DateTime.UtcNow.AddMinutes(30)
+                        Expires = DateTime.UtcNow.AddDays(1)
                     };
 
                     Response.Cookies.Append("tokenjwt", token, cookie);
@@ -77,7 +77,7 @@ namespace ApiCbtis.Controllers
                 issuer: _config["Jwt:Issuer"] ?? "TuAppAPI",
                 audience: _config["Jwt:Audience"] ?? "TuAppUsuarios",
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30), // Match the cookie expiration
+                expires: DateTime.UtcNow.AddDays(1), // Match the cookie expiration
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

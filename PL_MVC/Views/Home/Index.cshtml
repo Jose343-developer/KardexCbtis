@@ -1,106 +1,173 @@
 @model ML.HomeViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Noticias y Dashboard";
 }
 
-@{
-    double total = Model != null && Model.AlumnosCount > 0 ? Convert.ToDouble(Model.AlumnosCount) : 1;
-    
-    double sem1 = Model != null ? Convert.ToDouble(Model.PrimerSemestre) : 0;
-    double sem2 = Model != null ? Convert.ToDouble(Model.SegundoSemestre) : 0;
-    double sem3 = Model != null ? Convert.ToDouble(Model.TercerSemestre) : 0;
-    double sem4 = Model != null ? Convert.ToDouble(Model.CuartoSemestre) : 0;
-    double sem5 = Model != null ? Convert.ToDouble(Model.QuintoSemestre) : 0;
-    double sem6 = Model != null ? Convert.ToDouble(Model.SextoSemestre) : 0;
-
-    var culture = System.Globalization.CultureInfo.InvariantCulture;
-    string pct1 = (sem1 / total * 100).ToString("0.0", culture) + "%";
-    string pct2 = (sem2 / total * 100).ToString("0.0", culture) + "%";
-    string pct3 = (sem3 / total * 100).ToString("0.0", culture) + "%";
-    string pct4 = (sem4 / total * 100).ToString("0.0", culture) + "%";
-    string pct5 = (sem5 / total * 100).ToString("0.0", culture) + "%";
-    string pct6 = (sem6 / total * 100).ToString("0.0", culture) + "%";
+<!-- Modal Noticia Relevante -->
+@if (Model.NoticiaRelevante != null)
+{
+    <div class="modal fade" id="modalNoticiaRelevante" tabindex="-1" aria-labelledby="modalNoticiaRelevanteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="modalNoticiaRelevanteLabel">🔥 Noticia Destacada</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <h3 class="mb-2 fw-bold text-dark">@Model.NoticiaRelevante.Titulo</h3>
+                    <p class="text-muted small mb-3"><i class="bi bi-clock"></i> Publicado el: @Model.NoticiaRelevante.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm")</p>
+                    
+                    @if (!string.IsNullOrEmpty(Model.NoticiaRelevante.ImagenBase64))
+                    {
+                        <div class="text-center mb-4">
+                            <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" class="img-fluid rounded shadow-sm" alt="Noticia" style="height: 400px; width: 100%; object-fit: cover; object-position: center;">
+                        </div>
+                    }
+                    <div class="noticia-contenido" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6; color: #444;">
+                        @Model.NoticiaRelevante.Contenido
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
-@section Styles {
-    <link rel="stylesheet" href="~/css/Home/Index.css" asp-append-version="true" />
-}
 
-<div class="dashboard-card text-center">
-    <!-- Encabezado -->
-    <h1 class="display-4 dashboard-title">¡BIENVENIDOS!</h1>
-    <p class="text-muted text-uppercase fw-bold mt-3">Total de Alumnos Inscritos</p>
-    <div class="total-alumnos">@Model.AlumnosCount</div>
-    <hr class="mt-4 mb-4" style="border-top: 2px solid #eee;">
+<div class="container-fluid mt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="fw-bold m-0"><i class="bi bi-newspaper text-primary"></i> Zona de Noticias</h2>
+        @if (Context.User.IsInRole("Administrador"))
+        {
+            <button type="button" class="btn btn-success rounded-pill shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalAñadirNoticia">
+                <i class="bi bi-plus-circle me-2"></i> Añadir Noticia
+            </button>
+        }
+    </div>
 
-    <!-- Gráfica generada con CSS -->
-    <div class="grafica-contenedor">
-        <h4 class="mb-4 text-center fw-bold text-secondary">Distribución por Semestre</h4>
-
-        <!-- Semestre 1 -->
-        <div class="barra-grupo">
-            <div class="barra-etiquetas">
-                <span>1er Semestre</span>
-                <span>@Model.PrimerSemestre alumnos</span>
-            </div>
-            <div class="barra-fondo">
-                <div class="barra-progreso c-sem1" style="width: @pct1;">@pct1</div>
-            </div>
+    <div class="row g-4">
+        <!-- Feed de Noticias -->
+        <div class="col-lg-8">
+            @if (Model.Noticias != null && Model.Noticias.Any())
+            {
+                foreach (ML.Noticia noticia in Model.Noticias)
+                {
+                    <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+                        @if (!string.IsNullOrEmpty(noticia.ImagenBase64))
+                        {
+                            <img src="data:image/jpeg;base64,@noticia.ImagenBase64" class="card-img-top" alt="Imagen noticia" style="height: 280px; width: 100%; object-fit: cover; object-position: center;">
+                        }
+                        <div class="card-body p-4">
+                            <h4 class="card-title fw-bold">@noticia.Titulo</h4>
+                            <p class="card-text text-muted small mb-3">
+                                <i class="bi bi-calendar3"></i> @noticia.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm")
+                            </p>
+                            <p class="card-text text-secondary" style="white-space: pre-wrap; line-height: 1.6;">@noticia.Contenido</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info border-0 shadow-sm rounded-3">
+                    <i class="bi bi-info-circle me-2"></i> No hay noticias disponibles en este momento.
+                </div>
+            }
         </div>
 
-        <!-- Semestre 2 -->
-        <div class="barra-grupo">
-            <div class="barra-etiquetas">
-                <span>2do Semestre</span>
-                <span>@Model.SegundoSemestre alumnos</span>
-            </div>
-            <div class="barra-fondo">
-                <div class="barra-progreso c-sem2" style="width: @pct2;">@pct2</div>
-            </div>
-        </div>
-
-        <!-- Semestre 3 -->
-        <div class="barra-grupo">
-            <div class="barra-etiquetas">
-                <span>3er Semestre</span>
-                <span>@Model.TercerSemestre alumnos</span>
-            </div>
-            <div class="barra-fondo">
-                <div class="barra-progreso c-sem3" style="width: @pct3;">@pct3</div>
-            </div>
-        </div>
-
-        <!-- Semestre 4 -->
-        <div class="barra-grupo">
-            <div class="barra-etiquetas">
-                <span>4to Semestre</span>
-                <span>@Model.CuartoSemestre alumnos</span>
-            </div>
-            <div class="barra-fondo">
-                <div class="barra-progreso c-sem4" style="width: @pct4;">@pct4</div>
-            </div>
-        </div>
-
-        <!-- Semestre 5 -->
-        <div class="barra-grupo">
-            <div class="barra-etiquetas">
-                <span>5to Semestre</span>
-                <span>@Model.QuintoSemestre alumnos</span>
-            </div>
-            <div class="barra-fondo">
-                <div class="barra-progreso c-sem5" style="width: @pct5;">@pct5</div>
+        <!-- Dashboard Lateral -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 text-center">
+                <div class="card-body p-4">
+                    <h4 class="card-title fw-bold mb-4 text-primary">Estadísticas</h4>
+                    <p class="text-muted text-uppercase fw-bold m-0" style="font-size: 0.85rem;">Total de Alumnos</p>
+                    <div class="display-4 fw-bold text-dark mb-4">@Model.AlumnosCount</div>
+                    
+                    <h6 class="mb-3 text-secondary text-start fw-bold">Distribución por Semestre</h6>
+                    <ul class="list-group list-group-flush text-start">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-primary"></i> 1er Semestre</span> 
+                            <span class="badge bg-primary rounded-pill">@Model.PrimerSemestre</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-success"></i> 2do Semestre</span> 
+                            <span class="badge bg-success rounded-pill">@Model.SegundoSemestre</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-danger"></i> 3er Semestre</span> 
+                            <span class="badge bg-danger rounded-pill">@Model.TercerSemestre</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-warning"></i> 4to Semestre</span> 
+                            <span class="badge bg-warning text-dark rounded-pill">@Model.CuartoSemestre</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-info"></i> 5to Semestre</span> 
+                            <span class="badge bg-info text-dark rounded-pill">@Model.QuintoSemestre</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-secondary"></i> 6to Semestre</span> 
+                            <span class="badge bg-secondary rounded-pill">@Model.SextoSemestre</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-
-        <!-- Semestre 6 -->
-        <div class="barra-grupo">
-            <div class="barra-etiquetas">
-                <span>6to Semestre</span>
-                <span>@Model.SextoSemestre alumnos</span>
-            </div>
-            <div class="barra-fondo">
-                <div class="barra-progreso c-sem6" style="width: @pct6;">@pct6</div>
-            </div>
-        </div>
-
     </div>
 </div>
+
+<!-- Modal Añadir Noticia -->
+@if (Context.User.IsInRole("Administrador"))
+{
+    <div class="modal fade" id="modalAñadirNoticia" tabindex="-1" aria-labelledby="modalAñadirNoticiaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <form asp-controller="Home" asp-action="AgregarNoticia" method="post" enctype="multipart/form-data" class="w-100">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title fw-bold" id="modalAñadirNoticiaLabel"><i class="bi bi-pencil-square me-2"></i> Nueva Noticia</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label fw-bold">Título</label>
+                            <input type="text" class="form-control rounded-3" id="titulo" name="titulo" required placeholder="Escribe un título atractivo">
+                        </div>
+                        <div class="mb-3">
+                            <label for="contenido" class="form-label fw-bold">Contenido</label>
+                            <textarea class="form-control rounded-3" id="contenido" name="contenido" rows="5" required placeholder="Detalles de la noticia..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="imagen" class="form-label fw-bold">Imagen <span class="text-muted fw-normal">(Opcional)</span></label>
+                            <input class="form-control rounded-3" type="file" id="imagen" name="imagen" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success px-4 rounded-pill"><i class="bi bi-check-circle me-2"></i> Publicar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            @if (Model.NoticiaRelevante != null)
+            {
+                <text>
+                // Show modal automatically when there is a relevant news
+                var myModalEl = document.getElementById('modalNoticiaRelevante');
+                if (myModalEl) {
+                    var myModal = new bootstrap.Modal(myModalEl, {
+                        keyboard: true
+                    });
+                    myModal.show();
+                }
+                </text>
+            }
+        });
+    </script>
+}

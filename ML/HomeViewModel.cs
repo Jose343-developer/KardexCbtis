@@ -11,5 +11,7 @@ namespace ML
         public int CuartoSemestre { get; set; }
         public int QuintoSemestre { get; set; }
         public int SextoSemestre { get; set; }
+        public List<object>? Noticias { get; set; }
+        public Noticia? NoticiaRelevante { get; set; }
     }
 }
