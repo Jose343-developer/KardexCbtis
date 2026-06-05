@@ -1,0 +1,66 @@
+@model List<ML.Especialidad>
+
+@{
+    ViewData["Title"] = "Especialidades";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>@ViewData["Title"]</h2>
+        <a asp-action="EspecialidadForm" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Agregar Especialidad
+        </a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center" style="width: 100px;">ID</th>
+                        <th>Nombre de Especialidad</th>
+                        <th>Clave Oficial</th>
+                        <th class="text-center" style="width: 150px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center align-middle">@item.IdEspecialidad</td>
+                                <td class="align-middle">@item.Nombre</td>
+                                <td class="align-middle">@item.ClaveOficial</td>
+                                <td class="text-center align-middle">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="EspecialidadForm" asp-route-idEspecialidad="@item.IdEspecialidad" class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="EspecialidadDelete" asp-route-idEspecialidad="@item.IdEspecialidad" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar esta especialidad?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">No hay especialidades registradas.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

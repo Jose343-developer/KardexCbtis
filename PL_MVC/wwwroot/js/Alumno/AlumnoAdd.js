@@ -148,6 +148,16 @@ $(document).ready(function () {
         }
     });
 
+    $("#NombreUser").on("input", function() {
+        var val = $(this).val().trim();
+        validateField($(this), val !== "" && val.length <= 100);
+    });
+
+    $("#Password").on("input", function() {
+        var val = $(this).val();
+        validateField($(this), val !== "" && val.length >= 4 && val.length <= 500);
+    });
+
     // Validar en el submit del formulario
     $("#alumnoForm").submit(function (e) {
         var isValid = true;
@@ -157,6 +167,8 @@ $(document).ready(function () {
         $("#ApellidoPaterno").trigger("input");
         $("#Matricula").trigger("input");
         $("#Curp").trigger("input");
+        $("#NombreUser").trigger("input");
+        $("#Password").trigger("input");
         
         if ($("#ApellidoMaterno").val().trim() !== "") $("#ApellidoMaterno").trigger("input");
         if ($("#Correo").val().trim() !== "") $("#Correo").trigger("input");

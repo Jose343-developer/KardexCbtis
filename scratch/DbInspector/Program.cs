@@ -9,25 +9,27 @@ class Program
         using (SqlConnection conn = new SqlConnection(connString))
         {
             conn.Open();
-            Console.WriteLine("--- ROLES ---");
-            using (SqlCommand cmd = new SqlCommand("SELECT IdRol, Nombre FROM Rol", conn))
-            using (SqlDataReader rdr = cmd.ExecuteReader())
-            {
-                while (rdr.Read())
-                {
-                    Console.WriteLine($"IdRol: {rdr.GetInt32(0)}, Nombre: {rdr.GetString(1)}");
-                }
-            }
+            Console.WriteLine("\n--- SP_LOGINUSUARIO STORED PROCEDURE ---");
+            PrintSp(conn, "sp_LoginUsuario");
+        }
+    }
 
-            Console.WriteLine("\n--- USUARIOS ---");
-            using (SqlCommand cmd = new SqlCommand("SELECT IdUsuario, IdRol, NombreUser, Password, Estatus FROM Usuario", conn))
+    static void PrintSp(SqlConnection conn, string spName)
+    {
+        try
+        {
+            using (SqlCommand cmd = new SqlCommand($"EXEC sp_helptext '{spName}'", conn))
             using (SqlDataReader rdr = cmd.ExecuteReader())
             {
                 while (rdr.Read())
                 {
-                    Console.WriteLine($"IdUsuario: {rdr.GetInt32(0)}, IdRol: {rdr.GetInt32(1)}, NombreUser: {rdr.GetString(2)}, Password: {rdr.GetString(3)}, Estatus: {(rdr.IsDBNull(4) ? "NULL" : rdr.GetBoolean(4))}");
+                    Console.Write(rdr.GetString(0));
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error printing SP {spName}: {ex.Message}");
         }
     }
 }

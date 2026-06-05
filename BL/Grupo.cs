@@ -139,4 +139,117 @@ public ML.Result GetTurno()
         return result;
     }
 
+    public ML.Result Add(ML.Grupo grupo)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var dbGrupo = new DL.Models.Grupo
+            {
+                Semestre = (byte)(grupo.Semestre ?? 0),
+                Letra = grupo.Letra ?? "",
+                Turno = grupo.Turno ?? ""
+            };
+            _context.Grupos.Add(dbGrupo);
+            _context.SaveChanges();
+            result.Correct = true;
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
+    }
+
+    public ML.Result Update(ML.Grupo grupo)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var dbGrupo = _context.Grupos.Find(grupo.IdGrupo);
+            if (dbGrupo != null)
+            {
+                dbGrupo.Semestre = (byte)(grupo.Semestre ?? 0);
+                dbGrupo.Letra = grupo.Letra ?? "";
+                dbGrupo.Turno = grupo.Turno ?? "";
+                _context.SaveChanges();
+                result.Correct = true;
+            }
+            else
+            {
+                result.Correct = false;
+                result.ErrorMessage = "No se encontró el grupo";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
+    }
+
+    public ML.Result Delete(int idGrupo)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var dbGrupo = _context.Grupos.Find(idGrupo);
+            if (dbGrupo != null)
+            {
+                _context.Grupos.Remove(dbGrupo);
+                _context.SaveChanges();
+                result.Correct = true;
+            }
+            else
+            {
+                result.Correct = false;
+                result.ErrorMessage = "No se encontró el grupo";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
+    }
+
+    public ML.Result GetById(int idGrupo)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var dbGrupo = _context.Grupos.Find(idGrupo);
+            if (dbGrupo != null)
+            {
+                var mlGrupo = new ML.Grupo
+                {
+                    IdGrupo = dbGrupo.IdGrupo,
+                    Semestre = dbGrupo.Semestre,
+                    Letra = dbGrupo.Letra,
+                    Turno = dbGrupo.Turno
+                };
+                result.Object = mlGrupo;
+                result.Correct = true;
+            }
+            else
+            {
+                result.Correct = false;
+                result.ErrorMessage = "No se encontró el grupo";
+            }
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
+    }
+
 }

@@ -1,0 +1,42 @@
+@model ML.Especialidad
+
+@{
+    ViewData["Title"] = Model.IdEspecialidad > 0 ? "Editar Especialidad" : "Nueva Especialidad";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@ViewData["Title"]</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.Message</div>
+                    }
+
+                    <form asp-action="EspecialidadForm" method="post">
+                        <input type="hidden" asp-for="IdEspecialidad" />
+
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label fw-bold">Nombre de Especialidad <span class="text-danger">*</span></label>
+                            <input asp-for="Nombre" class="form-control" required />
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ClaveOficial" class="form-label fw-bold">Clave Oficial <span class="text-danger">*</span></label>
+                            <input asp-for="ClaveOficial" class="form-control" required />
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Especialidades" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar Especialidad</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

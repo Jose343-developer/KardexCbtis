@@ -63,18 +63,13 @@
 
                         @if (rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                         {
-                            <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="GetAll">Alumnos</a>
-                            <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="GetAll">Empleados</a>
-                            <a class="nav-item" asp-area="" asp-controller="Asignacion" asp-action="GetAll">Asignación Docente</a>
-                            <a class="nav-item" asp-area="" asp-controller="Materia" asp-action="GetAll">Materias</a>
+                            <a class="nav-item" asp-area="" asp-controller="Catalogo" asp-action="Index">Catálogos</a>
                             <a class="nav-item" asp-area="" asp-controller="Reporte" asp-action="Dashboard">Estadísticas</a>
                             <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="AlumnoAdd">Agregar Alumno</a>
-                            <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="EmpleadoAdd">Agregar Empleado</a>
                             <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
                         }
                         else if (rolUsuario.Equals("Profesor", StringComparison.OrdinalIgnoreCase))
                         {
-                            <a class="nav-item" asp-area="" asp-controller="Asignacion" asp-action="GetAll">Asignación Docente</a>
                             <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
                         }
                         else if (rolUsuario.Equals("Alumno", StringComparison.OrdinalIgnoreCase))

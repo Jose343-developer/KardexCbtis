@@ -1,0 +1,81 @@
+@model List<ML.Grupo>
+
+@{
+    ViewData["Title"] = "Grupos";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>@ViewData["Title"]</h2>
+        <a asp-action="GrupoForm" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Agregar Grupo
+        </a>
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center" style="width: 100px;">ID</th>
+                        <th class="text-center">Semestre</th>
+                        <th class="text-center">Letra</th>
+                        <th class="text-center">Turno</th>
+                        <th class="text-center" style="width: 150px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center align-middle">@item.IdGrupo</td>
+                                <td class="text-center align-middle">@item.Semestre</td>
+                                <td class="text-center align-middle">@item.Letra</td>
+                                <td class="text-center align-middle">
+                                    @if (item.Turno == "M" || item.Turno == "Matutino")
+                                    {
+                                        <span class="badge bg-info text-dark">Matutino</span>
+                                    }
+                                    else if (item.Turno == "V" || item.Turno == "Vespertino")
+                                    {
+                                        <span class="badge bg-warning text-dark">Vespertino</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@item.Turno</span>
+                                    }
+                                </td>
+                                <td class="text-center align-middle">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="GrupoForm" asp-route-idGrupo="@item.IdGrupo" class="btn btn-sm btn-outline-warning" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="GrupoDelete" asp-route-idGrupo="@item.IdGrupo" class="btn btn-sm btn-outline-danger" title="Eliminar" onclick="return confirm('¿Está seguro de eliminar este grupo?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No hay grupos registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

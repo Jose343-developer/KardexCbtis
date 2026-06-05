@@ -49,12 +49,14 @@ namespace PL_MVC.Controllers
 
 
 
-     [HttpGet]
+      [HttpGet]
 public ActionResult AlumnoAdd()
 {
     ML.Alumno alumno = new ML.Alumno();
     alumno.Especialidad = new ML.Especialidad();
     alumno.Grupo = new ML.Grupo();
+    alumno.Usuario = new ML.Usuario();
+    alumno.Usuario.Rol = new ML.Rol();
 
     var grupoBL = _grupoBL;
     var especialidadBL = _especialidadBL;
@@ -83,6 +85,15 @@ public ActionResult AlumnoAdd()
       [HttpPost]
 public ActionResult AlumnoAdd(ML.Alumno alumno)
 {
+    if (alumno.Usuario == null)
+    {
+        alumno.Usuario = new ML.Usuario();
+    }
+    if (alumno.Usuario.Rol == null)
+    {
+        alumno.Usuario.Rol = new ML.Rol();
+    }
+
     if (!ModelState.IsValid)
     {
         var especialidadBL = _especialidadBL;
@@ -165,6 +176,7 @@ public ActionResult AlumnoAdd(ML.Alumno alumno)
         return View(alumno);
     }
 }
+
 
 
 // 3. Arreglé un pequeño typo en el nombre (decía GetEspecialdiad)
@@ -271,6 +283,10 @@ public ActionResult CargaMasiva(IFormFile archivoExcel)
 
                         alumnoNuevo.Grupo = new ML.Grupo();
                         alumnoNuevo.Grupo.IdGrupo = Convert.ToInt32(row["IdGrupo"]);
+
+                        alumnoNuevo.Usuario = new ML.Usuario();
+                        alumnoNuevo.Usuario.NombreUser = alumnoNuevo.Matricula;
+                        alumnoNuevo.Usuario.Password = alumnoNuevo.Curp;
 
                         // Mandamos a llamar tu Procedure
                         ML.Result resultInsert = alumnoBL.AlumnoAdd(alumnoNuevo);

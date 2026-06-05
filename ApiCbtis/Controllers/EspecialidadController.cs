@@ -26,5 +26,60 @@ namespace ApiCbtis.Controllers
                 return BadRequest(result);
             }
         }
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var result = _especialidadBL.GetById(id);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Add([FromBody] ML.Especialidad especialidad)
+        {
+            var result = _especialidadBL.Add(especialidad);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] ML.Especialidad especialidad)
+        {
+            var result = _especialidadBL.Update(especialidad);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var result = _especialidadBL.Delete(id);
+            if (result.Correct)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
     }
 }

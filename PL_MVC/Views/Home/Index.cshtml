@@ -48,7 +48,7 @@
 
     <div class="row g-4">
         <!-- Feed de Noticias -->
-        <div class="col-lg-8">
+        <div class="@(Context.User.IsInRole("Alumno") ? "col-lg-12" : "col-lg-8")">
             @if (Model.Noticias != null && Model.Noticias.Any())
             {
                 foreach (ML.Noticia noticia in Model.Noticias)
@@ -76,44 +76,48 @@
             }
         </div>
 
-        <!-- Dashboard Lateral -->
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4 text-center">
-                <div class="card-body p-4">
-                    <h4 class="card-title fw-bold mb-4 text-primary">Estadísticas</h4>
-                    <p class="text-muted text-uppercase fw-bold m-0" style="font-size: 0.85rem;">Total de Alumnos</p>
-                    <div class="display-4 fw-bold text-dark mb-4">@Model.AlumnosCount</div>
-                    
-                    <h6 class="mb-3 text-secondary text-start fw-bold">Distribución por Semestre</h6>
-                    <ul class="list-group list-group-flush text-start">
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-primary"></i> 1er Semestre</span> 
-                            <span class="badge bg-primary rounded-pill">@Model.PrimerSemestre</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-success"></i> 2do Semestre</span> 
-                            <span class="badge bg-success rounded-pill">@Model.SegundoSemestre</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-danger"></i> 3er Semestre</span> 
-                            <span class="badge bg-danger rounded-pill">@Model.TercerSemestre</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-warning"></i> 4to Semestre</span> 
-                            <span class="badge bg-warning text-dark rounded-pill">@Model.CuartoSemestre</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-info"></i> 5to Semestre</span> 
-                            <span class="badge bg-info text-dark rounded-pill">@Model.QuintoSemestre</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                            <span class="text-secondary"><i class="bi bi-person-fill me-2 text-secondary"></i> 6to Semestre</span> 
-                            <span class="badge bg-secondary rounded-pill">@Model.SextoSemestre</span>
-                        </li>
-                    </ul>
+        @if (!Context.User.IsInRole("Alumno"))
+        {
+            <!-- Dashboard Lateral -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 text-center">
+                    <div class="card-body p-4">
+                        <h4 class="card-title fw-bold mb-4 text-primary">Estadísticas</h4>
+                        <p class="text-muted text-uppercase fw-bold m-0" style="font-size: 0.85rem;">Total de Alumnos</p>
+                        <div class="display-4 fw-bold text-dark mb-4">@Model.AlumnosCount</div>
+                        
+                        <h6 class="mb-3 text-secondary text-start fw-bold">Distribución por Semestre</h6>
+                        <ul class="list-group list-group-flush text-start">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-primary"></i> 1er Semestre</span> 
+                                <span class="badge bg-primary rounded-pill">@Model.PrimerSemestre</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-success"></i> 2do Semestre</span> 
+                                <span class="badge bg-success rounded-pill">@Model.SegundoSemestre</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-danger"></i> 3er Semestre</span> 
+                                <span class="badge bg-danger rounded-pill">@Model.TercerSemestre</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-warning"></i> 4to Semestre</span> 
+                                <span class="badge bg-warning text-dark rounded-pill">@Model.CuartoSemestre</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-info"></i> 5to Semestre</span> 
+                                <span class="badge bg-info text-dark rounded-pill">@Model.QuintoSemestre</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
+                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-secondary"></i> 6to Semestre</span> 
+                                <span class="badge bg-secondary rounded-pill">@Model.SextoSemestre</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+
     </div>
 </div>
 

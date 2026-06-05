@@ -86,17 +86,41 @@ ML.Result result = new ML.Result();
             return result;
     }
 
-public ML.Result AlumnoAdd (ML.Alumno alumno)
+    public ML.Result AlumnoAdd(ML.Alumno alumno)
     {
-        
-ML.Result result = new ML.Result();
+        ML.Result result = new ML.Result();
 
-        try
+        using (var transaction = _context.Database.BeginTransaction())
         {
-            
-                var context = _context;
+            try
             {
-                
+                int? idUsuario = null;
+
+                // 1. Create the user if provided
+                if (alumno.Usuario != null && !string.IsNullOrEmpty(alumno.Usuario.NombreUser))
+                {
+                    bool userExists = _context.Usuarios.Any(u => u.NombreUser == alumno.Usuario.NombreUser);
+                    if (userExists)
+                    {
+                        result.Correct = false;
+                        result.ErrorMessage = "El nombre de usuario ya está registrado.";
+                        return result;
+                    }
+
+                    var dbUsuario = new DL.Models.Usuario
+                    {
+                        NombreUser = alumno.Usuario.NombreUser,
+                        Password = ComputeSHA256(alumno.Usuario.Password ?? ""),
+                        IdRol = 3, // Alumno
+                        Estatus = true
+                    };
+                    _context.Usuarios.Add(dbUsuario);
+                    _context.SaveChanges();
+                    idUsuario = dbUsuario.IdUsuario;
+                }
+
+                // 2. Insert the student using existing stored procedure
+                var context = _context;
                 var query = context.Database.ExecuteSqlInterpolated($@"EXEC AlumnoAdd
                 
                 {alumno.Matricula}, 
@@ -112,32 +136,52 @@ ML.Result result = new ML.Result();
 
                 if (query > 0 || query == -1)
                 {
+                    // 3. Link the user to the student
+                    if (idUsuario.HasValue)
+                    {
+                        var dbAlumno = _context.Alumnos.FirstOrDefault(a => a.Matricula == alumno.Matricula);
+                        if (dbAlumno != null)
+                        {
+                            dbAlumno.IdUsuario = idUsuario.Value;
+                            _context.SaveChanges();
+                        }
+                    }
+
+                    transaction.Commit();
                     result.Correct = true;
                 }
                 else
                 {
+                    transaction.Rollback();
                     result.Correct = false;
                     result.ErrorMessage = "error al insertar datos";
                 }
-
-
             }
-
-
-        }
-        catch(Exception ex)
-        {
-            
-            result.Correct = false;
-            result.ErrorMessage = ex.Message;
-            result.Ex = ex;
-
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
         }
         return result;
-
-        
-
     }
+
+    private string ComputeSHA256(string input)
+    {
+        using (System.Security.Cryptography.SHA256 sha256 = System.Security.Cryptography.SHA256.Create())
+        {
+            byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            foreach (byte b in bytes)
+            {
+                builder.Append(b.ToString("X2"));
+            }
+            return builder.ToString();
+        }
+    }
+
 
 public ML.Result CountAlumno()
     {
