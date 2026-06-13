@@ -4,35 +4,41 @@
     ViewData["Title"] = Model.IdEspecialidad > 0 ? "Editar Especialidad" : "Nueva Especialidad";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">@ViewData["Title"]</h4>
-                </div>
-                <div class="card-body">
+@section Styles {
+    <link rel="stylesheet" href="~/css/Catalogo/FormulariosEsp.css" asp-append-version="true" />
+}
+
+<div class="row g-5 justify-content-center b-area">
+
+    <div class="row justify-content-center b-area-formulario">
+        <div class="col-md-8 col-lg-6">
+            <div class="card b-tarjeta-formulario">
+                <div class="card-body p-5">
                     @if (ViewBag.Message != null)
                     {
-                        <div class="alert alert-danger">@ViewBag.Message</div>
+                        <div class="alert alert-danger b-alerta-error mb-4" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> @ViewBag.Message
+                        </div>
                     }
 
-                    <form asp-action="EspecialidadForm" method="post">
+                    <form asp-action="EspecialidadForm" method="post" class="b-formulario">
                         <input type="hidden" asp-for="IdEspecialidad" />
 
-                        <div class="mb-3">
-                            <label asp-for="Nombre" class="form-label fw-bold">Nombre de Especialidad <span class="text-danger">*</span></label>
-                            <input asp-for="Nombre" class="form-control" required />
-                        </div>
-
                         <div class="mb-4">
-                            <label asp-for="ClaveOficial" class="form-label fw-bold">Clave Oficial <span class="text-danger">*</span></label>
-                            <input asp-for="ClaveOficial" class="form-control" required />
+                            <label asp-for="Nombre" class="form-label b-label">Nombre de Especialidad <span class="b-requerido">*</span></label>
+                            <input asp-for="Nombre" class="form-control b-input" required placeholder="Ej. Programación" />
                         </div>
 
-                        <div class="d-flex justify-content-end gap-2">
-                            <a asp-action="Especialidades" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-primary">Guardar Especialidad</button>
+                        <div class="mb-5">
+                            <label asp-for="ClaveOficial" class="form-label b-label">Clave Oficial <span class="b-requerido">*</span></label>
+                            <input asp-for="ClaveOficial" class="form-control b-input" required placeholder="Ej. PROG-01" />
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3 pt-2 border-top b-acciones-formulario">
+                            <a asp-action="Especialidades" class="btn b-btn-secundario">Cancelar</a>
+                            <button type="submit" class="btn b-btn-primario">
+                                <i class="bi bi-check2 me-2"></i> Guardar Especialidad
+                            </button>
                         </div>
                     </form>
                 </div>

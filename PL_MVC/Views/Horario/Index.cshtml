@@ -4,58 +4,65 @@
     ViewData["Title"] = "Gestión de Horarios";
 }
 
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col">
-            <h2 class="fw-bold">Gestión de Horarios de Grupo</h2>
-            <p class="text-muted">Seleccione un grupo y suba el archivo PDF con su horario correspondiente.</p>
-        </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Horario/index.css" asp-append-version="true" />
+}
+
+<div class="container-fluid mt-4 px-4 b-contenedor-principal">
+    <div class="mb-5 pb-3 border-bottom b-header-seccion">
+        <p class="b-subtitulo-seccion mt-2">Seleccione un grupo y suba el archivo PDF con su horario correspondiente.</p>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+        <div class="alert alert-success alert-dismissible fade show b-alerta-exito mb-4" role="alert">
+            <i class="bi bi-check-circle me-2"></i> @TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     @if (TempData["ErrorMessage"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+        <div class="alert alert-danger alert-dismissible fade show b-alerta-error mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i> @TempData["ErrorMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4">
-            <form asp-action="Upload" method="post" enctype="multipart/form-data">
-                <div class="row g-3 align-items-center">
-                    <div class="col-md-5">
-                        <label class="form-label fw-bold">Seleccionar Grupo:</label>
-                        <select name="IdGrupo" class="form-select" required>
-                            <option value="">-- Seleccione un Grupo --</option>
-                            @if (Model.Grupos != null)
-                            {
-                                foreach (ML.Grupo grupo in Model.Grupos)
-                                {
-                                    <option value="@grupo.IdGrupo">@grupo.Semestre @grupo.Letra - @grupo.Turno</option>
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <label class="form-label fw-bold">Archivo PDF:</label>
-                        <input type="file" name="Documento" class="form-control" accept="application/pdf" required />
-                    </div>
-                    <div class="col-md-2 mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-upload"></i> Subir Horario
-                        </button>
-                    </div>
+    <div class="row justify-content-center b-area-formulario">
+        <div class="col-lg-10">
+            <div class="card b-tarjeta-formulario">
+                <div class="card-body p-5">
+                    <form asp-action="Upload" method="post" enctype="multipart/form-data" class="b-formulario">
+                        <div class="row g-4 align-items-end">
+                            <div class="col-md-5">
+                                <label class="form-label b-label">Seleccionar Grupo <span class="b-requerido">*</span></label>
+                                <select name="IdGrupo" class="form-select b-input" required>
+                                    <option value="">-- Seleccione un Grupo --</option>
+                                    @if (Model.Grupos != null)
+                                    {
+                                        foreach (ML.Grupo grupo in Model.Grupos)
+                                        {
+                                            <option value="@grupo.IdGrupo">@grupo.Semestre @grupo.Letra - @grupo.Turno</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-5">
+                                <label class="form-label b-label">Archivo PDF <span class="b-requerido">*</span></label>
+                                <input type="file" name="Documento" class="form-control b-input b-input-file" accept="application/pdf" required />
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <button type="submit" class="btn b-btn-primario w-100">
+                                    <i class="bi bi-cloud-arrow-up me-2"></i> Subir
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

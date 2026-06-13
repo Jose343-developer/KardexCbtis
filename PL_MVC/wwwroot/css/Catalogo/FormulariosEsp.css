@@ -1,0 +1,123 @@
+:root {
+    --b-vino: #722f37;
+    --b-vino-hover: #5a252b;
+    --b-texto-principal: #2d3436;
+    --b-texto-secundario: #636e72;
+    --b-fondo-principal: #fafafa;
+    --b-blanco: #ffffff;
+    --b-borde: #eaeaea;
+    --b-radio-suave: 16px;
+    --b-radio-boton: 8px;
+    --b-sombra-suave: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --b-sombra-foco: 0 0 0 3px rgba(114, 47, 55, 0.15);
+}
+
+.b-contenedor-principal {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.b-titulo-seccion {
+    font-weight: 600;
+    font-size: 1.75rem;
+    color: var(--b-texto-principal);
+    letter-spacing: -0.5px;
+}
+
+.b-area-formulario {
+    min-height: 55vh;
+    align-content: center;
+}
+
+.b-tarjeta-formulario {
+    background: var(--b-blanco);
+    border: 1px solid var(--b-borde);
+    border-radius: var(--b-radio-suave);
+    box-shadow: var(--b-sombra-suave);
+}
+
+.b-label {
+    font-weight: 600;
+    color: var(--b-texto-principal);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.b-requerido {
+    color: var(--b-vino);
+    margin-left: 2px;
+}
+
+.b-input {
+    border: 1px solid var(--b-borde);
+    border-radius: var(--b-radio-boton);
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    color: var(--b-texto-principal);
+    background-color: var(--b-fondo-principal);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.b-input:focus {
+    border-color: var(--b-vino);
+    box-shadow: var(--b-sombra-foco);
+    background-color: var(--b-blanco);
+    outline: none;
+}
+
+.b-input::placeholder {
+    color: #b2bec3;
+    font-weight: 400;
+}
+
+.b-acciones-formulario {
+    margin-top: 2rem;
+    padding-top: 1.5rem !important;
+}
+
+.b-btn-primario {
+    background-color: var(--b-vino);
+    color: var(--b-blanco);
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--b-radio-boton);
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.b-btn-primario:hover {
+    background-color: var(--b-vino-hover);
+    color: var(--b-blanco);
+    transform: translateY(-1px);
+}
+
+.b-btn-secundario {
+    background-color: transparent;
+    color: var(--b-texto-secundario);
+    border: 1px solid var(--b-borde);
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--b-radio-boton);
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.b-btn-secundario:hover {
+    background-color: var(--b-fondo-principal);
+    color: var(--b-texto-principal);
+    border-color: #dcdde1;
+}
+
+.b-alerta-error {
+    background-color: #fff5f5;
+    color: #c0392b;
+    border: 1px solid #fadbd8;
+    border-radius: var(--b-radio-boton);
+    font-weight: 500;
+}
+
+.b-area {
+    min-height: 55vh; 
+    align-content: center;
+}

@@ -1,0 +1,109 @@
+:root {
+    --b-vino: #722f37;
+    --b-vino-hover: #5a252b;
+    --b-vino-claro: #fbf5f6;
+    --b-texto-principal: #2d3436;
+    --b-texto-secundario: #636e72;
+    --b-fondo-principal: #fafafa;
+    --b-blanco: #ffffff;
+    --b-borde: #eaeaea;
+    --b-radio-suave: 16px;
+    --b-radio-boton: 8px;
+    --b-sombra-suave: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --b-sombra-hover: 0 12px 30px rgba(114, 47, 55, 0.08);
+}
+
+.b-contenedor-principal {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.b-header-seccion {
+    margin-bottom: 3rem;
+}
+
+.b-titulo-seccion {
+    font-weight: 600;
+    font-size: 1.75rem;
+    color: var(--b-texto-principal);
+    letter-spacing: -0.5px;
+}
+
+.b-tarjeta-catalogo {
+    background: var(--b-blanco);
+    border: 1px solid var(--b-borde);
+    border-radius: var(--b-radio-suave);
+    box-shadow: var(--b-sombra-suave);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.b-tarjeta-catalogo:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--b-sombra-hover);
+    border-color: rgba(114, 47, 55, 0.2);
+}
+
+.b-icono-contenedor {
+    width: 80px;
+    height: 80px;
+    background-color: var(--b-vino-claro);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.b-icono-contenedor i {
+    font-size: 2.5rem;
+    color: var(--b-vino);
+    transition: transform 0.3s ease;
+}
+
+.b-tarjeta-catalogo:hover .b-icono-contenedor {
+    background-color: var(--b-vino);
+}
+
+.b-tarjeta-catalogo:hover .b-icono-contenedor i {
+    color: var(--b-blanco);
+    transform: scale(1.1);
+}
+
+.b-titulo-tarjeta {
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--b-texto-principal);
+    margin-bottom: 1rem;
+}
+
+.b-texto-tarjeta {
+    color: var(--b-texto-secundario);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.b-btn-primario {
+    background-color: var(--b-vino);
+    color: var(--b-blanco);
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--b-radio-boton);
+    font-weight: 500;
+    font-size: 1rem;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.b-btn-primario:hover {
+    background-color: var(--b-vino-hover);
+    color: var(--b-blanco);
+    transform: translateY(-1px);
+
+
+}
+
+.b-area-tarjetas {
+    min-height: 55vh; 
+    align-content: center;
+}

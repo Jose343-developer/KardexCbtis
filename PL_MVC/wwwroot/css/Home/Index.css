@@ -1,70 +1,296 @@
-/* Diseño de la tarjeta principal */
-.dashboard-card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    padding: 40px;
-    margin: 20px auto;
-    max-width: 800px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+:root {
+    --b-vino: #722f37;
+    --b-vino-hover: #5a252b;
+    --b-vino-claro: #f8f1f2;
+    --b-texto-principal: #2d3436;
+    --b-texto-secundario: #636e72;
+    --b-fondo-principal: #fafafa;
+    --b-blanco: #ffffff;
+    --b-borde: #eaeaea;
+    --b-radio-suave: 12px;
+    --b-radio-boton: 8px;
+    --b-sombra-suave: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --b-sombra-hover: 0 10px 25px rgba(114, 47, 55, 0.08);
 }
 
-/* Estilos del encabezado */
-.dashboard-title {
-    color: #2d3436;
-    font-weight: 700;
-    letter-spacing: 1px;
-}
-.total-alumnos {
-    font-size: 4rem;
-    font-weight: 800;
-    color: #6c5ce7; /* Morado moderno */
-    line-height: 1;
-    margin: 15px 0;
+body {
+    background-color: var(--b-fondo-principal);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--b-texto-principal);
 }
 
-/* Estilos de la gráfica de barras */
-.grafica-contenedor {
-    margin-top: 40px;
-    text-align: left;
+.b-contenedor-principal {
+    max-width: 1400px;
+    margin: 0 auto;
 }
-.barra-grupo {
-    margin-bottom: 20px;
-}
-.barra-etiquetas {
-    display: flex;
-    justify-content: space-between;
+
+.b-titulo-seccion {
     font-weight: 600;
-    color: #636e72;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
+    font-size: 1.75rem;
+    color: var(--b-texto-principal);
+    letter-spacing: -0.5px;
 }
-.barra-fondo {
+
+.b-btn-primario {
+    background-color: var(--b-vino);
+    color: var(--b-blanco);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--b-radio-boton);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.b-btn-primario:hover {
+    background-color: var(--b-vino-hover);
+    color: var(--b-blanco);
+    transform: translateY(-1px);
+}
+
+.b-btn-secundario {
+    background-color: transparent;
+    color: var(--b-texto-secundario);
+    border: 1px solid var(--b-borde);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--b-radio-boton);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.b-btn-secundario:hover {
+    background-color: var(--b-fondo-principal);
+    color: var(--b-texto-principal);
+}
+
+.b-btn-icono-peligro {
+    color: #e74c3c;
+    background: transparent;
+    border: none;
+    padding: 0.4rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.b-btn-icono-peligro:hover {
+    background-color: #fdf0ef;
+    color: #c0392b;
+}
+
+.b-tarjeta-noticia {
+    background: var(--b-blanco);
+    border: 1px solid var(--b-borde);
+    border-radius: var(--b-radio-suave);
+    box-shadow: var(--b-sombra-suave);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.b-tarjeta-noticia:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--b-sombra-hover);
+}
+
+.b-imagen-contenedor-tarjeta {
     width: 100%;
-    background-color: #f1f2f6;
-    border-radius: 50px;
-    height: 24px;
+    height: 300px;
+    background-color: var(--b-fondo-principal);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid var(--b-borde);
     overflow: hidden;
 }
-.barra-progreso {
+
+.b-imagen-tarjeta {
+    width: 100%;
     height: 100%;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 15px;
-    color: white;
-    font-weight: bold;
-    font-size: 0.85rem;
-    transition: width 1s ease-in-out;
-    /* Efecto de brillo */
-    box-shadow: inset 0 -2px 5px rgba(0,0,0,0.1); 
+    object-fit: cover;
 }
 
-/* Colores únicos para cada semestre */
-.c-sem1 { background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); color: #333; }
-.c-sem2 { background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); color: #333;}
-.c-sem3 { background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%); }
-.c-sem4 { background: linear-gradient(120deg, #f6d365 0%, #fda085 100%); color: #333;}
-.c-sem5 { background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); }
-.c-sem6 { background: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%); }
+.b-cuerpo-tarjeta {
+    padding: 2rem;
+}
+
+.b-noticia-titulo {
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--b-texto-principal);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.b-noticia-fecha {
+    font-size: 0.85rem;
+    color: var(--b-texto-secundario);
+    font-weight: 500;
+}
+
+.b-noticia-extracto {
+    color: var(--b-texto-principal);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.b-estado-vacio {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--b-texto-secundario);
+    background: var(--b-blanco);
+    border-radius: var(--b-radio-suave);
+    border: 1px dashed #dcdde1;
+}
+
+.b-tarjeta-dashboard {
+    background: var(--b-blanco);
+    border: 1px solid var(--b-borde);
+    border-radius: var(--b-radio-suave);
+    box-shadow: var(--b-sombra-suave);
+    position: sticky;
+    top: 2rem;
+}
+
+.b-dashboard-titulo {
+    font-weight: 600;
+    color: var(--b-texto-principal);
+    letter-spacing: -0.5px;
+}
+
+.b-estadistica-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.b-estadistica-etiqueta {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--b-texto-secundario);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.b-estadistica-valor {
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: var(--b-vino);
+    line-height: 1;
+}
+
+.b-dashboard-subtitulo {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--b-texto-secundario);
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.b-lista-estadisticas .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-color: var(--b-borde);
+    background-color: transparent;
+    color: var(--b-texto-principal);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.b-badge-sem {
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.b-sem-1 { background-color: #e3f2fd; color: #1976d2; }
+.b-sem-2 { background-color: #e8f5e9; color: #2e7d32; }
+.b-sem-3 { background-color: #ffebee; color: #c62828; }
+.b-sem-4 { background-color: #fff8e1; color: #f57f17; }
+.b-sem-5 { background-color: #e0f7fa; color: #00838f; }
+.b-sem-6 { background-color: #f3e5f5; color: #6a1b9a; }
+
+.b-modal {
+    border: none;
+    border-radius: var(--b-radio-suave);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.b-modal-header {
+    background-color: var(--b-blanco);
+    border-bottom: 1px solid var(--b-borde);
+    padding: 1.5rem 2rem;
+}
+
+.b-modal-title {
+    font-weight: 600;
+    color: var(--b-texto-principal);
+}
+
+.b-modal-body {
+    padding: 2rem;
+}
+
+.b-modal-footer {
+    background-color: var(--b-blanco);
+    border-top: 1px solid var(--b-borde);
+    padding: 1.25rem 2rem;
+}
+
+.b-noticia-titulo-modal {
+    font-weight: 600;
+    font-size: 1.8rem;
+    color: var(--b-texto-principal);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.b-imagen-contenedor-modal {
+    width: 100%;
+    margin: 2rem 0;
+    border-radius: var(--b-radio-suave);
+    overflow: hidden;
+    background-color: var(--b-fondo-principal);
+}
+
+.b-imagen-modal {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+    display: block;
+}
+
+.b-noticia-contenido-modal {
+    white-space: pre-wrap;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--b-texto-principal);
+}
+
+.b-label {
+    font-weight: 500;
+    color: var(--b-texto-principal);
+    margin-bottom: 0.5rem;
+}
+
+.b-input {
+    border: 1px solid var(--b-borde);
+    border-radius: var(--b-radio-boton);
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.b-input:focus {
+    border-color: var(--b-vino);
+    box-shadow: 0 0 0 3px rgba(114, 47, 55, 0.1);
+    outline: none;
+}

@@ -4,44 +4,51 @@
     ViewData["Title"] = Model.IdGrupo > 0 ? "Editar Grupo" : "Nuevo Grupo";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">@ViewData["Title"]</h4>
-                </div>
-                <div class="card-body">
+@section Styles {
+    <link rel="stylesheet" href="~/css/Catalogo/FormulariosGrup.css" asp-append-version="true" />
+}
+
+<div class="container-fluid mt-4 px-4 b-contenedor-principal">
+<div class="row g-5 justify-content-center b-area">
+
+    </div>
+
+    <div class="row justify-content-center b-area-formulario">
+        <div class="col-md-10 col-lg-8">
+            <div class="card b-tarjeta-formulario">
+                <div class="card-body p-5">
                     @if (ViewBag.Message != null)
                     {
-                        <div class="alert alert-danger">@ViewBag.Message</div>
+                        <div class="alert alert-danger b-alerta-error mb-4" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> @ViewBag.Message
+                        </div>
                     }
 
-                    <form asp-action="GrupoForm" method="post">
+                    <form asp-action="GrupoForm" method="post" class="b-formulario">
                         <input type="hidden" asp-for="IdGrupo" />
 
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Semestre" class="form-label fw-bold">Semestre <span class="text-danger">*</span></label>
-                                <select asp-for="Semestre" class="form-select" required>
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-4">
+                                <label asp-for="Semestre" class="form-label b-label">Semestre <span class="b-requerido">*</span></label>
+                                <select asp-for="Semestre" class="form-select b-input" required>
                                     <option value="">Seleccione...</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
+                                    <option value="1">1er Semestre</option>
+                                    <option value="2">2do Semestre</option>
+                                    <option value="3">3er Semestre</option>
+                                    <option value="4">4to Semestre</option>
+                                    <option value="5">5to Semestre</option>
+                                    <option value="6">6to Semestre</option>
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-3">
-                                <label asp-for="Letra" class="form-label fw-bold">Letra (Grupo) <span class="text-danger">*</span></label>
-                                <input asp-for="Letra" class="form-control" maxlength="1" style="text-transform: uppercase;" required />
+                            <div class="col-md-4">
+                                <label asp-for="Letra" class="form-label b-label">Letra (Grupo) <span class="b-requerido">*</span></label>
+                                <input asp-for="Letra" class="form-control b-input" maxlength="1" style="text-transform: uppercase;" required placeholder="Ej. A" />
                             </div>
 
-                            <div class="col-md-4 mb-4">
-                                <label asp-for="Turno" class="form-label fw-bold">Turno <span class="text-danger">*</span></label>
-                                <select asp-for="Turno" class="form-select" required>
+                            <div class="col-md-4">
+                                <label asp-for="Turno" class="form-label b-label">Turno <span class="b-requerido">*</span></label>
+                                <select asp-for="Turno" class="form-select b-input" required>
                                     <option value="">Seleccione...</option>
                                     <option value="M">Matutino</option>
                                     <option value="V">Vespertino</option>
@@ -49,9 +56,11 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end gap-2">
-                            <a asp-action="Grupos" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-success">Guardar Grupo</button>
+                        <div class="d-flex justify-content-end gap-3 pt-4 border-top b-acciones-formulario">
+                            <a asp-action="Grupos" class="btn b-btn-secundario">Cancelar</a>
+                            <button type="submit" class="btn b-btn-primario">
+                                <i class="bi bi-check2 me-2"></i> Guardar Grupo
+                            </button>
                         </div>
                     </form>
                 </div>
