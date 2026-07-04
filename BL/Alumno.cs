@@ -320,6 +320,8 @@ public ML.Result GetCountAlumnoBySemestre(int semestre)
             var query = (from a in _context.Alumnos
                          join u in _context.Usuarios on a.IdUsuario equals u.IdUsuario into leftJoinUsuario
                          from lu in leftJoinUsuario.DefaultIfEmpty()
+                         join g in _context.Grupos on a.IdGrupo equals g.IdGrupo into leftJoinGrupo
+                         from lg in leftJoinGrupo.DefaultIfEmpty()
                          where a.Nombre.Contains(term) || 
                                (a.Correo != null && a.Correo.Contains(term)) || 
                                (lu != null && lu.NombreUser != null && lu.NombreUser.Contains(term))
@@ -335,6 +337,13 @@ public ML.Result GetCountAlumnoBySemestre(int semestre)
                              {
                                  IdUsuario = lu.IdUsuario,
                                  NombreUser = lu.NombreUser
+                             } : null,
+                             Grupo = lg != null ? new ML.Grupo
+                             {
+                                 IdGrupo = lg.IdGrupo,
+                                 Semestre = lg.Semestre,
+                                 Letra = lg.Letra,
+                                 Turno = lg.Turno
                              } : null
                          }).ToList();
             

@@ -229,11 +229,13 @@ $(document).ready(function () {
                         var correo = item.correo || "N/A";
                         var usuario = (item.usuario && item.usuario.nombreUser) ? item.usuario.nombreUser : "Sin Usuario";
                         var idUsuario = item.usuario ? item.usuario.idUsuario : 0;
+                        var grupo = item.grupo ? (item.grupo.semestre + item.grupo.letra + " " + item.grupo.turno) : "N/A";
 
                         var tr = $("<tr>");
                         tr.append($("<td>").text(item.matricula));
                         tr.append($("<td>").text(nombreCompleto));
                         tr.append($("<td>").text(correo));
+                        tr.append($("<td>").text(grupo));
                         tr.append($("<td>").text(usuario));
                         
                         var btnDelete = $("<button>")

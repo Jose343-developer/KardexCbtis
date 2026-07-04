@@ -15,10 +15,10 @@
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-0">
             <!-- Embeber el PDF para previsualización -->
-            <embed src="@Model.DocumentoRuta" type="application/pdf" width="100%" height="600px" style="border-radius: 1rem;" />
+            <embed src="@Model.DocumentoRuta?v=@DateTime.Now.Ticks" type="application/pdf" width="100%" height="600px" style="border-radius: 1rem;" />
         </div>
         <div class="card-footer text-center py-3 bg-light border-0 rounded-bottom-4">
-            <a href="@Model.DocumentoRuta" class="btn btn-primary" download>
+            <a href="@Model.DocumentoRuta?v=@DateTime.Now.Ticks" class="btn btn-primary" download>
                 <i class="bi bi-download"></i> Descargar Horario
             </a>
         </div>

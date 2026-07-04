@@ -109,6 +109,7 @@
         transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
         position: relative;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        cursor: pointer;
     }
     
     .apple-news-card:hover {
@@ -129,7 +130,7 @@
     .apple-news-img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
         transition: transform 0.5s ease;
     }
 
@@ -278,7 +279,7 @@
                     @foreach (ML.Noticia noticia in Model.Noticias)
                     {
                         <div class="col">
-                            <div class="apple-news-card h-100 d-flex flex-column">
+                            <div class="apple-news-card h-100 d-flex flex-column" data-bs-toggle="modal" data-bs-target="#modalNoticia_@noticia.IdNoticia">
                             @if (!string.IsNullOrEmpty(noticia.ImagenBase64))
                             {
                                 <div class="apple-news-img-container">
@@ -296,7 +297,7 @@
                                     </div>
                                     @if (Context.User.IsInRole("Administrador"))
                                     {
-                                        <form asp-controller="Home" asp-action="EliminarNoticia" method="post" onsubmit="return confirm('¿Estás seguro de eliminar esta noticia?');" class="ms-3">
+                                        <form asp-controller="Home" asp-action="EliminarNoticia" method="post" onsubmit="return confirm('¿Estás seguro de eliminar esta noticia?');" class="ms-3" onclick="event.stopPropagation();">
                                             <input type="hidden" name="idNoticia" value="@noticia.IdNoticia" />
                                             <button type="submit" class="apple-btn-danger-icon" title="Eliminar noticia">
                                                 <i class="bi bi-trash3-fill"></i>
@@ -385,8 +386,8 @@
                 <!-- Imagen que ocupa todo el borde superior -->
                 @if (!string.IsNullOrEmpty(Model.NoticiaRelevante.ImagenBase64))
                 {
-                    <div style="width: 100%; height: 350px; background: #f2f2f7; overflow: hidden; position: relative;">
-                        <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" alt="Noticia" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div style="width: 100%; max-height: 70vh; background: #000000; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;">
+                        <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" alt="Noticia" style="max-width: 100%; max-height: 70vh; object-fit: contain; height: auto;">
                     </div>
                 }
 
@@ -441,6 +442,39 @@
             </form>
         </div>
     </div>
+}
+
+<!-- Modals para cada Noticia (Feed) -->
+@if (Model.Noticias != null)
+{
+    foreach (ML.Noticia noticia in Model.Noticias)
+    {
+        <div class="modal fade" id="modalNoticia_@noticia.IdNoticia" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="apple-modal-content border-0 shadow-lg" style="background: #ffffff; border-radius: 28px;">
+                    <button type="button" class="apple-btn-close-floating" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    @if (!string.IsNullOrEmpty(noticia.ImagenBase64))
+                    {
+                        <div style="width: 100%; max-height: 70vh; background: #000000; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;">
+                            <img src="data:image/jpeg;base64,@noticia.ImagenBase64" alt="Noticia" style="max-width: 100%; max-height: 70vh; object-fit: contain; height: auto;">
+                        </div>
+                    }
+                    <div class="p-4 p-md-5">
+                        <div class="apple-news-meta mb-3" style="color: var(--apple-text-secondary); font-size: 13px; font-weight: 700; letter-spacing: 1px;">NOTICIA</div>
+                        <h2 class="fw-bold mb-2" style="font-size: 34px; letter-spacing: -1px; line-height: 1.15; color: #1c1c1e;">@noticia.Titulo</h2>
+                        <div class="apple-news-meta mb-4" style="color: #8e8e93; font-size: 15px; text-transform: none;">
+                            Publicado el @noticia.FechaPublicacion?.ToString("dd de MMMM de yyyy") a las @noticia.FechaPublicacion?.ToString("HH:mm")
+                        </div>
+                        <div class="apple-news-text" style="font-size: 18px; line-height: 1.6; color: #3a3a3c;">
+                            @noticia.Contenido
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 }
 
 @section Scripts {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace BL
 {
@@ -56,19 +57,20 @@ namespace BL
             try
             {
                 var query = _context.Horarios
+                                    .Include(h => h.Grupo)
                                     .Where(h => h.IdGrupo == idGrupo)
                                     .Select(h => new ML.Horario
                                     {
                                         IdHorario = h.IdHorario,
                                         IdGrupo = h.IdGrupo,
                                         DocumentoRuta = h.DocumentoRuta,
-                                        Grupo = new ML.Grupo
+                                        Grupo = h.Grupo != null ? new ML.Grupo
                                         {
                                             IdGrupo = h.Grupo.IdGrupo,
                                             Semestre = h.Grupo.Semestre,
                                             Letra = h.Grupo.Letra,
                                             Turno = h.Grupo.Turno
-                                        }
+                                        } : null
                                     }).FirstOrDefault();
 
                 if (query != null)

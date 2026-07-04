@@ -134,7 +134,7 @@ public ActionResult AlumnoAdd(ML.Alumno alumno)
     {
         // ¡Éxito! Guardamos el mensaje y lo mandamos a la tabla principal
         TempData["Message"] = "Alumno añadido correctamente";
-        return RedirectToAction("GetAll");
+        return RedirectToAction("AlumnoAdd");
     }
     else
     {
