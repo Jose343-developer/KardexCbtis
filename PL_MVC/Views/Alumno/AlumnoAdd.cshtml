@@ -4,120 +4,303 @@
     ViewData["Title"] = "Agregar Alumno";
 }
 
-<div class="mt-4">
-    <p class="d-inline-flex gap-1">
-        <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseCargaMasiva" role="button" aria-expanded="false" aria-controls="collapseCargaMasiva">
-            <i class="bi bi-file-earmark-excel me-1"></i> CARGA MASIVA
-        </a>
-    </p>
-    <div class="collapse" id="collapseCargaMasiva">
-        <form action="@Url.Action("CargaMasiva", "Alumno")" method="POST" enctype="multipart/form-data">
-            <div class="input-group mb-3">
-                <input type="file" name="archivoExcel" class="form-control" id="inputGroupFile04" accept=".xlsx" required>
-                
-                <button class="btn btn-success px-4" type="submit">
-                    <i class="bi bi-upload me-2"></i> Subir Excel
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+    .saas-container {
+        font-family: 'Inter', sans-serif;
+        background-color: #f8fafc;
+        padding: 2rem 0 4rem 0;
+        min-height: calc(100vh - 60px);
+    }
 
+    .saas-title {
+        font-weight: 700;
+        font-size: 2.25rem;
+        color: #0f172a;
+        letter-spacing: -0.025em;
+    }
 
-@* <div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12 text-center text-md-start">
-            <h1 class="display-5 fw-bold text-primary mb-2">Agregar Alumno</h1>
-            <p class="text-muted lead">Ingresa los datos del nuevo alumno.</p>
-        </div>
-    </div> *@
+    .saas-card {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+    }
+
+    .saas-card-header {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1.5rem 2rem;
+        background-color: transparent;
+    }
+
+    .saas-card-title {
+        font-weight: 600;
+        color: #2563eb;
+        font-size: 1.25rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .saas-label {
+        font-weight: 600;
+        color: #334155;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .saas-input {
+        border-radius: 0.5rem;
+        border: 1px solid #cbd5e1;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: #0f172a;
+        background-color: #ffffff;
+        transition: all 0.2s;
+    }
+    
+    .saas-input:disabled {
+        background-color: #f1f5f9;
+        color: #94a3b8;
+    }
+
+    .saas-input:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        outline: none;
+    }
+
+    .saas-input::placeholder {
+        color: #94a3b8;
+    }
+
+    .saas-btn-primary {
+        background-color: #2563eb;
+        color: #ffffff;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .saas-btn-primary:hover {
+        background-color: #1d4ed8;
+        color: white;
+    }
+    
+    .saas-btn-primary:active {
+        transform: scale(0.98);
+    }
+
+    .saas-btn-secondary {
+        background-color: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .saas-btn-secondary:hover {
+        background-color: #f8fafc;
+        color: #0f172a;
+        border-color: #94a3b8;
+    }
+    
+    /* Table styling inside cards */
+    .saas-table th {
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1rem;
+    }
+    .saas-table td {
+        padding: 1rem;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+</style>
+
+<div class="saas-container container-fluid">
 
     @if (ViewBag.Message != null)
     {
-        <div class="alert alert-danger" role="alert">
-            <i class="fs-4 bi bi-exclamation-triangle-fill text-danger me-2"></i> @ViewBag.Message
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                <div class="alert alert-danger rounded-3 border-0 shadow-sm" role="alert">
+                    <i class="fs-5 bi bi-exclamation-triangle-fill text-danger me-2"></i> @ViewBag.Message
+                </div>
+            </div>
         </div>
     }
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm border-0 rounded-3">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <!-- Header Section -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <div>
+                    <h1 class="saas-title mb-1">Agregar Alumno</h1>
+                    <p class="text-muted" style="font-size: 1rem;">Gestión e ingreso de nuevos estudiantes al sistema</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <a class="saas-btn-primary text-decoration-none d-inline-flex align-items-center shadow-sm" data-bs-toggle="collapse" href="#collapseCargaMasiva" role="button" aria-expanded="false" aria-controls="collapseCargaMasiva">
+                        <i class="bi bi-file-earmark-excel fs-5 me-2"></i> CARGA MASIVA
+                    </a>
+                </div>
+            </div>
+
+            <div class="collapse mb-4" id="collapseCargaMasiva">
+                <div class="saas-card p-4">
+                    <form action="@Url.Action("CargaMasiva", "Alumno")" method="POST" enctype="multipart/form-data">
+                        <label class="saas-label">Subir archivo Excel (.xlsx)</label>
+                        <div class="input-group">
+                            <input type="file" name="archivoExcel" class="form-control saas-input" id="inputGroupFile04" accept=".xlsx" required style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                            <button class="saas-btn-primary" type="submit" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                                <i class="bi bi-upload me-2"></i> Subir Excel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @if (Context.User.IsInRole("Administrador"))
+            {
+                <!-- Buscar y Eliminar Alumnos Card -->
+                <div class="saas-card mb-5">
+                    <div class="saas-card-header">
+                        <h5 class="saas-card-title"><i class="bi bi-search"></i> Buscar y Eliminar Alumnos</h5>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="input-group mb-4 shadow-sm" style="border-radius: 0.5rem;">
+                            <input type="text" id="searchInput" class="form-control saas-input border-end-0" placeholder="Buscar por Nombre, Correo o Usuario..." style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                            <button class="saas-btn-primary px-4" type="button" id="btnSearchAlumno" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                        <div class="table-responsive rounded-3 border border-light" style="max-height: 350px; overflow-y: auto;">
+                            <table class="table saas-table table-hover align-middle mb-0" id="tableAlumnosResults" style="display: none;">
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>Matrícula</th>
+                                        <th>Nombre</th>
+                                        <th>Correo</th>
+                                        <th>Usuario</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <div id="noResultsMsg" class="text-center text-muted py-5" style="display: none;">
+                                <i class="bi bi-inbox fs-2 d-block mb-2 text-light"></i>
+                                No se encontraron alumnos.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Formulario Datos del Alumno -->
+            <div class="saas-card">
+                <div class="saas-card-header">
+                    <h5 class="saas-card-title text-dark"><i class="bi bi-person-badge me-2"></i> Datos del Alumno</h5>
+                </div>
                 <div class="card-body p-4 p-md-5">
                     @using (Html.BeginForm("AlumnoAdd", "Alumno", FormMethod.Post, new { id = "alumnoForm", enctype = "multipart/form-data" }))
                     {
-                        <div class="row g-3">
+                        <div class="row g-4">
+                            <!-- Left Column -->
                             <div class="col-md-6">
-                                <label for="Nombre" class="form-label fw-semibold">Nombre</label>
-                                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", id = "Nombre", placeholder = "Ej: Emmanuel" })
-                                @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                                <label for="Nombre" class="saas-label">Nombre</label>
+                                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control saas-input", id = "Nombre", placeholder = "Ej: Emmanuel" })
+                                @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">El nombre es obligatorio y sólo debe contener letras.</div>
                             </div>
+                            <!-- Right Column -->
                             <div class="col-md-6">
-                                <label for="ApellidoPaterno" class="form-label fw-semibold">Apellido Paterno</label>
-                                @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control", id = "ApellidoPaterno", placeholder = "Ej: Rodríguez" })
-                                @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger" })
+                                <label for="ApellidoPaterno" class="saas-label">Apellido Paterno</label>
+                                @Html.TextBoxFor(m => m.ApellidoPaterno, new { @class = "form-control saas-input", id = "ApellidoPaterno", placeholder = "Ej: Rodríguez" })
+                                @Html.ValidationMessageFor(m => m.ApellidoPaterno, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">El apellido paterno es obligatorio y sólo debe contener letras.</div>
                             </div>
+
                             <div class="col-md-6">
-                                <label for="ApellidoMaterno" class="form-label fw-semibold">Apellido Materno</label>
-                                @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control", id = "ApellidoMaterno", placeholder = "Ej: Flores" })
-                                @Html.ValidationMessageFor(m => m.ApellidoMaterno, "", new { @class = "text-danger" })
+                                <label for="ApellidoMaterno" class="saas-label">Apellido Materno</label>
+                                @Html.TextBoxFor(m => m.ApellidoMaterno, new { @class = "form-control saas-input", id = "ApellidoMaterno", placeholder = "Ej: Flores" })
+                                @Html.ValidationMessageFor(m => m.ApellidoMaterno, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">El apellido materno sólo debe contener letras si se especifica.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="Matricula" class="form-label fw-semibold">Matrícula</label>
-                                @Html.TextBoxFor(m => m.Matricula, new { @class = "form-control", id = "Matricula", placeholder = "Ej: 123456789" })
-                                @Html.ValidationMessageFor(m => m.Matricula, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback">La matrícula es obligatoria y sólo debe contener números.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="Curp" class="form-label fw-semibold">CURP</label>
-                                @Html.TextBoxFor(m => m.Curp, new { @class = "form-control", id = "Curp", placeholder = "Ej: ROFE000101XXXXXXXX" })
-                                @Html.ValidationMessageFor(m => m.Curp, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback">El CURP es obligatorio y debe tener un formato oficial válido (18 caracteres).</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="Correo" class="form-label fw-semibold">Correo</label>
-                                @Html.TextBoxFor(m => m.Correo, new { @class = "form-control", id = "Correo", placeholder = "Ej: alumno@cbtis.edu.mx", type = "email" })
-                                @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback">El correo electrónico no tiene un formato válido.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="Telefono" class="form-label fw-semibold">Teléfono</label>
-                                @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control", id = "Telefono", placeholder = "Ej: 5551234567" })
-                                @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback">El teléfono debe contener exactamente 10 dígitos numéricos.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="Celular" class="form-label fw-semibold">Celular</label>
-                                @Html.TextBoxFor(m => m.Celular, new { @class = "form-control", id = "Celular", placeholder = "Ej: 5559876543" })
-                                @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback">El celular debe contener exactamente 10 dígitos numéricos.</div>
                             </div>
                             
                             <div class="col-md-6">
-                                @Html.LabelFor(m=>Model.Grupo.Semestre, "Semestre", new { @class = "form-label fw-semibold" })
+                                <label for="Matricula" class="saas-label">Matrícula</label>
+                                @Html.TextBoxFor(m => m.Matricula, new { @class = "form-control saas-input", id = "Matricula", placeholder = "Ej: 123456789" })
+                                @Html.ValidationMessageFor(m => m.Matricula, "", new { @class = "text-danger small mt-1" })
+                                <div class="invalid-feedback">La matrícula es obligatoria y sólo debe contener números.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="Curp" class="saas-label">CURP</label>
+                                @Html.TextBoxFor(m => m.Curp, new { @class = "form-control saas-input", id = "Curp", placeholder = "Ej: ROFE000101XXXXXXXX" })
+                                @Html.ValidationMessageFor(m => m.Curp, "", new { @class = "text-danger small mt-1" })
+                                <div class="invalid-feedback">El CURP es obligatorio y debe tener un formato oficial válido.</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="Correo" class="saas-label">Correo</label>
+                                @Html.TextBoxFor(m => m.Correo, new { @class = "form-control saas-input", id = "Correo", placeholder = "Ej: alumno@cbtis.edu.mx", type = "email" })
+                                @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger small mt-1" })
+                                <div class="invalid-feedback">El correo electrónico no tiene un formato válido.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="Telefono" class="saas-label">Teléfono</label>
+                                @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control saas-input", id = "Telefono", placeholder = "Ej: 5551234567" })
+                                @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "text-danger small mt-1" })
+                                <div class="invalid-feedback">El teléfono debe contener exactamente 10 dígitos numéricos.</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="Celular" class="saas-label">Celular</label>
+                                @Html.TextBoxFor(m => m.Celular, new { @class = "form-control saas-input", id = "Celular", placeholder = "Ej: 5559876543" })
+                                @Html.ValidationMessageFor(m => m.Celular, "", new { @class = "text-danger small mt-1" })
+                                <div class="invalid-feedback">El celular debe contener exactamente 10 dígitos numéricos.</div>
+                            </div>
+
+                            <div class="col-12 mt-4 mb-2">
+                                <hr style="border-color: #e2e8f0;">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                @Html.LabelFor(m=>Model.Grupo.Semestre, "Semestre", new { @class = "saas-label" })
                                 @Html.DropDownListFor(
                                     m=> Model.Grupo.Semestre,
                                      new SelectList(Model.Grupo.semestres),
                                      "Seleccione un Semestre",
-                                     new {@class = "form-select", @id="ddlsemestre"})
-                                @Html.ValidationMessageFor(m => m.Grupo.Semestre, "", new { @class = "text-danger" })
+                                     new {@class = "form-select saas-input", @id="ddlsemestre"})
+                                @Html.ValidationMessageFor(m => m.Grupo.Semestre, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">Seleccione un semestre.</div>
                             </div>    
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Turno</label>
-                                <select id="ddlTurno" class="form-select" disabled>
+                                <label class="saas-label">Turno</label>
+                                <select id="ddlTurno" class="form-select saas-input" disabled>
                                     <option value="">Primero seleccione Semestre</option>
                                 </select>
                                 <div class="invalid-feedback">Seleccione un turno.</div>
                             </div>
 
                             <div class="col-md-6">
-                                @Html.LabelFor(m => m.Grupo.IdGrupo, "Grupo", new { @class = "form-label fw-semibold" })
-                                <select name="Grupo.IdGrupo" id="ddlGrupo" class="form-select" disabled>
+                                @Html.LabelFor(m => m.Grupo.IdGrupo, "Grupo", new { @class = "saas-label" })
+                                <select name="Grupo.IdGrupo" id="ddlGrupo" class="form-select saas-input" disabled>
                                     <option value="">Seleccione SEMESTRE</option>
                                     @foreach (ML.Grupo grupo in Model.Grupo.grupos)
                                     {
@@ -126,41 +309,45 @@
                                         </option>
                                     }
                                 </select>
-                                @Html.ValidationMessageFor(m => m.Grupo.IdGrupo, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(m => m.Grupo.IdGrupo, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">Seleccione un grupo.</div>
                             </div>
 
                             <div class="col-md-6">
-                                @Html.LabelFor(m => Model.Especialidad, "Especialidad", new { @class = "form-label fw-semibold" })
+                                @Html.LabelFor(m => Model.Especialidad, "Especialidad", new { @class = "saas-label" })
                                 @Html.DropDownListFor(
                                     m => m.Especialidad.IdEspecialidad, 
                                     new SelectList(Model.Especialidad.Especialidades, "IdEspecialidad", "Nombre"), 
                                     "Seleccione una especialidad", 
-                                    new { @class = "form-select", @id = "ddlEspecialidad" }
+                                    new { @class = "form-select saas-input", @id = "ddlEspecialidad" }
                                 )
-                                @Html.ValidationMessageFor(m => m.Especialidad.IdEspecialidad, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(m => m.Especialidad.IdEspecialidad, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">Seleccione una especialidad.</div>
                             </div>
 
+                            <div class="col-12 mt-4 mb-2">
+                                <hr style="border-color: #e2e8f0;">
+                            </div>
+
                             <div class="col-md-6">
-                                <label for="NombreUser" class="form-label fw-semibold">Nombre de Usuario</label>
-                                @Html.TextBoxFor(m => m.Usuario.NombreUser, new { @class = "form-control", id = "NombreUser", placeholder = "Ej: emmanuel.rodriguez" })
-                                @Html.ValidationMessageFor(m => m.Usuario.NombreUser, "", new { @class = "text-danger" })
+                                <label for="NombreUser" class="saas-label">Nombre de Usuario</label>
+                                @Html.TextBoxFor(m => m.Usuario.NombreUser, new { @class = "form-control saas-input", id = "NombreUser", placeholder = "Ej: emmanuel.rodriguez" })
+                                @Html.ValidationMessageFor(m => m.Usuario.NombreUser, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">El nombre de usuario es obligatorio.</div>
                             </div>
                             <div class="col-md-6">
-                                <label for="Password" class="form-label fw-semibold">Contraseña</label>
-                                @Html.PasswordFor(m => m.Usuario.Password, new { @class = "form-control", id = "Password", placeholder = "••••••••", value = "" })
-                                @Html.ValidationMessageFor(m => m.Usuario.Password, "", new { @class = "text-danger" })
+                                <label for="Password" class="saas-label">Contraseña</label>
+                                @Html.PasswordFor(m => m.Usuario.Password, new { @class = "form-control saas-input", id = "Password", placeholder = "••••••••", value = "" })
+                                @Html.ValidationMessageFor(m => m.Usuario.Password, "", new { @class = "text-danger small mt-1" })
                                 <div class="invalid-feedback">La contraseña es obligatoria (mínimo 4 caracteres).</div>
                             </div>
 
-                            <div class="col-12 mt-4 text-center">
-                                <a href="@Url.Action("GetAll", "Alumno")" class="btn btn-outline-secondary px-4 me-2">
-                                    <i class="bi bi-arrow-left me-2"></i>Regresar
+                            <div class="col-12 mt-5 text-center text-md-end">
+                                <a href="@Url.Action("GetAll", "Alumno")" class="saas-btn-secondary text-decoration-none me-3 shadow-sm">
+                                    <i class="bi bi-arrow-left me-2"></i> Regresar
                                 </a>
-                                <button type="submit" class="btn btn-success px-4">
-                                    <i class="bi bi-save me-2"></i>Guardar Alumno
+                                <button type="submit" class="saas-btn-primary shadow-sm px-5">
+                                    <i class="bi bi-save me-2"></i> Guardar Alumno
                                 </button>
                             </div>
                         </div>

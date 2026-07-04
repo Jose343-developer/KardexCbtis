@@ -285,8 +285,8 @@ public ActionResult CargaMasiva(IFormFile archivoExcel)
                         alumnoNuevo.Grupo.IdGrupo = Convert.ToInt32(row["IdGrupo"]);
 
                         alumnoNuevo.Usuario = new ML.Usuario();
-                        alumnoNuevo.Usuario.NombreUser = alumnoNuevo.Matricula;
-                        alumnoNuevo.Usuario.Password = alumnoNuevo.Curp;
+                        alumnoNuevo.Usuario.NombreUser = row["NombreUser"]?.ToString();
+                        alumnoNuevo.Usuario.Password = row["Password"]?.ToString();
 
                         // Mandamos a llamar tu Procedure
                         ML.Result resultInsert = alumnoBL.AlumnoAdd(alumnoNuevo);
@@ -335,6 +335,23 @@ public ActionResult CargaMasiva(IFormFile archivoExcel)
                 TempData["ErrorMessage"] = "Error al actualizar estatus: " + result.ErrorMessage;
             }
             return RedirectToAction("GetAll");
+        }
+
+        [HttpGet]
+        public IActionResult SearchAlumnos(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+                return Json(new { correct = false, errorMessage = "El término de búsqueda está vacío." });
+
+            var result = _alumnoBL.Search(term);
+            return Json(new { correct = result.Correct, objects = result.Objects, errorMessage = result.ErrorMessage });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteFull(int idAlumno, int idUsuario)
+        {
+            var result = _alumnoBL.DeleteFull(idAlumno, idUsuario);
+            return Json(new { correct = result.Correct, errorMessage = result.ErrorMessage });
         }
     }
 }

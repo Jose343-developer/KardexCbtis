@@ -192,4 +192,100 @@ $(document).ready(function () {
             $(".is-invalid").first().focus();
         }
     });
+
+    // ==========================================
+    // BUSCADOR Y ELIMINADOR DE ALUMNOS (ADMIN)
+    // ==========================================
+    $("#btnSearchAlumno").click(function () {
+        var term = $("#searchInput").val().trim();
+        if (term === "") {
+            alert("Por favor ingresa un término de búsqueda.");
+            return;
+        }
+
+        // Show loading state if needed
+        var btn = $(this);
+        var originalText = btn.html();
+        btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Buscando...');
+        btn.prop("disabled", true);
+
+        $.ajax({
+            url: '/Alumno/SearchAlumnos',
+            type: 'GET',
+            data: { term: term },
+            success: function (res) {
+                btn.html(originalText);
+                btn.prop("disabled", false);
+
+                var tbody = $("#tableAlumnosResults tbody");
+                tbody.empty();
+
+                if (res.correct && res.objects && res.objects.length > 0) {
+                    $("#noResultsMsg").hide();
+                    $("#tableAlumnosResults").show();
+
+                    $.each(res.objects, function (i, item) {
+                        var nombreCompleto = item.nombre + " " + item.apellidoPaterno + (item.apellidoMaterno ? " " + item.apellidoMaterno : "");
+                        var correo = item.correo || "N/A";
+                        var usuario = (item.usuario && item.usuario.nombreUser) ? item.usuario.nombreUser : "Sin Usuario";
+                        var idUsuario = item.usuario ? item.usuario.idUsuario : 0;
+
+                        var tr = $("<tr>");
+                        tr.append($("<td>").text(item.matricula));
+                        tr.append($("<td>").text(nombreCompleto));
+                        tr.append($("<td>").text(correo));
+                        tr.append($("<td>").text(usuario));
+                        
+                        var btnDelete = $("<button>")
+                            .addClass("btn btn-danger btn-sm")
+                            .html('<i class="bi bi-trash"></i>')
+                            .attr("title", "Eliminar Alumno")
+                            .click(function () {
+                                if (confirm("¿Estás seguro de que deseas ELIMINAR PERMANENTEMENTE a este alumno y su usuario? Esta acción borrará todas sus calificaciones y no se puede deshacer.")) {
+                                    deleteAlumnoFull(item.idAlumno, idUsuario, tr);
+                                }
+                            });
+                        
+                        tr.append($('<td class="text-center">').append(btnDelete));
+                        tbody.append(tr);
+                    });
+                } else {
+                    $("#tableAlumnosResults").hide();
+                    $("#noResultsMsg").text(res.errorMessage || "No se encontraron alumnos.").show();
+                }
+            },
+            error: function () {
+                btn.html(originalText);
+                btn.prop("disabled", false);
+                alert("Ocurrió un error al buscar.");
+            }
+        });
+    });
+
+    // Enter key para buscar
+    $("#searchInput").keypress(function (e) {
+        if (e.which == 13) {
+            e.preventDefault();
+            $("#btnSearchAlumno").click();
+        }
+    });
+
+    function deleteAlumnoFull(idAlumno, idUsuario, rowElement) {
+        $.ajax({
+            url: '/Alumno/DeleteFull',
+            type: 'POST',
+            data: { idAlumno: idAlumno, idUsuario: idUsuario },
+            success: function (res) {
+                if (res.correct) {
+                    rowElement.fadeOut(400, function() { $(this).remove(); });
+                    alert("Alumno eliminado correctamente.");
+                } else {
+                    alert("Error al eliminar: " + res.errorMessage);
+                }
+            },
+            error: function () {
+                alert("Ocurrió un error en el servidor al intentar eliminar.");
+            }
+        });
+    }
 });

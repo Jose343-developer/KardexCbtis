@@ -3,45 +3,268 @@
     ViewData["Title"] = "Noticias y Dashboard";
 }
 
-<!-- Modal Noticia Relevante -->
-@if (Model.NoticiaRelevante != null)
-{
-    <div class="modal fade" id="modalNoticiaRelevante" tabindex="-1" aria-labelledby="modalNoticiaRelevanteLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title fw-bold" id="modalNoticiaRelevanteLabel">🔥 Noticia Destacada</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <h3 class="mb-2 fw-bold text-dark">@Model.NoticiaRelevante.Titulo</h3>
-                    <p class="text-muted small mb-3"><i class="bi bi-clock"></i> Publicado el: @Model.NoticiaRelevante.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm")</p>
-                    
-                    @if (!string.IsNullOrEmpty(Model.NoticiaRelevante.ImagenBase64))
-                    {
-                        <div class="text-center mb-4 bg-light rounded shadow-sm d-flex justify-content-center align-items-center" style="height: 400px; overflow: hidden;">
-                            <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" class="img-fluid" alt="Noticia" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                        </div>
-                    }
-                    <div class="noticia-contenido" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6; color: #444;">
-                        @Model.NoticiaRelevante.Contenido
-                    </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+<style>
+    :root {
+        --apple-bg: rgba(255, 255, 255, 0.7);
+        --apple-bg-solid: #ffffff;
+        --apple-blur: blur(24px);
+        --apple-border: rgba(0, 0, 0, 0.1);
+        --apple-text-primary: #1c1c1e;
+        --apple-text-secondary: #8e8e93;
+        --apple-blue: #0A84FF;
+        --apple-red: #FF3B30;
+        --apple-green: #34C759;
+        --apple-orange: #FF9500;
+        --apple-radius-lg: 24px;
+        --apple-radius-md: 16px;
+        --font-family-apple: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-<div class="container-fluid mt-4 px-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <h2 class="fw-bold m-0"><i class="bi bi-newspaper text-primary"></i> Zona de Noticias</h2>
+    .apple-container {
+        font-family: var(--font-family-apple);
+        color: var(--apple-text-primary);
+    }
+
+    /* Modals */
+    .apple-modal-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        pointer-events: auto;
+        background: var(--apple-bg-solid);
+        border: 1px solid var(--apple-border);
+        border-radius: var(--apple-radius-lg);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        color: var(--apple-text-primary);
+        overflow: hidden;
+    }
+    
+    .apple-modal-header {
+        border-bottom: 1px solid var(--apple-border);
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .apple-modal-title {
+        font-weight: 700;
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .apple-btn-close {
+        background: rgba(0,0,0,0.05);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--apple-text-secondary);
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .apple-btn-close:hover {
+        background: rgba(0,0,0,0.1);
+        color: var(--apple-text-primary);
+    }
+    
+    .apple-btn-close-floating {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1c1c1e;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: transform 0.2s, background 0.2s;
+    }
+    .apple-btn-close-floating:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: scale(1.05);
+    }
+
+    /* News Cards */
+    .apple-news-card {
+        background: var(--apple-bg);
+        border: 1px solid var(--apple-border);
+        backdrop-filter: var(--apple-blur);
+        -webkit-backdrop-filter: var(--apple-blur);
+        border-radius: var(--apple-radius-lg);
+        overflow: hidden;
+        transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        position: relative;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .apple-news-card:hover {
+        transform: scale(1.01);
+    }
+
+    .apple-news-img-container {
+        width: 100%;
+        height: 200px;
+        background: #f2f2f7;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .apple-news-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .apple-news-card:hover .apple-news-img {
+        transform: scale(1.03);
+    }
+
+    .apple-news-content {
+        padding: 24px;
+    }
+
+    .apple-news-title {
+        font-weight: 800;
+        font-size: 24px;
+        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+        line-height: 1.2;
+    }
+
+    .apple-news-meta {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--apple-text-secondary);
+        margin-bottom: 12px;
+        letter-spacing: 0.5px;
+    }
+
+    .apple-news-text {
+        color: var(--apple-text-secondary);
+        font-size: 16px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        margin: 0;
+    }
+
+    /* Dashboard Widgets */
+    .apple-widget {
+        background: var(--apple-bg);
+        border: 1px solid var(--apple-border);
+        backdrop-filter: var(--apple-blur);
+        -webkit-backdrop-filter: var(--apple-blur);
+        border-radius: var(--apple-radius-lg);
+        padding: 24px;
+        height: 100%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .apple-widget-title {
+        font-weight: 700;
+        font-size: 17px;
+        color: var(--apple-text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .apple-stat-big {
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -1.5px;
+        margin-bottom: 8px;
+    }
+
+    .apple-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .apple-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--apple-border);
+    }
+    .apple-list-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Buttons */
+    .apple-btn-primary {
+        background: var(--apple-blue);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 20px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: opacity 0.2s;
+    }
+    .apple-btn-primary:hover {
+        opacity: 0.9;
+    }
+    
+    .apple-btn-danger-icon {
+        background: rgba(255, 59, 48, 0.1);
+        color: var(--apple-red);
+        border: none;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    .apple-btn-danger-icon:hover {
+        background: var(--apple-red);
+        color: white;
+    }
+    
+    .apple-form-control {
+        background: rgba(0,0,0,0.03);
+        border: 1px solid var(--apple-border);
+        color: var(--apple-text-primary);
+        border-radius: 12px;
+        padding: 12px;
+    }
+    .apple-form-control:focus {
+        background: #fff;
+        border-color: var(--apple-blue);
+        box-shadow: 0 0 0 3px rgba(10,132,255,0.2);
+    }
+</style>
+
+<div class="apple-container container-fluid mt-4 px-4 pb-5">
+    
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1 class="fw-bold m-0" style="font-size: 34px; letter-spacing: -1px;">Noticias Destacadas</h1>
         @if (Context.User.IsInRole("Administrador"))
         {
-            <button type="button" class="btn btn-success rounded-pill shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalAñadirNoticia">
-                <i class="bi bi-plus-circle me-2"></i> Añadir Noticia
+            <button type="button" class="apple-btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAñadirNoticia">
+                <i class="bi bi-plus-lg me-1"></i> Nueva
             </button>
         }
     </div>
@@ -51,38 +274,49 @@
         <div class="@(Context.User.IsInRole("Alumno") ? "col-lg-12" : "col-lg-8")">
             @if (Model.Noticias != null && Model.Noticias.Any())
             {
-                foreach (ML.Noticia noticia in Model.Noticias)
-                {
-                    <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
-                        @if (!string.IsNullOrEmpty(noticia.ImagenBase64))
-                        {
-                            <div class="bg-light d-flex justify-content-center align-items-center" style="height: 280px; width: 100%; overflow: hidden;">
-                                <img src="data:image/jpeg;base64,@noticia.ImagenBase64" class="card-img-top" alt="Imagen noticia" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                            </div>
-                        }
-                        <div class="card-body p-4 position-relative">
-                            @if (Context.User.IsInRole("Administrador"))
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    @foreach (ML.Noticia noticia in Model.Noticias)
+                    {
+                        <div class="col">
+                            <div class="apple-news-card h-100 d-flex flex-column">
+                            @if (!string.IsNullOrEmpty(noticia.ImagenBase64))
                             {
-                                <form asp-controller="Home" asp-action="EliminarNoticia" method="post" class="position-absolute top-0 end-0 mt-3 me-3" onsubmit="return confirm('¿Estás seguro de eliminar esta noticia?');">
-                                    <input type="hidden" name="idNoticia" value="@noticia.IdNoticia" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm" title="Eliminar noticia">
-                                        <i class="bi bi-trash"></i> Eliminar
-                                    </button>
-                                </form>
+                                <div class="apple-news-img-container">
+                                    <img src="data:image/jpeg;base64,@noticia.ImagenBase64" class="apple-news-img" alt="Imagen noticia">
+                                </div>
                             }
-                            <h4 class="card-title fw-bold pe-5">@noticia.Titulo</h4>
-                            <p class="card-text text-muted small mb-3">
-                                <i class="bi bi-calendar3"></i> @noticia.FechaPublicacion?.ToString("dd/MM/yyyy HH:mm")
-                            </p>
-                            <p class="card-text text-secondary" style="white-space: pre-wrap; line-height: 1.6;">@noticia.Contenido</p>
+                            
+                            <div class="apple-news-content flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <div class="apple-news-meta">
+                                            @noticia.FechaPublicacion?.ToString("dd MMM yyyy • HH:mm")
+                                        </div>
+                                        <h2 class="apple-news-title" style="font-size: 20px;">@noticia.Titulo</h2>
+                                    </div>
+                                    @if (Context.User.IsInRole("Administrador"))
+                                    {
+                                        <form asp-controller="Home" asp-action="EliminarNoticia" method="post" onsubmit="return confirm('¿Estás seguro de eliminar esta noticia?');" class="ms-3">
+                                            <input type="hidden" name="idNoticia" value="@noticia.IdNoticia" />
+                                            <button type="submit" class="apple-btn-danger-icon" title="Eliminar noticia">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                                <p class="apple-news-text">@noticia.Contenido</p>
+                            </div>
                         </div>
-                    </div>
-                }
+                        </div>
+                    }
+                </div>
             }
             else
             {
-                <div class="alert alert-info border-0 shadow-sm rounded-3">
-                    <i class="bi bi-info-circle me-2"></i> No hay noticias disponibles en este momento.
+                <div class="apple-widget text-center py-5 d-flex flex-column align-items-center justify-content-center">
+                    <i class="bi bi-newspaper mb-3" style="font-size: 48px; color: var(--apple-text-secondary);"></i>
+                    <h4 class="fw-bold">Sin Noticias</h4>
+                    <p class="apple-text-secondary m-0">No hay contenido destacado en este momento.</p>
                 </div>
             }
         </div>
@@ -91,75 +325,117 @@
         {
             <!-- Dashboard Lateral -->
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 text-center">
-                    <div class="card-body p-4">
-                        <h4 class="card-title fw-bold mb-4 text-primary">Estadísticas</h4>
-                        <p class="text-muted text-uppercase fw-bold m-0" style="font-size: 0.85rem;">Total de Alumnos</p>
-                        <div class="display-4 fw-bold text-dark mb-4">@Model.AlumnosCount</div>
-                        
-                        <h6 class="mb-3 text-secondary text-start fw-bold">Distribución por Semestre</h6>
-                        <ul class="list-group list-group-flush text-start">
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-primary"></i> 1er Semestre</span> 
-                                <span class="badge bg-primary rounded-pill">@Model.PrimerSemestre</span>
+                <div class="d-flex flex-column gap-4">
+                    
+                    <!-- Total Widget -->
+                    <div class="apple-widget">
+                        <h4 class="apple-widget-title">Población Estudiantil</h4>
+                        <div class="apple-stat-big text-primary">@Model.AlumnosCount</div>
+                        <p class="apple-subtext m-0">Alumnos inscritos totales</p>
+                    </div>
+
+                    <!-- Distribución Widget -->
+                    <div class="apple-widget">
+                        <h4 class="apple-widget-title">Distribución por Semestre</h4>
+                        <ul class="apple-list">
+                            <li class="apple-list-item">
+                                <span class="fw-medium">1er Semestre</span> 
+                                <span class="fw-bold" style="color: var(--apple-text-secondary);">@Model.PrimerSemestre</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-success"></i> 2do Semestre</span> 
-                                <span class="badge bg-success rounded-pill">@Model.SegundoSemestre</span>
+                            <li class="apple-list-item">
+                                <span class="fw-medium">2do Semestre</span> 
+                                <span class="fw-bold" style="color: var(--apple-text-secondary);">@Model.SegundoSemestre</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-danger"></i> 3er Semestre</span> 
-                                <span class="badge bg-danger rounded-pill">@Model.TercerSemestre</span>
+                            <li class="apple-list-item">
+                                <span class="fw-medium">3er Semestre</span> 
+                                <span class="fw-bold" style="color: var(--apple-text-secondary);">@Model.TercerSemestre</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-warning"></i> 4to Semestre</span> 
-                                <span class="badge bg-warning text-dark rounded-pill">@Model.CuartoSemestre</span>
+                            <li class="apple-list-item">
+                                <span class="fw-medium">4to Semestre</span> 
+                                <span class="fw-bold" style="color: var(--apple-text-secondary);">@Model.CuartoSemestre</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-info"></i> 5to Semestre</span> 
-                                <span class="badge bg-info text-dark rounded-pill">@Model.QuintoSemestre</span>
+                            <li class="apple-list-item">
+                                <span class="fw-medium">5to Semestre</span> 
+                                <span class="fw-bold" style="color: var(--apple-text-secondary);">@Model.QuintoSemestre</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-light">
-                                <span class="text-secondary"><i class="bi bi-person-fill me-2 text-secondary"></i> 6to Semestre</span> 
-                                <span class="badge bg-secondary rounded-pill">@Model.SextoSemestre</span>
+                            <li class="apple-list-item">
+                                <span class="fw-medium">6to Semestre</span> 
+                                <span class="fw-bold" style="color: var(--apple-text-secondary);">@Model.SextoSemestre</span>
                             </li>
                         </ul>
                     </div>
+
                 </div>
             </div>
         }
-
     </div>
 </div>
+
+<!-- Modal Noticia Relevante -->
+@if (Model.NoticiaRelevante != null)
+{
+    <div class="modal fade" id="modalNoticiaRelevante" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="apple-modal-content border-0 shadow-lg" style="background: #ffffff; border-radius: 28px;">
+                <!-- Botón flotante para cerrar -->
+                <button type="button" class="apple-btn-close-floating" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+                <!-- Imagen que ocupa todo el borde superior -->
+                @if (!string.IsNullOrEmpty(Model.NoticiaRelevante.ImagenBase64))
+                {
+                    <div style="width: 100%; height: 350px; background: #f2f2f7; overflow: hidden; position: relative;">
+                        <img src="data:image/jpeg;base64,@Model.NoticiaRelevante.ImagenBase64" alt="Noticia" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                }
+
+                <!-- Contenido tipográfico premium -->
+                <div class="p-4 p-md-5">
+                    <div class="apple-news-meta mb-3" style="color: var(--apple-blue); font-size: 13px; font-weight: 700; letter-spacing: 1px;">LO MÁS DESTACADO</div>
+                    <h2 class="fw-bold mb-2" style="font-size: 34px; letter-spacing: -1px; line-height: 1.15; color: #1c1c1e;">@Model.NoticiaRelevante.Titulo</h2>
+                    <div class="apple-news-meta mb-4" style="color: #8e8e93; font-size: 15px; text-transform: none;">
+                        Publicado el @Model.NoticiaRelevante.FechaPublicacion?.ToString("dd de MMMM de yyyy") a las @Model.NoticiaRelevante.FechaPublicacion?.ToString("HH:mm")
+                    </div>
+                    <div class="apple-news-text" style="font-size: 18px; line-height: 1.6; color: #3a3a3c;">
+                        @Model.NoticiaRelevante.Contenido
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <!-- Modal Añadir Noticia -->
 @if (Context.User.IsInRole("Administrador"))
 {
-    <div class="modal fade" id="modalAñadirNoticia" tabindex="-1" aria-labelledby="modalAñadirNoticiaLabel" aria-hidden="true">
+    <div class="modal fade" id="modalAñadirNoticia" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <form asp-controller="Home" asp-action="AgregarNoticia" method="post" enctype="multipart/form-data" class="w-100">
-                <div class="modal-content border-0 shadow">
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title fw-bold" id="modalAñadirNoticiaLabel"><i class="bi bi-pencil-square me-2"></i> Nueva Noticia</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="apple-modal-content">
+                    <div class="apple-modal-header">
+                        <h5 class="apple-modal-title">Nueva Noticia</h5>
+                        <button type="button" class="apple-btn-close" data-bs-dismiss="modal">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
                     </div>
                     <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label for="titulo" class="form-label fw-bold">Título</label>
-                            <input type="text" class="form-control rounded-3" id="titulo" name="titulo" required placeholder="Escribe un título atractivo">
+                        <div class="mb-4">
+                            <label for="titulo" class="form-label fw-bold" style="color: var(--apple-text-secondary);">Título</label>
+                            <input type="text" class="form-control apple-form-control" id="titulo" name="titulo" required placeholder="Escribe el título">
                         </div>
-                        <div class="mb-3">
-                            <label for="contenido" class="form-label fw-bold">Contenido</label>
-                            <textarea class="form-control rounded-3" id="contenido" name="contenido" rows="5" required placeholder="Detalles de la noticia..."></textarea>
+                        <div class="mb-4">
+                            <label for="contenido" class="form-label fw-bold" style="color: var(--apple-text-secondary);">Contenido</label>
+                            <textarea class="form-control apple-form-control" id="contenido" name="contenido" rows="5" required placeholder="Detalles de la noticia..."></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="imagen" class="form-label fw-bold">Imagen <span class="text-muted fw-normal">(Opcional)</span></label>
-                            <input class="form-control rounded-3" type="file" id="imagen" name="imagen" accept="image/*">
+                        <div class="mb-2">
+                            <label for="imagen" class="form-label fw-bold" style="color: var(--apple-text-secondary);">Imagen Opcional</label>
+                            <input class="form-control apple-form-control" type="file" id="imagen" name="imagen" accept="image/*">
                         </div>
                     </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-success px-4 rounded-pill"><i class="bi bi-check-circle me-2"></i> Publicar</button>
+                    <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2 flex-nowrap">
+                        <button type="button" class="btn w-50" style="background: rgba(0,0,0,0.05); color: var(--apple-text-primary); border-radius: 14px; padding: 12px; font-weight: 600;" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn w-50" style="background: var(--apple-blue); color: white; border-radius: 14px; padding: 12px; font-weight: 600;">Publicar</button>
                     </div>
                 </div>
             </form>
@@ -173,7 +449,6 @@
             @if (Model.NoticiaRelevante != null)
             {
                 <text>
-                // Show modal automatically when there is a relevant news
                 var myModalEl = document.getElementById('modalNoticiaRelevante');
                 if (myModalEl) {
                     var myModal = new bootstrap.Modal(myModalEl, {

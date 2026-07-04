@@ -311,4 +311,92 @@ public ML.Result GetCountAlumnoBySemestre(int semestre)
         }
         return result;
     }
+
+    public ML.Result Search(string term)
+    {
+        ML.Result result = new ML.Result();
+        try
+        {
+            var query = (from a in _context.Alumnos
+                         join u in _context.Usuarios on a.IdUsuario equals u.IdUsuario into leftJoinUsuario
+                         from lu in leftJoinUsuario.DefaultIfEmpty()
+                         where a.Nombre.Contains(term) || 
+                               (a.Correo != null && a.Correo.Contains(term)) || 
+                               (lu != null && lu.NombreUser != null && lu.NombreUser.Contains(term))
+                         select new ML.Alumno
+                         {
+                             idAlumno = a.IdAlumno,
+                             Nombre = a.Nombre,
+                             ApellidoPaterno = a.ApellidoPaterno,
+                             ApellidoMaterno = a.ApellidoMaterno,
+                             Correo = a.Correo,
+                             Matricula = a.Matricula,
+                             Usuario = lu != null ? new ML.Usuario
+                             {
+                                 IdUsuario = lu.IdUsuario,
+                                 NombreUser = lu.NombreUser
+                             } : null
+                         }).ToList();
+            
+            result.Objects = new List<object>();
+            foreach (var item in query)
+            {
+                result.Objects.Add(item);
+            }
+            result.Correct = true;
+        }
+        catch (Exception ex)
+        {
+            result.Correct = false;
+            result.ErrorMessage = ex.Message;
+            result.Ex = ex;
+        }
+        return result;
+    }
+
+    public ML.Result DeleteFull(int idAlumno, int idUsuario)
+    {
+        ML.Result result = new ML.Result();
+        using (var transaction = _context.Database.BeginTransaction())
+        {
+            try
+            {
+                // Delete Calificaciones
+                var calificaciones = _context.Calificaciones.Where(c => c.IdAlumno == idAlumno);
+                if (calificaciones.Any())
+                {
+                    _context.Calificaciones.RemoveRange(calificaciones);
+                }
+
+                // Delete Alumno
+                var dbAlumno = _context.Alumnos.Find(idAlumno);
+                if (dbAlumno != null)
+                {
+                    _context.Alumnos.Remove(dbAlumno);
+                }
+
+                // Delete Usuario
+                if (idUsuario > 0)
+                {
+                    var dbUsuario = _context.Usuarios.Find(idUsuario);
+                    if (dbUsuario != null)
+                    {
+                        _context.Usuarios.Remove(dbUsuario);
+                    }
+                }
+
+                _context.SaveChanges();
+                transaction.Commit();
+                result.Correct = true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                result.Correct = false;
+                result.ErrorMessage = ex.Message;
+                result.Ex = ex;
+            }
+        }
+        return result;
+    }
 }
