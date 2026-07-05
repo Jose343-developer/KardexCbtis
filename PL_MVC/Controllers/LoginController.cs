@@ -138,7 +138,7 @@ namespace PL_MVC.Controllers
             }
             else if (role.Equals("Profesor", StringComparison.OrdinalIgnoreCase))
             {
-                return RedirectToAction("GetAll", "Asignacion");
+                return RedirectToAction("Index", "Home");
             }
             else if (role.Equals("Alumno", StringComparison.OrdinalIgnoreCase))
             {

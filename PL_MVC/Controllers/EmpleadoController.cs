@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using PL_MVC.Filters;
+using System.Linq;
+using System.Security.Claims;
 
 namespace PL_MVC.Controllers
 {
@@ -14,6 +16,32 @@ namespace PL_MVC.Controllers
         {
             _empleadoBL = empleadoBL;
             _rolBL = rolBL;
+        }
+
+        private List<object> FilterRoles(List<object> roles)
+        {
+            var loggedInRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role || c.Type == "role")?.Value;
+            if (!string.Equals(loggedInRole, "Administrador", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return roles.Where(r => !string.Equals(((ML.Rol)r).Nombre, "Administrador", System.StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            return roles;
+        }
+
+        private void ValidateRoleAssignment(ML.Empleado empleado, ML.Result resultRoles)
+        {
+            var loggedInRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role || c.Type == "role")?.Value;
+            if (!string.Equals(loggedInRole, "Administrador", System.StringComparison.OrdinalIgnoreCase))
+            {
+                if (empleado.Usuario?.Rol != null && resultRoles.Correct)
+                {
+                    var submittedRole = (ML.Rol)resultRoles.Objects.FirstOrDefault(r => ((ML.Rol)r).IdRol == empleado.Usuario.Rol.IdRol);
+                    if (submittedRole != null && string.Equals(submittedRole.Nombre, "Administrador", System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        ModelState.AddModelError("Usuario.Rol.IdRol", "No tienes permisos para asignar el rol de Administrador.");
+                    }
+                }
+            }
         }
 
         [HttpGet]
@@ -50,7 +78,7 @@ namespace PL_MVC.Controllers
 
             if (resultRoles.Correct)
             {
-                empleado.Usuario.Rol.Roles = resultRoles.Objects;
+                empleado.Usuario.Rol.Roles = FilterRoles(resultRoles.Objects);
             }
             else
             {
@@ -63,17 +91,19 @@ namespace PL_MVC.Controllers
         [HttpPost]
         public ActionResult EmpleadoAdd(ML.Empleado empleado)
         {
+            var rolBL = _rolBL;
+            ML.Result resultRoles = rolBL.RolGetAll();
+
+            ValidateRoleAssignment(empleado, resultRoles);
+
             if (!ModelState.IsValid)
             {
-                var rolBL = _rolBL;
-                ML.Result resultRoles = rolBL.RolGetAll();
-
                 if (empleado.Usuario == null) empleado.Usuario = new ML.Usuario();
                 if (empleado.Usuario.Rol == null) empleado.Usuario.Rol = new ML.Rol();
 
                 if (resultRoles.Correct)
                 {
-                    empleado.Usuario.Rol.Roles = resultRoles.Objects;
+                    empleado.Usuario.Rol.Roles = FilterRoles(resultRoles.Objects);
                 }
                 else
                 {
@@ -93,15 +123,12 @@ namespace PL_MVC.Controllers
             }
             else
             {
-                var rolBL = _rolBL;
-                ML.Result resultRoles = rolBL.RolGetAll();
-
                 if (empleado.Usuario == null) empleado.Usuario = new ML.Usuario();
                 if (empleado.Usuario.Rol == null) empleado.Usuario.Rol = new ML.Rol();
 
                 if (resultRoles.Correct)
                 {
-                    empleado.Usuario.Rol.Roles = resultRoles.Objects;
+                    empleado.Usuario.Rol.Roles = FilterRoles(resultRoles.Objects);
                 }
                 else
                 {
@@ -126,7 +153,7 @@ namespace PL_MVC.Controllers
 
                 if (resultRoles.Correct)
                 {
-                    model.Usuario.Rol.Roles = resultRoles.Objects;
+                    model.Usuario.Rol.Roles = FilterRoles(resultRoles.Objects);
                 }
                 else
                 {
@@ -157,15 +184,17 @@ namespace PL_MVC.Controllers
                 }
             }
 
+            ML.Result resultRoles = _rolBL.RolGetAll();
+            ValidateRoleAssignment(empleado, resultRoles);
+
             if (!ModelState.IsValid)
             {
-                ML.Result resultRoles = _rolBL.RolGetAll();
                 if (empleado.Usuario == null) empleado.Usuario = new ML.Usuario();
                 if (empleado.Usuario.Rol == null) empleado.Usuario.Rol = new ML.Rol();
 
                 if (resultRoles.Correct)
                 {
-                    empleado.Usuario.Rol.Roles = resultRoles.Objects;
+                    empleado.Usuario.Rol.Roles = FilterRoles(resultRoles.Objects);
                 }
                 else
                 {
@@ -182,13 +211,12 @@ namespace PL_MVC.Controllers
             }
             else
             {
-                ML.Result resultRoles = _rolBL.RolGetAll();
                 if (empleado.Usuario == null) empleado.Usuario = new ML.Usuario();
                 if (empleado.Usuario.Rol == null) empleado.Usuario.Rol = new ML.Rol();
 
                 if (resultRoles.Correct)
                 {
-                    empleado.Usuario.Rol.Roles = resultRoles.Objects;
+                    empleado.Usuario.Rol.Roles = FilterRoles(resultRoles.Objects);
                 }
                 else
                 {

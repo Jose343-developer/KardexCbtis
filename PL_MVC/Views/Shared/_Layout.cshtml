@@ -33,8 +33,9 @@
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
+    <meta name="google" content="notranslate" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CBTis 133</title>
@@ -47,6 +48,13 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
+    <!-- Botón de menú para móviles -->
+    <button class="mobile-menu-toggle">
+        <i class="bi bi-list"></i>
+    </button>
+    <!-- Fondo oscuro al abrir el menú en móviles -->
+    <div class="sidebar-overlay"></div>
+
     <div class="dashboard-container">
         
         <aside class="sidebar">
@@ -64,6 +72,7 @@
                         @if (rolUsuario.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                         {
                             <a class="nav-item" asp-area="" asp-controller="Catalogo" asp-action="Index">Catálogos</a>
+                            <a class="nav-item" asp-area="" asp-controller="Empleado" asp-action="GetAll">Personal</a>
                             <a class="nav-item" asp-area="" asp-controller="Horario" asp-action="Index">Subir Horarios</a>
                             @* <a class="nav-item" asp-area="" asp-controller="Reporte" asp-action="Dashboard">Estadísticas</a> *@
                             <a class="nav-item" asp-area="" asp-controller="Alumno" asp-action="AlumnoAdd">Agregar Alumno</a>
@@ -72,11 +81,12 @@
                         else if (rolUsuario.Equals("Profesor", StringComparison.OrdinalIgnoreCase))
                         {
                             <a class="nav-item" asp-area="" asp-controller="Calendario" asp-action="GetAllCalendarView">Calendario</a>
+                            <a class="nav-item" asp-area="" asp-controller="Horario" asp-action="Index">Subir Horarios</a>
                         }
                         else if (rolUsuario.Equals("Alumno", StringComparison.OrdinalIgnoreCase))
                         {
                             <a class="nav-item" asp-area="" asp-controller="Horario" asp-action="MiHorario">Mi Horario</a>
-                            <a class="nav-item" asp-area="" asp-controller="Calificacion" asp-action="MisCalificaciones">Mis Calificaciones</a>
+                            <a class="nav-item" asp-area="" asp-controller="Calificacion" asp-action="MisCalificaciones">Mis Datos</a>
                         }
 
                         <a class="nav-item" asp-area="" asp-controller="Home" asp-action="Privacy">Privacidad</a>

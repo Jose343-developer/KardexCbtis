@@ -42,7 +42,7 @@ public partial class ApplicationDbContext : DbContext
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=localhost,1435;Database=CbtisKardex;User Id=sa;Password=P@ssw0rd2026!;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=basecbtisoficial.cxgakm22slho.us-east-2.rds.amazonaws.com,1433;Database=CbtisKardex;User Id=admin;Password=CbtisKardexMaster#word1;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

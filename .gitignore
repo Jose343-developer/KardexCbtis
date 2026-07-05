@@ -20,3 +20,6 @@ Thumbs.db
 
 ## Ignore API Keys and secrets
 PL_MVC/App_Data/KeysCalendar.json
+publish/
+PL_MVC/out/
+PL_MVC/publish_mvc/

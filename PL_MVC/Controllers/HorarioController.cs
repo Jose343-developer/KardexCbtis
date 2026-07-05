@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PL_MVC.Controllers
 {
-    [AuthorizeRole("Administrador", "Alumno")]
+    [AuthorizeRole("Administrador", "Alumno", "Profesor")]
     public class HorarioController : Controller
     {
         private readonly IWebHostEnvironment _env;
@@ -25,7 +25,7 @@ namespace PL_MVC.Controllers
             _horarioBL = horarioBL;
         }
 
-        [AuthorizeRole("Administrador")]
+        [AuthorizeRole("Administrador", "Profesor")]
         public IActionResult Index()
         {
             var resultGrupos = _grupoBL.GrupoGetAll();
@@ -38,7 +38,7 @@ namespace PL_MVC.Controllers
         }
 
         [HttpPost]
-        [AuthorizeRole("Administrador")]
+        [AuthorizeRole("Administrador", "Profesor")]
         public async Task<IActionResult> Upload(int IdGrupo, IFormFile Documento)
         {
             if (IdGrupo <= 0 || Documento == null || Documento.Length == 0)

@@ -265,3 +265,84 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* --- RESPONSIVIDAD (MÓVILES Y TABLETAS) --- */
+@media (max-width: 768px) {
+    /* Ocultar el panel lateral por defecto y prepararlo para deslizarse */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1040;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    /* Clase para mostrar el panel cuando se toca el botón */
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* Oscurecer el fondo cuando el menú está abierto */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1030;
+    }
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Reducir los márgenes y paddings principales */
+    .page-header {
+        padding: 20px 20px 10px;
+    }
+    
+    .page-header h1 {
+        font-size: 22px;
+        margin-top: 40px; /* Espacio para el botón de menú */
+    }
+
+    .content-area {
+        padding: 10px 20px;
+    }
+
+    /* Botón de hamburguesa flotante */
+    .mobile-menu-toggle {
+        display: block !important;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 1020;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 12px;
+        font-size: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Ajustar las tarjetas de estadísticas */
+    .widgets-container {
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .card {
+        width: 100%;
+    }
+}
+
+/* Ocultar el botón de menú en computadoras */
+.mobile-menu-toggle {
+    display: none;
+}
